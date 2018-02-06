@@ -3,6 +3,7 @@ package gui;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
@@ -20,6 +21,7 @@ public class GUI extends JFrame {
 	public void makeFrame() {
 		
 		JFrame frame =  new JFrame();
+		
 		frame.pack();
 		frame.setSize(1920, 800);
 		frame.setResizable(false);
@@ -34,11 +36,20 @@ public class GUI extends JFrame {
 		menuItem = new JMenuItem("text");
 		menu.add(menuItem);
 		frame.setJMenuBar(menuBar);
+		/* Följande kod tar fram en bild
+		 * 
+		 */
+		JLabel jl = new JLabel();
+	    Image image = new ImageIcon(getClass().getResource("image.jpg")).getImage();
+	    jl.setIcon(new ImageIcon(image));
+	    frame.add(jl);
+	    
 		
 
 	    frame.setLocationRelativeTo(null); 
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.setVisible(true);
+
 	}
 	
 }
