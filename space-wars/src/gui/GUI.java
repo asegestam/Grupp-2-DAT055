@@ -20,7 +20,6 @@ public class GUI extends JFrame {
 	public void makeFrame() {
 		
 		JFrame frame =  new JFrame();
-		Container contentPane = frame.getContentPane();
 		frame.pack();
 		frame.setSize(1920, 800);
 		frame.setResizable(false);
