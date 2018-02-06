@@ -13,7 +13,7 @@ public class Obj {
 	private int hitPoints;
 	private int width;
 	private int lenght;
-	//private BufferedImage img; eeee
+	//private BufferedImage img;es eeee
 	
 	public Obj() {
 		
