@@ -1,8 +1,11 @@
 package game;
+import java.awt.*;
+import javax.imageio.*;
 
 public class Obj {
 	
-	//Instans variabler
+	//Instansvariabler
+	
 	private int xPos;
 	private int yPos;
 	private int xSpeed;
@@ -10,6 +13,7 @@ public class Obj {
 	private int hitPoints;
 	private int width;
 	private int lenght;
+	private BufferedImage img;
 	
 	public Obj() {
 		
