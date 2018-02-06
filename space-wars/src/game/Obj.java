@@ -15,7 +15,11 @@ public class Obj {
 	private int lenght;
 	//private BufferedImage img;
 	
-	public Obj() {
+	public Obj(int x, int y, int dx, int dy) {
+		this.xPos = x;
+		this.yPos = y;
+		this.xSpeed = dx;
+		this.yPos = dy;
 		
 	}
 
@@ -76,6 +80,8 @@ public class Obj {
 	}
 	
 	public void move() {
+		this.xPos += xSpeed;
+		this.yPos += ySpeed;
 		
 	}
 

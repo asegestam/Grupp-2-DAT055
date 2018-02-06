@@ -5,8 +5,8 @@ public class Projectiles extends Obj {
 	private boolean hostile;
 	private int dmg;
 	
-	public Projectiles() {
-		
+	public Projectiles(int x, int y, int dx, int dy) {
+		super(x,y,dx,dy);
 	}
 
 	public boolean isHostile() {

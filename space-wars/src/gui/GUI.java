@@ -37,7 +37,7 @@ public class GUI extends JFrame {
 		menu.add(menuItem);
 		frame.setJMenuBar(menuBar);
 		//Följande kod tar fram bild
-		frame.add(new JLabel(new ImageIcon("C:/Users/erik/Documents/Grupp-2-DAT055/space-wars/src/gui/image.jpg")));
+		frame.add(new JLabel(new ImageIcon("img/ship.png")));
 	    
 		
 

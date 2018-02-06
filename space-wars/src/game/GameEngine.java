@@ -14,9 +14,9 @@ public class GameEngine {
 
 	public GameEngine(String name) {
 		activeObjects = new ArrayList<Obj>();
-		player = new Player(name);
+		player = new Player(50,50,0,0,"Noob");
 	}
-
+	
 	public void update() {
 
 	}
@@ -36,4 +36,6 @@ public class GameEngine {
 	public void generateScore() {
 
 	}
+	
+	
 }
