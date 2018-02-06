@@ -36,13 +36,8 @@ public class GUI extends JFrame {
 		menuItem = new JMenuItem("text");
 		menu.add(menuItem);
 		frame.setJMenuBar(menuBar);
-		/* Följande kod tar fram en bild
-		 * 
-		 */
-		JLabel jl = new JLabel();
-	    Image image = new ImageIcon(getClass().getResource("image.jpg")).getImage();
-	    jl.setIcon(new ImageIcon(image));
-	    frame.add(jl);
+		//Följande kod tar fram bild
+		frame.add(new JLabel(new ImageIcon("C:/Users/erik/Documents/Grupp-2-DAT055/space-wars/src/gui/image.jpg")));
 	    
 		
 
