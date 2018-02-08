@@ -1,13 +1,8 @@
 package gui;
 
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-
 import javax.swing.*;
+
+import game.GameEngine;
 
 public class GUI extends JFrame {
 	
@@ -19,13 +14,17 @@ public class GUI extends JFrame {
 		makeFrame();
 	}
 	public void makeFrame() {
-		
 		JFrame frame =  new JFrame();
-		
+		makeMenu(frame);
+		frame.add(new GameEngine());
 		frame.pack();
-		frame.setSize(1920, 800);
+		frame.setSize(800, 800);
 		frame.setResizable(false);
-		
+	    frame.setLocationRelativeTo(null); 
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    frame.setVisible(true);
+	}
+	public void makeMenu(JFrame frame) {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Options");
 		menuBar.add(menu);
@@ -36,15 +35,6 @@ public class GUI extends JFrame {
 		menuItem = new JMenuItem("text");
 		menu.add(menuItem);
 		frame.setJMenuBar(menuBar);
-		//Följande kod tar fram bild
-		frame.add(new JLabel(new ImageIcon("img/ship.png")));
-	    
-		
-
-	    frame.setLocationRelativeTo(null); 
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    frame.setVisible(true);
-
 	}
 	
 }

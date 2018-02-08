@@ -5,7 +5,6 @@ import javax.imageio.*;
 public class Obj {
 	
 	//Instansvariabler
-	
 	private int xPos;
 	private int yPos;
 	private int xSpeed;
@@ -13,14 +12,13 @@ public class Obj {
 	private int hitPoints;
 	private int width;
 	private int lenght;
-	//private BufferedImage img;
+	private Image image;
 	
 	public Obj(int x, int y, int dx, int dy) {
 		this.xPos = x;
 		this.yPos = y;
 		this.xSpeed = dx;
 		this.yPos = dy;
-		
 	}
 
 	public int getxPos() {
@@ -78,7 +76,15 @@ public class Obj {
 	public void setLenght(int lenght) {
 		this.lenght = lenght;
 	}
-	
+    public void setImage(Image image) {
+        
+        this.image = image;
+    }
+
+    public Image getImage() {
+    
+        return image;
+    }
 	public void move() {
 		this.xPos += xSpeed;
 		this.yPos += ySpeed;

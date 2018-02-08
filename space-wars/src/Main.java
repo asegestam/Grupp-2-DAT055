@@ -1,12 +1,9 @@
-import game.GameEngine;
 import gui.GUI;
 
-public class Main {
-	
+public class Main{
+
 	public static void main(String[] args) {
-		
-	GUI gui = new GUI();
-	GameEngine game = new GameEngine("");
+		GUI gui = new GUI();
 	}
 
 }
