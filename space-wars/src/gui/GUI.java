@@ -18,7 +18,7 @@ public class GUI extends JFrame {
 		makeMenu(frame);
 		frame.add(new GameEngine());
 		frame.pack();
-		frame.setSize(800, 800);
+		frame.setSize(1920, 1080);
 		frame.setResizable(false);
 	    frame.setLocationRelativeTo(null); 
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
