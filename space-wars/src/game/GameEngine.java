@@ -7,11 +7,12 @@ import javax.swing.*;
 
 import controller.MoveAction;
 
-public class GameEngine extends JPanel implements Runnable{
+public class GameEngine extends JPanel implements Runnable,ActionListener, KeyListener{
 
 	private ArrayList<Ship> activeObjects;
 	private Player player;
 	private Ship enemy;
+	Projectiles projectile;
 	private Thread gameloop;
 	public ArrayList<Projectiles> projectiles;
 	private int score = 0;
@@ -22,10 +23,9 @@ public class GameEngine extends JPanel implements Runnable{
 		activeObjects = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
 		setBackground(Color.black);
-		this.setLayout(null);
+		addKeyListener(this);
 		setFocusable(true);
         gameInit();
-        createActions();
         setDoubleBuffered(true);
 	}
     @Override
@@ -60,7 +60,6 @@ public class GameEngine extends JPanel implements Runnable{
 		 for(Projectiles p : projectiles) {
 			 Projectiles shot = p.getProjectile();
 			 g.drawImage(shot.getImage(), shot.getxPos(), shot.getyPos(), this);
-			 
 		 }
 	 }
 	 //Paints the player,enemies, and the projectiles
@@ -102,33 +101,53 @@ public class GameEngine extends JPanel implements Runnable{
             beforeTime = System.currentTimeMillis();
         }
     }
-	//Creates all the key actions for player movement and shooting
-	public void createActions() {
-		InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = getActionMap();
-        //pressed key
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0,false), "leftP");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0,false), "rightP");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0,false), "upP");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0,false), "downP");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0,false), "shootP");
-        //released key
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0,true), "leftR");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0,true), "rightR");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0,true), "upR");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0,true), "downR");
-        //Actions for pressed key
-        am.put("leftP", new MoveAction(player, -1, 0));
-        am.put("rightP", new MoveAction(player, 1, 0));
-        am.put("upP", new MoveAction(player, 0, -1));
-        am.put("downP", new MoveAction(player, 0, 1));
-        am.put("shootP",new ShootAction(5,0));
-        //Actions for released key
-        am.put("leftR", new MoveAction(player, 0, 0));
-        am.put("rightR", new MoveAction(player, 0, 0));
-        am.put("upR", new MoveAction(player, 0, 0));
-        am.put("downR", new MoveAction(player, 0, 0));
+	@Override
+	public void keyPressed(KeyEvent e) {
+		
+
+		int c = e.getKeyCode();
+		
+		if(c == KeyEvent.VK_LEFT)
+		{
+			player.setxSpeed(-1);
+			player.setySpeed(0);
+		}
+		if(c == KeyEvent.VK_RIGHT)
+		{
+			player.setxSpeed(1);
+			player.setySpeed(0);
+		}
+		if(c == KeyEvent.VK_UP)
+		{
+			player.setxSpeed(0);
+			player.setySpeed(-1);
+		}
+		if(c == KeyEvent.VK_DOWN)
+		{
+			player.setxSpeed(0);
+			player.setySpeed(1);
+		}	
+		if(c == KeyEvent.VK_SPACE) {
+			projectile = new Projectiles(playerX,playerY,5,0);
+			addProjectile(projectile);
+			
+		}	
 	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		int c = e.getKeyCode();
+		if (c == KeyEvent.VK_LEFT || c == KeyEvent.VK_RIGHT || c == KeyEvent.VK_UP ||  c == KeyEvent.VK_DOWN ) {
+			player.setxSpeed(0);
+			player.setySpeed(0);
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+}
 	public void update() {
 		player.move();
 		//Update the x and y position of the player for the projectiles
@@ -163,24 +182,9 @@ public class GameEngine extends JPanel implements Runnable{
 	public void generateScore() {
 
 	}
-	//When called: creates a projectile object and adds it to the array
-	private class ShootAction extends AbstractAction{
-
-		Projectiles projectile;
-		private int dx;
-		private int dy;
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
 		
-		public ShootAction(int dx, int dy) {
-			this.dx = dx;
-			this.dy = dy;
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			projectile = new Projectiles(playerX,playerY,dx,dy);
-			projectile.setVisible(true);
-			addProjectile(projectile);
-			System.out.println("Shooting");
-		}
 	}
 }

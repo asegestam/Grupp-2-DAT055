@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 public class Background {
 	
 	private BufferedImage img;
-	private final String backgroundImg = "space-wars/img/space.jpg";
+	private final String backgroundImg = "img/space.jpg";
 	private int x,y;
 	
 	public Background() {

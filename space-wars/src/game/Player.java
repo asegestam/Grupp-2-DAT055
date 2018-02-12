@@ -22,8 +22,4 @@ public class Player extends Obj {
 	public String getName() {
 		return name;
 	}
-	public void createPlayer() {
-		
-	}
-
 }

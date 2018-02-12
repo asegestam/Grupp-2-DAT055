@@ -9,10 +9,10 @@ import game.Player;
 public class MoveAction extends AbstractAction {
 	
 	private Player player;
-	private int dx;
-	private int dy;
+	private double dx;
+	private double dy;
 	
-	public MoveAction(Player player, int dx, int dy) {
+	public MoveAction(Player player, double dx, double dy) {
 		this.dx = dx;
 		this.dy = dy;
 		this.player = player;
@@ -20,10 +20,13 @@ public class MoveAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(player.getxSpeed() != dx || player.getySpeed() != dy) {
+			player.setxSpeed(player.getxSpeed());
+			player.setySpeed(player.getySpeed());
+		}
 		player.setxSpeed(dx);
 		player.setySpeed(dy);
 		player.move();
-		
 	}
 
 }
