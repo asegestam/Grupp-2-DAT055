@@ -13,7 +13,8 @@ public class Player extends Obj {
 		initPlayer();
 	}
 	public void initPlayer() {
-		ImageIcon imgI = new ImageIcon(playerImg);
+		//ImageIcon imgI = new ImageIcon(playerImg);
+		ImageIcon imgI = new ImageIcon("/Users/Admin/Desktop/ship.png");
 		setWidth(imgI.getImage().getWidth(null));
 		setImage(imgI.getImage());
 	}
