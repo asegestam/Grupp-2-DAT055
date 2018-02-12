@@ -1,12 +1,13 @@
-import game.GameEngine;
+import java.awt.EventQueue;
+
 import gui.GUI;
 
-public class Main {
-	
+public class Main{
+
 	public static void main(String[] args) {
-		
-	GUI gui = new GUI();
-	GameEngine game = new GameEngine("");
+		 EventQueue.invokeLater(() -> {
+			 GUI gui = new GUI();
+	        });
 	}
 
 }
