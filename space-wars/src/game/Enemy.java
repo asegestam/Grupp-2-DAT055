@@ -6,5 +6,7 @@ public abstract class Enemy extends Obj {
 	int scoreValue;
 	
 	void changeFireRate(){}
-	
+	public Enemy(int x, int y, int dx, int dy) {
+		super(x,y,dx,dy);
+	}
 }
