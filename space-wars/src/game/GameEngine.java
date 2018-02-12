@@ -101,31 +101,43 @@ public class GameEngine extends JPanel implements Runnable,ActionListener, KeyLi
             beforeTime = System.currentTimeMillis();
         }
     }
+	
+	boolean leftKey = false,rightKey = false,upKey = false, downKey = false;
+	double speed;
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		
 
 		int c = e.getKeyCode();
 		
-		if(c == KeyEvent.VK_LEFT)
+		if(c == KeyEvent.VK_LEFT && !leftKey)
 		{
-			player.setxSpeed(-1);
-			player.setySpeed(0);
+			speed = player.getxSpeed();
+			speed --;
+			player.setxSpeed(speed);
+			leftKey = true;
 		}
-		if(c == KeyEvent.VK_RIGHT)
+		if(c == KeyEvent.VK_RIGHT && !rightKey)
 		{
-			player.setxSpeed(1);
-			player.setySpeed(0);
+			speed = player.getxSpeed();
+			speed ++;
+			player.setxSpeed(speed);
+			rightKey = true;
 		}
-		if(c == KeyEvent.VK_UP)
+		if(c == KeyEvent.VK_UP && !upKey)
 		{
-			player.setxSpeed(0);
-			player.setySpeed(-1);
+			speed = player.getySpeed();
+			speed --;
+			player.setySpeed(speed);
+			upKey = true;
 		}
-		if(c == KeyEvent.VK_DOWN)
+		if(c == KeyEvent.VK_DOWN && !downKey)
 		{
-			player.setxSpeed(0);
-			player.setySpeed(1);
+			speed = player.getySpeed();
+			speed ++;
+			player.setySpeed(speed);
+			downKey = true;
 		}	
 		if(c == KeyEvent.VK_SPACE) {
 			projectile = new Projectiles(playerX,playerY,5,0);
@@ -137,10 +149,34 @@ public class GameEngine extends JPanel implements Runnable,ActionListener, KeyLi
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int c = e.getKeyCode();
-		if (c == KeyEvent.VK_LEFT || c == KeyEvent.VK_RIGHT || c == KeyEvent.VK_UP ||  c == KeyEvent.VK_DOWN ) {
-			player.setxSpeed(0);
-			player.setySpeed(0);
+		if(c == KeyEvent.VK_LEFT && leftKey)
+		{
+			speed = player.getxSpeed();
+			speed ++;
+			player.setxSpeed(speed);
+			leftKey = false;
 		}
+		if(c == KeyEvent.VK_RIGHT && rightKey)
+		{
+			speed = player.getxSpeed();
+			speed --;
+			player.setxSpeed(speed);
+			rightKey = false;
+		}
+		if(c == KeyEvent.VK_UP && upKey)
+		{
+			speed = player.getySpeed();
+			speed ++;
+			player.setySpeed(speed);
+			upKey = false;
+		}
+		if(c == KeyEvent.VK_DOWN && downKey)
+		{
+			speed = player.getySpeed();
+			speed --;
+			player.setySpeed(speed);
+			downKey = false;
+		}	
 	}
 
 	@Override
