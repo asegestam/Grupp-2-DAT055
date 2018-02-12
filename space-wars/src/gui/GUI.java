@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Component;
+
 import javax.swing.*;
 
 import game.GameEngine;
@@ -11,17 +13,26 @@ public class GUI extends JFrame {
 	public GUI() {
 		super(WINDOW_TITLE);
 		makeFrame();
+		
 	}
 	public void makeFrame() {
 		JFrame frame =  new JFrame();
 		makeMenu(frame);
 		frame.add(new GameEngine());
+		/*
+		 * lägger in bakgrunden som rör sig
+		 * men kapar alla andra texturer
+		 * men commitar ändå
+		 * frame.add(new ScrollingBackground());
+		 */
+		
 		frame.pack();
-		frame.setSize(1240, 840);
+		frame.setSize(1280, 720);
 		frame.setResizable(false);
 	    frame.setLocationRelativeTo(null); 
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.setVisible(true);
+	    
 	}
 	public void makeMenu(JFrame frame) {
 		JMenuBar menuBar = new JMenuBar();
