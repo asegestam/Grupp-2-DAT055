@@ -36,6 +36,7 @@ public class Ship extends Enemy {
 	public void initEnemy(int x, int y) {
 		ImageIcon imgI = new ImageIcon(enemyImg);
 		setWidth(imgI.getImage().getWidth(null));
+		setLenght(imgI.getImage().getHeight(null));
 		setImage(imgI.getImage());
 		setxPos(x);
 		setyPos(y);

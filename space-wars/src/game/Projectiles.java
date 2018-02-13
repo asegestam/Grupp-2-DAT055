@@ -20,6 +20,7 @@ public class Projectiles extends Obj {
 	public void initShot(int x, int y) {
 		ImageIcon imgI = new ImageIcon(shot);
 		setWidth(imgI.getImage().getWidth(null));
+		setLenght(imgI.getImage().getHeight(null));
 		setImage(imgI.getImage());
 		setxPos(x + 120);
 		setyPos(y + 55);
