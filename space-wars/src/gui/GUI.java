@@ -1,9 +1,5 @@
 package gui;
-
-import java.awt.Component;
-
 import javax.swing.*;
-
 import game.GameEngine;
 
 public class GUI extends JFrame {
@@ -19,12 +15,6 @@ public class GUI extends JFrame {
 		JFrame frame =  new JFrame();
 		makeMenu(frame);
 		frame.add(new GameEngine());
-		/*
-		 * l�gger in bakgrunden som r�r sig
-		 * men kapar alla andra texturer
-		 * men commitar �nd�
-		 * frame.add(new ScrollingBackground());
-		 */
 		frame.pack();
 		frame.setSize(1280, 720);
 		frame.setResizable(false);

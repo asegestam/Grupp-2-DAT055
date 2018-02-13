@@ -5,7 +5,7 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 
 public class Ship extends Enemy {
-	private final String enemyImg = "img/enemy.png";
+	private final String enemyImg = "space-wars/img/enemy.png";
 	private int max = 220;
 	private int min = -230;
 

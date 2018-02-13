@@ -1,12 +1,16 @@
 package game;
-
 import java.util.ArrayList;
 import java.awt.*; 
-import java.awt.event.*; 
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import javax.swing.*;
+import gui.Background;
 
 public class GameEngine extends JPanel implements Runnable,ActionListener,KeyListener{
-
+	private Background backgroundOne;
+    private Background backgroundTwo;
+ 
+    private BufferedImage back;
 	private ArrayList<Ship> activeObjects;
 	private Player player;
 	private Ship enemy;
@@ -21,11 +25,13 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
 	
 	
 	public GameEngine() {
+		backgroundOne = new Background();
+        backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
+        setVisible(true);
 		activeObjects = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
-		setBackground(Color.black);
 		addKeyListener(this);
-		setFocusable(true);
+        setFocusable(true);
         gameInit();
         setDoubleBuffered(true);
 	}
@@ -45,6 +51,23 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
 	        	gameloop.start();
 	        }
 	 }
+	public void paintBackground(Graphics g) {
+        Graphics2D twoD = (Graphics2D)g;
+ 
+        if (back == null)
+            back = (BufferedImage)(createImage(getWidth(), getHeight()));
+ 
+        // Create a buffer to draw to
+        Graphics buffer = back.createGraphics();
+ 
+        // Put the two copies of the background image onto the buffer
+        backgroundOne.draw(buffer);
+        backgroundTwo.draw(buffer);
+ 
+        // Draw the image onto the window
+        twoD.drawImage(back, null, 0, 0);
+ 
+    }
 	 //Draws the player
 	 public void drawPlayer(Graphics g) {
 			g.drawImage(player.getImage(), player.getxPos(), player.getyPos(), this);
@@ -67,9 +90,11 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
 	 @Override
 	 public void paintComponent(Graphics g) {
 	        super.paintComponent(g);
+	        paintBackground(g);
 	        drawPlayer(g);
 	        drawEnemies(g);
 	        drawShot(g);  
+	        
 	        Toolkit.getDefaultToolkit().sync();
 	        g.dispose();
 	 }
@@ -77,6 +102,7 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
 	 public void addProjectile(Projectiles projectile) {
 			projectiles.add(projectile);	
 		}
+	 
 
 	//Updates and repaints the panel on a delay
 	@Override
