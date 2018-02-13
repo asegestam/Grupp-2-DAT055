@@ -1,7 +1,6 @@
 package game;
 import java.util.ArrayList;
 import java.awt.*; 
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 
@@ -50,7 +49,8 @@ public class GameEngine extends JPanel implements Runnable{
 	        	gameloop.start();
 	        }
 	 }
-	public void paintBackground(Graphics g) {
+	//Draw the background
+	public void drawBackground(Graphics g) {
         Graphics2D twoD = (Graphics2D)g;
  
         if (back == null)
@@ -89,7 +89,7 @@ public class GameEngine extends JPanel implements Runnable{
 	 @Override
 	 public void paintComponent(Graphics g) {
 	        super.paintComponent(g);
-	        paintBackground(g);
+	        drawBackground(g);
 	        drawPlayer(g);
 	        drawEnemies(g);
 	        drawShot(g);  
