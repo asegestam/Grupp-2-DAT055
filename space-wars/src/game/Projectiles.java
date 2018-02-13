@@ -13,7 +13,7 @@ public class Projectiles extends Obj {
 	
 	public Projectiles(int x, int y, int dx, int dy) {
 		super(x,y,dx,dy);
-		setVisible(false);
+		//setVisible(false);
 		initShot(x,y);
 	}
 	

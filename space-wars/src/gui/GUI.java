@@ -20,12 +20,11 @@ public class GUI extends JFrame {
 		makeMenu(frame);
 		frame.add(new GameEngine());
 		/*
-		 * lägger in bakgrunden som rör sig
+		 * lï¿½gger in bakgrunden som rï¿½r sig
 		 * men kapar alla andra texturer
-		 * men commitar ändå
+		 * men commitar ï¿½ndï¿½
 		 * frame.add(new ScrollingBackground());
 		 */
-		
 		frame.pack();
 		frame.setSize(1280, 720);
 		frame.setResizable(false);
