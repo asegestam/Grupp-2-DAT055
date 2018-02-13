@@ -5,19 +5,20 @@ import java.awt.*;
 import java.awt.event.*; 
 import javax.swing.*;
 
-import controller.MoveAction;
-
-public class GameEngine extends JPanel implements Runnable,ActionListener, KeyListener{
+public class GameEngine extends JPanel implements Runnable,ActionListener,KeyListener{
 
 	private ArrayList<Ship> activeObjects;
 	private Player player;
 	private Ship enemy;
-	Projectiles projectile;
+	private Projectiles projectile;
 	private Thread gameloop;
 	public ArrayList<Projectiles> projectiles;
 	private int score = 0;
 	private int playerX;
 	private int playerY;
+	boolean leftKey = false,rightKey = false,upKey = false, downKey = false;
+	double speed;
+	
 	
 	public GameEngine() {
 		activeObjects = new ArrayList<Ship>();
@@ -101,9 +102,6 @@ public class GameEngine extends JPanel implements Runnable,ActionListener, KeyLi
             beforeTime = System.currentTimeMillis();
         }
     }
-	
-	boolean leftKey = false,rightKey = false,upKey = false, downKey = false;
-	double speed;
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
