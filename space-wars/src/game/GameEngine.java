@@ -89,6 +89,7 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
         while (true) {
             repaint();
             update();
+            collisionDetection();
             timeDiff = System.currentTimeMillis() - beforeTime;
             sleep = 5 - timeDiff;
             if (sleep < 0) {
@@ -100,6 +101,7 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
                 System.out.println("interrupted");
             }
             beforeTime = System.currentTimeMillis();
+            
         }
     }
 	
@@ -201,8 +203,26 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
 		}
 	}
 
-	public boolean collisionDetection() {
-		return false;
+	public void collisionDetection() {
+		if(!activeObjects.isEmpty() && !projectiles.isEmpty()) {
+		for(int j = 0; j < projectiles.size(); j ++) {
+			Projectiles p = projectiles.get(j);
+
+			for(int i = 0; i < activeObjects.size(); i++) {
+				Ship s = activeObjects.get(i);
+
+				
+				if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
+						&& (p.getxPos()+p.getWidth() >= s.getxPos() && p.getxPos()+p.getWidth() <= s.getxPos()+ s.getWidth())) {
+					
+					activeObjects.remove(s);
+					projectiles.remove(p);
+					}
+				}
+				
+				
+			}
+		}
 	}
 
 	public void newGame(String name) {
