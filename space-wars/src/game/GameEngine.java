@@ -4,12 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
+
+import controller.ActionHandler;
 import gui.Background;
 
-public class GameEngine extends JPanel implements Runnable,ActionListener,KeyListener{
+public class GameEngine extends JPanel implements Runnable{
 	private Background backgroundOne;
     private Background backgroundTwo;
- 
     private BufferedImage back;
 	private ArrayList<Ship> activeObjects;
 	private Player player;
@@ -20,8 +21,6 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
 	private int score = 0;
 	private int playerX;
 	private int playerY;
-	boolean leftKey = false,rightKey = false,upKey = false, downKey = false;
-	double speed;
 	
 	
 	public GameEngine() {
@@ -30,9 +29,9 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
         setVisible(true);
 		activeObjects = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
-		addKeyListener(this);
         setFocusable(true);
         gameInit();
+        addKeyListener(new ActionHandler(player, this));
         setDoubleBuffered(true);
 	}
     @Override
@@ -94,13 +93,13 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
 	        drawPlayer(g);
 	        drawEnemies(g);
 	        drawShot(g);  
-	        
 	        Toolkit.getDefaultToolkit().sync();
 	        g.dispose();
 	 }
 	 //Used to add the projectiles to the array
-	 public void addProjectile(Projectiles projectile) {
-			projectiles.add(projectile);	
+	 public void addProjectile() {
+		 projectile = new Projectiles(playerX,playerY,5,0);
+		 projectiles.add(projectile);	
 		}
 	 
 
@@ -128,86 +127,6 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
             beforeTime = System.currentTimeMillis();
         }
     }
-	
-	@Override
-	public void keyPressed(KeyEvent e) {
-		
-
-		int c = e.getKeyCode();
-		
-		if(c == KeyEvent.VK_LEFT && !leftKey)
-		{
-			speed = player.getxSpeed();
-			speed --;
-			player.setxSpeed(speed);
-			leftKey = true;
-		}
-		if(c == KeyEvent.VK_RIGHT && !rightKey)
-		{
-			speed = player.getxSpeed();
-			speed ++;
-			player.setxSpeed(speed);
-			rightKey = true;
-		}
-		if(c == KeyEvent.VK_UP && !upKey)
-		{
-			speed = player.getySpeed();
-			speed --;
-			player.setySpeed(speed);
-			upKey = true;
-		}
-		if(c == KeyEvent.VK_DOWN && !downKey)
-		{
-			speed = player.getySpeed();
-			speed ++;
-			player.setySpeed(speed);
-			downKey = true;
-		}	
-		if(c == KeyEvent.VK_SPACE) {
-			projectile = new Projectiles(playerX,playerY,5,0);
-			addProjectile(projectile);
-			
-		}	
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		int c = e.getKeyCode();
-		if(c == KeyEvent.VK_LEFT && leftKey)
-		{
-			speed = player.getxSpeed();
-			speed ++;
-			player.setxSpeed(speed);
-			leftKey = false;
-		}
-		if(c == KeyEvent.VK_RIGHT && rightKey)
-		{
-			speed = player.getxSpeed();
-			speed --;
-			player.setxSpeed(speed);
-			rightKey = false;
-		}
-		if(c == KeyEvent.VK_UP && upKey)
-		{
-			speed = player.getySpeed();
-			speed ++;
-			player.setySpeed(speed);
-			upKey = false;
-		}
-		if(c == KeyEvent.VK_DOWN && downKey)
-		{
-			speed = player.getySpeed();
-			speed --;
-			player.setySpeed(speed);
-			downKey = false;
-		}	
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
-}
 	public void update() {
 		player.move();
 		//Update the x and y position of the player for the projectiles
@@ -242,9 +161,5 @@ public class GameEngine extends JPanel implements Runnable,ActionListener,KeyLis
 	public void generateScore() {
 
 	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }
