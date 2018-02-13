@@ -4,22 +4,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Server extends Thread{
 
 	    public static final int PORT_NUMBER = 8081;
 	    
-	    private static HashMap<String, Integer> highScores  = new HashMap<String, Integer>();
+	    private HashMap<String, Integer> highScores  = new HashMap<String, Integer>();
 	 
 	    protected Socket socket;
 
 	    private Server(Socket socket) {
 	        this.socket = socket;
+	        addCrapToTheMap();
 	        System.out.println("New client connected from " + socket.getInetAddress().getHostAddress());
 	        start();
 	    }
@@ -30,18 +33,25 @@ public class Server extends Thread{
 	        try {
 	            in = socket.getInputStream();
 	            out = socket.getOutputStream();
+	            ObjectOutputStream mapOutputStream = new ObjectOutputStream(out);
 	            BufferedReader br = new BufferedReader(new InputStreamReader(in));
 	            String request;
 	            while ((request = br.readLine()) != null) {
 	                System.out.println("Message received:" + request);
 	                
-	                if(request.equals("add"))
-	                		System.out.println("add(String user, int score)");
-	                else if(request.equals("get"))
-	                		System.out.println("get HashMap<String, Integer> highScores");
+	                if(request.startsWith("add")) {
+	                		String highScoreInfo[] = request.split(" ");
+	                		add(highScoreInfo[1], Integer.parseInt(highScoreInfo[2]));
+	                		for (Map.Entry<String, Integer> entry : highScores.entrySet())
+	                		{
+	                			System.out.println(entry.getKey() + ":" + entry.getValue());
+	                		}
+	                }
+	                else if(request.startsWith("get")) {
+	                		mapOutputStream.writeObject(getHighScores());
+	                }
 	                
 	                request += '\n';
-	                out.write(request.getBytes());
 	            }
 	 
 	        } catch (IOException ex) {
@@ -81,11 +91,10 @@ public class Server extends Thread{
 	        }
 	    }
 	    
-	    private static void add(String user, int score) {
+	    private void add(String user, int score) {
 	    	
 	    		if(!highScores.containsKey(user) && score > 0) {
 	    			highScores.put(user, score);
-	    			return;
 	    		}
 	    			
 	    		if(highScores.containsKey(user) && highScores.get(user) < score) {
@@ -94,10 +103,19 @@ public class Server extends Thread{
 	    		
 	    }
 	    
-	    private static HashMap<String, Integer> getHighScores(){
+	    private HashMap<String, Integer> getHighScores(){
 	    	
 	    		return highScores;
-	    	
+	    		
+	    }
+	    
+	    public void addCrapToTheMap() {
+	    		add("Markus", 1337);
+	    		add("Theo", 100);
+	    		add("Albin", 111);
+	    		add("Åke", 1);
+	    		add("Tony", 1336);
+	    		add("Svante", 1335);
 	    }
 	
 }
