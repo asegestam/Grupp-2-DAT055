@@ -115,6 +115,7 @@ public class GameEngine extends JPanel implements Runnable{
             repaint();
             update();
             collisionDetection();
+            outOfBound();
             timeDiff = System.currentTimeMillis() - beforeTime;
             sleep = 5 - timeDiff;
             if (sleep < 0) {
@@ -158,16 +159,69 @@ public class GameEngine extends JPanel implements Runnable{
 
 				
 				if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
-						&& (p.getxPos()+p.getWidth() >= s.getxPos() && p.getxPos()+p.getWidth() <= s.getxPos()+ s.getWidth())) {
+						&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
 					
 					activeObjects.remove(s);
 					projectiles.remove(p);
+					break;
 					}
 				}
-				
-				
 			}
 		}
+	}
+	
+	public void outOfBound() {
+		
+		//player
+		if(player.getxPos() < 0) {
+			player.setxPos(1);
+		}
+		else if(player.getxPos() >= 1280 - player.getWidth()) {
+			player.setxPos(1279 - player.getWidth());
+		}
+		else if(player.getyPos() < 0) {
+			player.setyPos(1);
+		}
+		else if(player.getyPos() >= 720 - player.getLenght()) {
+			player.setyPos(719 - player.getLenght());
+		}
+		
+		//skepp
+		for(int i = 0; i < activeObjects.size(); i++) {
+			Ship s = activeObjects.get(i);
+			
+			if(s.getxPos() < 0) {
+				s.setxPos(1);
+			}
+			else if(s.getxPos() >= 1280 - s.getWidth()) {
+				s.setxPos(1279 - s.getWidth());
+			}
+			else if(s.getyPos() < 0) {
+				s.setyPos(1);
+			}
+			else if(s.getyPos() >= 720 - s.getLenght()) {
+				s.setyPos(719 - s.getLenght());
+			}
+		}
+		
+		//projectiles
+		for(int i = 0; i < projectiles.size(); i++) {
+			Projectiles s = projectiles.get(i);
+			
+			if(s.getxPos() < 0) {
+				projectiles.remove(s);
+			}
+			else if(s.getxPos() >= 1280 - s.getWidth()) {
+				projectiles.remove(s);
+			}
+			else if(s.getyPos() < 0) {
+				projectiles.remove(s);
+			}
+			else if(s.getyPos() >= 720 - s.getLenght()) {
+				projectiles.remove(s);
+			}
+		}
+		
 	}
 
 	public void newGame(String name) {
