@@ -142,7 +142,6 @@ public class GameEngine extends JPanel implements Runnable{
 		//For each enemy ship, move it
 		for(Ship s : activeObjects) {
 			 Ship s2 = s.getShip();
-			 s2.bounce();
 			 s2.moveEnemy();
 			 s2.move();
 		}
@@ -159,7 +158,8 @@ public class GameEngine extends JPanel implements Runnable{
 				
 				if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
 						&& (p.getxPos()+p.getWidth() >= s.getxPos() && p.getxPos()+p.getWidth() <= s.getxPos()+ s.getWidth())) {
-					
+					score += 10;
+					System.out.println("Score " + score);
 					activeObjects.remove(s);
 					projectiles.remove(p);
 					}
