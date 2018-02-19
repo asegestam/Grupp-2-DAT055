@@ -21,21 +21,24 @@ public class GUI extends JFrame {
 	//Creates a frame with buttons to start, load and exit the game
 	public void makeStartMenu() {
 		JFrame frame =  new JFrame("Space-Wars");
-		GridLayout gl = new GridLayout(3,1);
+		GridLayout gl = new GridLayout(2,2);
 		frame.setSize(1280, 720);
 		frame.setLayout(gl);
 		frame.setResizable(false);
 		JButton startButton = new JButton("Start Game");
 		JButton loadButton = new JButton("Load Game");
 		JButton exitButton = new JButton("Exit Game");
+		JButton hsButton = new JButton("HighScores");
 		
 		startButton.setPreferredSize(new Dimension(250,50));
 		loadButton.setPreferredSize(new Dimension(250,50));
 		exitButton.setPreferredSize(new Dimension(250,50));
+		hsButton.setPreferredSize(new Dimension(250,50));
 		
 		frame.add(startButton);
 		frame.add(loadButton);
 		frame.add(exitButton);
+		frame.add(hsButton);
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null); 
@@ -44,6 +47,8 @@ public class GUI extends JFrame {
         (ActionEvent e)->{makeGameFrame(); frame.dispose();;});
         exitButton.addActionListener(
         (ActionEvent e)->{System.exit(0);;});
+        hsButton.addActionListener(
+        (ActionEvent e)->{writeHighScores();});
 	}
 	//Creates the game frame
 	public void makeGameFrame() {

@@ -151,7 +151,7 @@ public class GameEngine extends JPanel implements Runnable{
 		//For each enemy ship, move it
 		for(Ship s : activeObjects) {
 			 Ship s2 = s.getShip();
-			 s2.moveEnemy(playerX,playerY);
+			 s2.moveEnemy();
 			 s2.move();
 		}
 		//For each enemy ship, move it
@@ -202,3 +202,4 @@ public class GameEngine extends JPanel implements Runnable{
 	}
 
 }
+
