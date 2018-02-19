@@ -3,7 +3,7 @@ package game;
 import javax.swing.ImageIcon;
 
 public class Player extends Obj {
-	private final String playerImg = "img/ship.png";
+	private final String playerImg = "space-wars/img/ship.png";
 
 	private String name;
 
@@ -13,16 +13,13 @@ public class Player extends Obj {
 		initPlayer();
 	}
 	public void initPlayer() {
-		//ImageIcon imgI = new ImageIcon(playerImg);
-		ImageIcon imgI = new ImageIcon("/Users/Admin/Desktop/ship.png");
+		ImageIcon imgI = new ImageIcon(playerImg);
 		setWidth(imgI.getImage().getWidth(null));
 		setImage(imgI.getImage());
+		setxPos(100);
+		setyPos(250);
 	}
 	public String getName() {
 		return name;
 	}
-	public void createPlayer() {
-		
-	}
-
 }

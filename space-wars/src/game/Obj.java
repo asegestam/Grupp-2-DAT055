@@ -7,18 +7,21 @@ public class Obj {
 	//Instansvariabler
 	private int xPos;
 	private int yPos;
-	private int xSpeed;
-	private int ySpeed;
+	private double xSpeed;
+	private double ySpeed;
 	private int hitPoints;
 	private int width;
 	private int lenght;
 	private Image image;
-	
+	private boolean visible;
+
 	public Obj(int x, int y, int dx, int dy) {
 		this.xPos = x;
 		this.yPos = y;
 		this.xSpeed = dx;
 		this.yPos = dy;
+		visible = true;
+
 	}
 
 	public int getxPos() {
@@ -37,19 +40,19 @@ public class Obj {
 		this.yPos = yPos;
 	}
 
-	public int getxSpeed() {
+	public double getxSpeed() {
 		return xSpeed;
 	}
 
-	public void setxSpeed(int xSpeed) {
+	public void setxSpeed(double xSpeed) {
 		this.xSpeed = xSpeed;
 	}
 
-	public int getySpeed() {
+	public double getySpeed() {
 		return ySpeed;
 	}
 
-	public void setySpeed(int ySpeed) {
+	public void setySpeed(double ySpeed) {
 		this.ySpeed = ySpeed;
 	}
 
@@ -84,6 +87,15 @@ public class Obj {
     public Image getImage() {
     
         return image;
+    }
+    public boolean isVisible() {
+    
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+    
+        this.visible = visible;
     }
 	public void move() {
 		this.xPos += xSpeed;
