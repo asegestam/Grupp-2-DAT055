@@ -15,23 +15,8 @@ public class Ship extends Enemy {
 	}
 	public void moveEnemy() {
 		int random = new Random().nextInt(max + 1 - min) + min;
-		this.setxSpeed(random/100);
-		this.setySpeed(random/100);
-	}
-	public void bounce() {
-		if(this.getxPos() < 0 || this.getyPos()> 840)
-		{
-		    this.setxSpeed(-this.getxSpeed());
-
-		if (this.getxPos() < 0)  
-		{
-		    this.setxPos(0);
-		} 
-		else if (this.getxPos() > 840)  
-		{
-		    this.setxPos(840);
-		} 
-	}
+		this.setxSpeed(random/97);
+		this.setySpeed(random/97);
 	}
 	public void initEnemy(int x, int y) {
 		ImageIcon imgI = new ImageIcon(enemyImg);
