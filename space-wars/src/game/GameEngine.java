@@ -8,11 +8,12 @@ import static java.util.concurrent.TimeUnit.*;
 import controller.ActionHandler;
 import gui.Background;
 
+
 public class GameEngine extends JPanel implements Runnable{
 	
 	private Background backgroundOne;
-    private Background backgroundTwo;
-    private BufferedImage back;
+  private Background backgroundTwo;
+  private BufferedImage back;
 	public ArrayList<Ship> activeObjects;
 	public ArrayList<Projectiles> projectiles;
 	public ArrayList<Rock> rocks;
@@ -27,7 +28,7 @@ public class GameEngine extends JPanel implements Runnable{
 	
 	public GameEngine() {
 		backgroundOne = new Background();
-        backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
+    backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
 		activeObjects = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
 		rocks = new ArrayList<Rock>();
@@ -110,7 +111,6 @@ public class GameEngine extends JPanel implements Runnable{
 		 projectile = new Projectiles(playerX,playerY,5,0);
 		 projectiles.add(projectile);	
 		}
-	 
 
 	//Updates and repaints the panel on a delay
 	@Override
@@ -151,7 +151,7 @@ public class GameEngine extends JPanel implements Runnable{
 		//For each enemy ship, move it
 		for(Ship s : activeObjects) {
 			 Ship s2 = s.getShip();
-			 s2.moveEnemy(playerX,playerY);
+			 s2.moveEnemy();
 			 s2.move();
 		}
 		//For each enemy ship, move it
@@ -202,3 +202,4 @@ public class GameEngine extends JPanel implements Runnable{
 	}
 
 }
+

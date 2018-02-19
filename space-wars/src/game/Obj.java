@@ -14,12 +14,14 @@ public class Obj {
 	private int lenght;
 	private Image image;
 	private boolean visible;
+
 	public Obj(int x, int y, int dx, int dy) {
 		this.xPos = x;
 		this.yPos = y;
 		this.xSpeed = dx;
 		this.yPos = dy;
 		visible = true;
+
 	}
 
 	public int getxPos() {
@@ -86,7 +88,6 @@ public class Obj {
     
         return image;
     }
-
     public boolean isVisible() {
     
         return visible;
@@ -96,7 +97,6 @@ public class Obj {
     
         this.visible = visible;
     }
-    
 	public void move() {
 		this.xPos += xSpeed;
 		this.yPos += ySpeed;

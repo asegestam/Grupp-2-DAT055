@@ -1,10 +1,14 @@
 package gui;
+
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-
+import java.awt.event.ActionListener;
+import java.util.Map;
 import javax.swing.*;
 import game.GameEngine;
+import server.Client;
 
 public class GUI extends JFrame {
 	
@@ -17,21 +21,24 @@ public class GUI extends JFrame {
 	//Creates a frame with buttons to start, load and exit the game
 	public void makeStartMenu() {
 		JFrame frame =  new JFrame("Space-Wars");
-		GridLayout gl = new GridLayout(3,1);
+		GridLayout gl = new GridLayout(2,2);
 		frame.setSize(1280, 720);
 		frame.setLayout(gl);
 		frame.setResizable(false);
 		JButton startButton = new JButton("Start Game");
 		JButton loadButton = new JButton("Load Game");
 		JButton exitButton = new JButton("Exit Game");
+		JButton hsButton = new JButton("HighScores");
 		
 		startButton.setPreferredSize(new Dimension(250,50));
 		loadButton.setPreferredSize(new Dimension(250,50));
 		exitButton.setPreferredSize(new Dimension(250,50));
+		hsButton.setPreferredSize(new Dimension(250,50));
 		
 		frame.add(startButton);
 		frame.add(loadButton);
 		frame.add(exitButton);
+		frame.add(hsButton);
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null); 
@@ -40,6 +47,8 @@ public class GUI extends JFrame {
         (ActionEvent e)->{makeGameFrame(); frame.dispose();;});
         exitButton.addActionListener(
         (ActionEvent e)->{System.exit(0);;});
+        hsButton.addActionListener(
+        (ActionEvent e)->{writeHighScores();});
 	}
 	//Creates the game frame
 	public void makeGameFrame() {
@@ -56,14 +65,43 @@ public class GUI extends JFrame {
 	//Creates the menubar
 	public void makeMenu(JFrame frame) {
 		JMenuBar menuBar = new JMenuBar();
+		//Options menu
 		JMenu menu = new JMenu("Options");
 		JMenuItem menuItem = new JMenuItem("text");
 		menuBar.add(menu);
 		menu.add(menuItem);
+		//Settings menu
 		menu = new JMenu("Settings");
 		menuBar.add(menu);
 		menuItem = new JMenuItem("text");
 		menu.add(menuItem);
 		frame.setJMenuBar(menuBar);
+		//HighScore menu
+		menu = new JMenu("HighScores");
+		menuBar.add(menu);
+		menuItem = new JMenuItem("List of highscores");
+		menu.add(menuItem);
+		frame.setJMenuBar(menuBar);
+		menuItem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					writeHighScores();
+				}
+			});
+	}
+	
+	public void writeHighScores() {
+		Client client = new Client("127.0.0.1", 8081);
+		Map <String, Integer> map = client.getHighScore();
+		String highScoreString = "";
+		for (Map.Entry<String, Integer> entry : map.entrySet())
+		{
+			highScoreString += entry.getKey() + ":" + entry.getValue() + "\n";
+		}
+		
+		JOptionPane.showMessageDialog(this,
+			    highScoreString,
+			    "HighScores",
+			    JOptionPane.PLAIN_MESSAGE);
 	}
 }
