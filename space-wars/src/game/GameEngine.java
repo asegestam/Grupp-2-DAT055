@@ -1,8 +1,11 @@
 package game;
 import java.util.ArrayList;
-import java.awt.*; 
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
+import java.util.Random;
 
 import controller.ActionHandler;
 import gui.Background;
@@ -97,8 +100,8 @@ public class GameEngine extends JPanel implements Runnable{
 	        g.dispose();
 	 }
 	 //Used to add the projectiles to the array
-	 public void addProjectile() {
-		 projectile = new Projectiles(playerX,playerY,5,0);
+	 public void addProjectile(int x,int y,int dx, int dy,String img, boolean hostile) {
+		 projectile = new Projectiles(x,y,dx,dy,img,hostile);
 		 projectiles.add(projectile);	
 		}
 	 
@@ -116,6 +119,7 @@ public class GameEngine extends JPanel implements Runnable{
             update();
             collisionDetection();
             outOfBound();
+            fiendeSottTimer.start();
             timeDiff = System.currentTimeMillis() - beforeTime;
             sleep = 5 - timeDiff;
             if (sleep < 0) {
@@ -148,22 +152,39 @@ public class GameEngine extends JPanel implements Runnable{
 			 s2.move();
 		}
 	}
+	
+	
+	//fiende skott
+	ActionListener fiende_skott = new ActionListener() {
+		 public void actionPerformed(ActionEvent evt) {
+             
+			 for(int i = 0; i < activeObjects.size(); i++) {
+					Ship s = activeObjects.get(i);
+			 addProjectile(s.getxPos(),s.getyPos(),-2,0,"space-wars/img/shot2.png",true);
+			 }
+         }
+	};
+	
+	
+	Timer fiendeSottTimer = new Timer(1200,fiende_skott);
 
 	public void collisionDetection() {
 		if(!activeObjects.isEmpty() && !projectiles.isEmpty()) {
 		for(int j = 0; j < projectiles.size(); j ++) {
 			Projectiles p = projectiles.get(j);
+			if (p.isHostile() == false) {
 
 			for(int i = 0; i < activeObjects.size(); i++) {
 				Ship s = activeObjects.get(i);
 
 				
-				if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
+					if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
 						&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
 					
-					activeObjects.remove(s);
-					projectiles.remove(p);
-					break;
+						activeObjects.remove(s);
+						projectiles.remove(p);
+						break;
+						}
 					}
 				}
 			}
