@@ -9,21 +9,19 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class Server extends Thread{
 
 	    public static final int PORT_NUMBER = 8081;
 	    
-	    private HashMap<String, Integer> highScores  = new HashMap<String, Integer>();
+	    private static HashMap<String, Integer> highScores  = new HashMap<String, Integer>();
 	 
 	    protected Socket socket;
 
 	    private Server(Socket socket) {
 	        this.socket = socket;
 	        addCrapToTheMap();
-	        System.out.println("New client connected from " + socket.getInetAddress().getHostAddress());
 	        start();
 	    }
 	 
@@ -37,15 +35,13 @@ public class Server extends Thread{
 	            BufferedReader br = new BufferedReader(new InputStreamReader(in));
 	            String request;
 	            while ((request = br.readLine()) != null) {
-	                System.out.println("Message received:" + request);
-	                
 	                if(request.startsWith("add")) {
 	                		String highScoreInfo[] = request.split(" ");
 	                		add(highScoreInfo[1], Integer.parseInt(highScoreInfo[2]));
-	                		for (Map.Entry<String, Integer> entry : highScores.entrySet())
-	                		{
-	                			System.out.println(entry.getKey() + ":" + entry.getValue());
-	                		}
+//	                		for (Map.Entry<String, Integer> entry : highScores.entrySet())
+//	                		{
+//	                			System.out.println(entry.getKey() + ":" + entry.getValue());
+//	                		}
 	                }
 	                else if(request.startsWith("get")) {
 	                		mapOutputStream.writeObject(getHighScores());
@@ -68,7 +64,7 @@ public class Server extends Thread{
 	    }
 	 
 	    public static void main(String[] args) {
-	        System.out.println("Space-Wars Server");
+	        System.out.println("Space-Wars Server is now active");
 	        ServerSocket server = null;
 	        try {
 	            server = new ServerSocket(PORT_NUMBER);
@@ -91,7 +87,7 @@ public class Server extends Thread{
 	        }
 	    }
 	    
-	    private void add(String user, int score) {
+	    private static void add(String user, int score) {
 	    	
 	    		if(!highScores.containsKey(user) && score > 0) {
 	    			highScores.put(user, score);
@@ -103,7 +99,7 @@ public class Server extends Thread{
 	    		
 	    }
 	    
-	    private HashMap<String, Integer> getHighScores(){
+	    private static HashMap<String, Integer> getHighScores(){
 	    	
 	    		return highScores;
 	    		
