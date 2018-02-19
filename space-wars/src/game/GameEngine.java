@@ -1,22 +1,25 @@
 package game;
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.awt.*; 
 import java.awt.image.BufferedImage;
 import javax.swing.*;
-
+import static java.util.concurrent.TimeUnit.*;
 import controller.ActionHandler;
 import gui.Background;
 
 public class GameEngine extends JPanel implements Runnable{
+	
 	private Background backgroundOne;
     private Background backgroundTwo;
     private BufferedImage back;
-	private ArrayList<Ship> activeObjects;
+	public ArrayList<Ship> activeObjects;
+	public ArrayList<Projectiles> projectiles;
+	public ArrayList<Rock> rocks;
 	private Player player;
 	private Ship enemy;
 	private Projectiles projectile;
 	private Thread gameloop;
-	public ArrayList<Projectiles> projectiles;
 	private int score = 0;
 	private int playerX;
 	private int playerY;
@@ -25,9 +28,10 @@ public class GameEngine extends JPanel implements Runnable{
 	public GameEngine() {
 		backgroundOne = new Background();
         backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
-        setVisible(true);
 		activeObjects = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
+		rocks = new ArrayList<Rock>();
+        setVisible(true);
         setFocusable(true);
         gameInit();
         addKeyListener(new ActionHandler(player, this));
@@ -40,10 +44,7 @@ public class GameEngine extends JPanel implements Runnable{
     //Creates the player, enemies and starts the thread
 	public void gameInit() {
 	        player = new Player(0,0,0,0,"test");
-	        	for(int j = 0; j < 6; j++) {
-	        		Ship ship = new Ship(1000, (50 + 114 *j), 0 , 0);
-		        	activeObjects.add(ship);
-	        	}
+	        addThreads();
 	        if(gameloop == null) {
 	        	gameloop = new Thread(this);
 	        	gameloop.start();
@@ -85,6 +86,13 @@ public class GameEngine extends JPanel implements Runnable{
 			 g.drawImage(shot.getImage(), shot.getxPos(), shot.getyPos(), this);
 		 }
 	 }
+	 //Draws the projectiles
+	 public void drawRocks(Graphics g) {
+		 for(Rock r : rocks) {
+			 Rock rock = r.getRock();
+			 g.drawImage(rock.getImage(), rock.getxPos(), rock.getyPos(), this);
+		 }
+	 }
 	 //Paints the player,enemies, and the projectiles
 	 @Override
 	 public void paintComponent(Graphics g) {
@@ -93,6 +101,7 @@ public class GameEngine extends JPanel implements Runnable{
 	        drawPlayer(g);
 	        drawEnemies(g);
 	        drawShot(g);  
+	        drawRocks(g);
 	        Toolkit.getDefaultToolkit().sync();
 	        g.dispose();
 	 }
@@ -142,8 +151,13 @@ public class GameEngine extends JPanel implements Runnable{
 		//For each enemy ship, move it
 		for(Ship s : activeObjects) {
 			 Ship s2 = s.getShip();
-			 s2.moveEnemy();
+			 s2.moveEnemy(playerX,playerY);
 			 s2.move();
+		}
+		//For each enemy ship, move it
+		for(Rock r : rocks) {
+			 Rock r2 = r.getRock();
+			 r2.move();
 		}
 	}
 
@@ -164,10 +178,15 @@ public class GameEngine extends JPanel implements Runnable{
 					projectiles.remove(p);
 					}
 				}
-				
-				
 			}
 		}
+	}
+	//Used to add threads to a scheduled pool
+	private void addThreads() {
+		 ScheduledThreadPoolExecutor eventPool = new ScheduledThreadPoolExecutor(5);
+		 //Spawns enemy ships every x seconds
+		 eventPool.scheduleAtFixedRate(new ShipMaker(this), 0, 10, SECONDS);
+		 eventPool.scheduleAtFixedRate(new RockMaker(this), 0, 5, SECONDS);
 	}
 
 	public void newGame(String name) {

@@ -24,9 +24,11 @@ public class GUI extends JFrame {
 		JButton startButton = new JButton("Start Game");
 		JButton loadButton = new JButton("Load Game");
 		JButton exitButton = new JButton("Exit Game");
+		
 		startButton.setPreferredSize(new Dimension(250,50));
 		loadButton.setPreferredSize(new Dimension(250,50));
 		exitButton.setPreferredSize(new Dimension(250,50));
+		
 		frame.add(startButton);
 		frame.add(loadButton);
 		frame.add(exitButton);
@@ -35,7 +37,7 @@ public class GUI extends JFrame {
 		frame.setLocationRelativeTo(null); 
 		
         startButton.addActionListener(
-        (ActionEvent e)->{clearScreen(frame); makeGameFrame();;});
+        (ActionEvent e)->{makeGameFrame(); frame.dispose();;});
         exitButton.addActionListener(
         (ActionEvent e)->{System.exit(0);;});
 	}
@@ -64,12 +66,4 @@ public class GUI extends JFrame {
 		menu.add(menuItem);
 		frame.setJMenuBar(menuBar);
 	}
-	
-	//Removes everything from the frame
-	public void clearScreen(JFrame frame) {
-		frame.getContentPane().removeAll();
-		frame.getContentPane().repaint();
-	}
-
-	
 }
