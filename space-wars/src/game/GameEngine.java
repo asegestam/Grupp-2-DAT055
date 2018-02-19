@@ -50,7 +50,7 @@ public class GameEngine extends JPanel implements Runnable{
     }
     //Creates the player, enemies and starts the thread
 	public void gameInit() {
-	        player = new Player(0,0,0,0,"test");
+	        player = new Player(0,0,0,0,3,"test");
 	        addThreads();
 	        if(gameloop == null) {
 	        	gameloop = new Thread(this);
@@ -186,26 +186,48 @@ public class GameEngine extends JPanel implements Runnable{
 
 	public void collisionDetection() {
 		if(!activeObjects.isEmpty() && !projectiles.isEmpty()) {
-		for(int j = 0; j < projectiles.size(); j ++) {
-			Projectiles p = projectiles.get(j);
-			if (p.isHostile() == false) {
-
-			for(int i = 0; i < activeObjects.size(); i++) {
-				Ship s = activeObjects.get(i);
-        
-					if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
-						&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
-            score += 10;
-            System.out.println("Score " + score);
-						activeObjects.remove(s);
-						projectiles.remove(p);
-						break;
+			for(int j = 0; j < projectiles.size(); j ++) {
+				Projectiles p = projectiles.get(j);
+				if (p.isHostile() == false) {
+					for(int i = 0; i < activeObjects.size(); i++) {
+						Ship s = activeObjects.get(i);
+						//enemy and projectile
+						if(enemyHit(p,s)) {
+							score += 10;
+							System.out.println("Score " + score);
+							activeObjects.remove(s);
+							projectiles.remove(p);
+							break;
 						}
+					}
+				}
+				//player and projectile
+				else if(playerHit(p,player)) {
+					projectiles.remove(p);
+					player.setHitPoints(player.getHitPoints()-1);
+					if(player.getHitPoints() == 0) {
+						System.out.println("Game over");
 					}
 				}
 			}
 		}
 	}
+	public boolean playerHit(Projectiles p, Player player) {
+		if((p.getyPos()+(p.getLenght()/2) >= player.getyPos() && p.getyPos()+(p.getLenght()/2) <= player.getyPos() + player.getLenght())
+				&& (p.getxPos()+(p.getWidth()*0.5) >= player.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= player.getxPos()+ player.getWidth())) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean enemyHit(Projectiles p, Ship s) {
+		if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
+				&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
+			return true;
+		}
+		return false;
+	}
+	
   public void outOfBound() {
 		//player
 		if(player.getxPos() < 0) {
@@ -257,6 +279,7 @@ public class GameEngine extends JPanel implements Runnable{
 			}
 		}
 	}
+	
 	//Used to add threads to a scheduled pool
 	private void addThreads() {
 		 ScheduledThreadPoolExecutor eventPool = new ScheduledThreadPoolExecutor(5);

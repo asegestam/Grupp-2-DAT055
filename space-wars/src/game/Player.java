@@ -7,8 +7,9 @@ public class Player extends Obj {
 
 	private String name;
 
-	public Player(int x, int y, int dx, int dy, String name) {
+	public Player(int x, int y, int dx, int dy,int hp, String name) {
 		super(x,y,dx,dy);
+		setHitPoints(hp);
 		this.name = name;
 		initPlayer();
 	}
