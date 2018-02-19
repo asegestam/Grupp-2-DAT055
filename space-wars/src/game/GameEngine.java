@@ -256,7 +256,7 @@ public class GameEngine extends JPanel implements Runnable{
 				projectiles.remove(s);
 			}
 		}
-	
+	}
 	//Used to add threads to a scheduled pool
 	private void addThreads() {
 		 ScheduledThreadPoolExecutor eventPool = new ScheduledThreadPoolExecutor(5);
