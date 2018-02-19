@@ -15,6 +15,7 @@ public class Player extends Obj {
 	public void initPlayer() {
 		ImageIcon imgI = new ImageIcon(playerImg);
 		setWidth(imgI.getImage().getWidth(null));
+		setLenght(imgI.getImage().getHeight(null));
 		setImage(imgI.getImage());
 		setxPos(100);
 		setyPos(250);

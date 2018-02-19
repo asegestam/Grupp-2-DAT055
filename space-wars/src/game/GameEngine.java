@@ -1,5 +1,11 @@
 package game;
 import java.util.ArrayList;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import javax.swing.*;
+import java.util.Random;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.awt.*; 
 import java.awt.image.BufferedImage;
@@ -107,8 +113,8 @@ public class GameEngine extends JPanel implements Runnable{
 	        g.dispose();
 	 }
 	 //Used to add the projectiles to the array
-	 public void addProjectile() {
-		 projectile = new Projectiles(playerX,playerY,5,0);
+	 public void addProjectile(int x,int y,int dx, int dy,String img, boolean hostile) {
+		 projectile = new Projectiles(x,y,dx,dy,img,hostile);
 		 projectiles.add(projectile);	
 		}
 
@@ -124,6 +130,8 @@ public class GameEngine extends JPanel implements Runnable{
             repaint();
             update();
             collisionDetection();
+            outOfBound();
+            fiendeSottTimer.start();
             timeDiff = System.currentTimeMillis() - beforeTime;
             sleep = 5 - timeDiff;
             if (sleep < 0) {
@@ -160,33 +168,102 @@ public class GameEngine extends JPanel implements Runnable{
 			 r2.move();
 		}
 	}
+	
+	
+	//fiende skott
+	ActionListener fiende_skott = new ActionListener() {
+		 public void actionPerformed(ActionEvent evt) {
+             
+			 for(int i = 0; i < activeObjects.size(); i++) {
+					Ship s = activeObjects.get(i);
+			 addProjectile(s.getxPos(),s.getyPos(),-2,0,"space-wars/img/shot2.png",true);
+			 }
+         }
+	};
+	
+	
+	Timer fiendeSottTimer = new Timer(1200,fiende_skott);
 
 	public void collisionDetection() {
 		if(!activeObjects.isEmpty() && !projectiles.isEmpty()) {
 		for(int j = 0; j < projectiles.size(); j ++) {
 			Projectiles p = projectiles.get(j);
+			if (p.isHostile() == false) {
 
 			for(int i = 0; i < activeObjects.size(); i++) {
 				Ship s = activeObjects.get(i);
-
-				
-				if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
-						&& (p.getxPos()+p.getWidth() >= s.getxPos() && p.getxPos()+p.getWidth() <= s.getxPos()+ s.getWidth())) {
-					score += 10;
-					System.out.println("Score " + score);
-					activeObjects.remove(s);
-					projectiles.remove(p);
+        
+					if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
+						&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
+            score += 10;
+            System.out.println("Score " + score);
+						activeObjects.remove(s);
+						projectiles.remove(p);
+						break;
+						}
 					}
 				}
 			}
 		}
 	}
+  public void outOfBound() {
+		//player
+		if(player.getxPos() < 0) {
+			player.setxPos(1);
+		}
+		else if(player.getxPos() >= 1280 - player.getWidth()) {
+			player.setxPos(1279 - player.getWidth());
+		}
+		else if(player.getyPos() < 0) {
+			player.setyPos(1);
+		}
+		else if(player.getyPos() >= 720 - player.getLenght()) {
+			player.setyPos(719 - player.getLenght());
+		}
+		
+		//skepp
+		for(int i = 0; i < activeObjects.size(); i++) {
+			Ship s = activeObjects.get(i);
+			
+			if(s.getxPos() < 0) {
+				s.setxPos(1);
+			}
+			else if(s.getxPos() >= 1280 - s.getWidth()) {
+				s.setxPos(1279 - s.getWidth());
+			}
+			else if(s.getyPos() < 0) {
+				s.setyPos(1);
+			}
+			else if(s.getyPos() >= 720 - s.getLenght()) {
+				s.setyPos(719 - s.getLenght());
+			}
+		}
+		
+		//projectiles
+		for(int i = 0; i < projectiles.size(); i++) {
+			Projectiles s = projectiles.get(i);
+			
+			if(s.getxPos() < 0) {
+				projectiles.remove(s);
+			}
+			else if(s.getxPos() >= 1280 - s.getWidth()) {
+				projectiles.remove(s);
+			}
+			else if(s.getyPos() < 0) {
+				projectiles.remove(s);
+			}
+			else if(s.getyPos() >= 720 - s.getLenght()) {
+				projectiles.remove(s);
+			}
+		}
+	
 	//Used to add threads to a scheduled pool
 	private void addThreads() {
 		 ScheduledThreadPoolExecutor eventPool = new ScheduledThreadPoolExecutor(5);
 		 //Spawns enemy ships every x seconds
 		 eventPool.scheduleAtFixedRate(new ShipMaker(this), 0, 10, SECONDS);
 		 eventPool.scheduleAtFixedRate(new RockMaker(this), 0, 5, SECONDS);
+
 	}
 
 	public void newGame(String name) {

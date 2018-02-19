@@ -11,14 +11,15 @@ public class Projectiles extends Obj {
 	private int dmg;
 	private final String shot = "space-wars/img/shot.png";
 	
-	public Projectiles(int x, int y, int dx, int dy) {
+	public Projectiles(int x, int y, int dx, int dy, String img, boolean fientligt) {
 		super(x,y,dx,dy);
 		//setVisible(false);
-		initShot(x,y);
+		initShot(x,y,img);
+		hostile = fientligt;
 	}
 	
-	public void initShot(int x, int y) {
-		ImageIcon imgI = new ImageIcon(shot);
+	public void initShot(int x, int y, String img) {
+		ImageIcon imgI = new ImageIcon(img);
 		setWidth(imgI.getImage().getWidth(null));
 		setLenght(imgI.getImage().getHeight(null));
 		setImage(imgI.getImage());
