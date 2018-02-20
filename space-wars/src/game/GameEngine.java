@@ -13,6 +13,7 @@ import javax.swing.*;
 import static java.util.concurrent.TimeUnit.*;
 import controller.ActionHandler;
 import gui.Background;
+import javax.swing.ImageIcon;
 
 
 public class GameEngine extends JPanel implements Runnable{
@@ -28,8 +29,8 @@ public class GameEngine extends JPanel implements Runnable{
 	private Projectiles projectile;
 	private Thread gameloop;
 	private int score = 0;
-	private int playerX;
-	private int playerY;
+	private double playerX;
+	private double playerY;
 	
 	
 	public GameEngine() {
@@ -77,27 +78,27 @@ public class GameEngine extends JPanel implements Runnable{
     }
 	 //Draws the player
 	 public void drawPlayer(Graphics g) {
-			g.drawImage(player.getImage(), player.getxPos(), player.getyPos(), this);
+			g.drawImage(player.getImage(),(int) player.getxPos(),(int) player.getyPos(), this);
 		 }
 	//Draws the enemies
 	 public void drawEnemies(Graphics g) {
 		 for(Ship s : activeObjects) {
 			 Ship s2 = s.getShip();
-			 g.drawImage(s2.getImage(), s2.getxPos(),s2.getyPos(), this);
+			 g.drawImage(s2.getImage(), (int)s2.getxPos(),(int)s2.getyPos(), this);
 		 }
 	 }
 	 //Draws the projectiles
 	 public void drawShot(Graphics g) {
 		 for(Projectiles p : projectiles) {
 			 Projectiles shot = p.getProjectile();
-			 g.drawImage(shot.getImage(), shot.getxPos(), shot.getyPos(), this);
+			 g.drawImage(shot.getImage(), (int) shot.getxPos(), (int) shot.getyPos(), this);
 		 }
 	 }
 	 //Draws the projectiles
 	 public void drawRocks(Graphics g) {
 		 for(Rock r : rocks) {
 			 Rock rock = r.getRock();
-			 g.drawImage(rock.getImage(), rock.getxPos(), rock.getyPos(), this);
+			 g.drawImage(rock.getImage(),(int) rock.getxPos(),(int) rock.getyPos(), this);
 		 }
 	 }
 	 //Paints the player,enemies, and the projectiles
@@ -113,16 +114,16 @@ public class GameEngine extends JPanel implements Runnable{
 	        g.dispose();
 	 }
 	 //Used to add the projectiles to the array
-	 public void addProjectile(int x,int y,double dx, double dy,String img, boolean hostile) {
-		 projectile = new Projectiles(x,y,dx,dy,img,hostile);
+	 public void addProjectile(double d,double e,double dx, double dy,String img, boolean hostile) {
+		 projectile = new Projectiles(d,e,dx,dy,img,hostile);
 		 projectiles.add(projectile);	
 		}
 
 	//Updates and repaints the panel on a delay
 	@Override
     public void run() {
-		int x = player.getxPos();
-		int y = player.getyPos();
+		double x = player.getxPos();
+		double y = player.getyPos();
         long beforeTime, timeDiff, sleep;
         System.out.println("x: " + x + "y: " + y);
         beforeTime = System.currentTimeMillis();
@@ -159,8 +160,8 @@ public class GameEngine extends JPanel implements Runnable{
 		//For each enemy ship, move it
 		for(Ship s : activeObjects) {
 			 Ship s2 = s.getShip();
-			 s2.moveEnemy();
 			 s2.move();
+			 
 		}
 		//For each enemy ship, move it
 		for(Rock r : rocks) {
@@ -174,24 +175,44 @@ public class GameEngine extends JPanel implements Runnable{
 	//fiende skott
 	ActionListener fiende_skott = new ActionListener() {
 		 public void actionPerformed(ActionEvent evt) {
-             
-			 for(int i = 0; i < activeObjects.size(); i++) {
-					Ship s = activeObjects.get(i);
+			 
+             	int min = 0;
+             	int max = activeObjects.size()-1;
+             	int random = new Random().nextInt(max + 1 - min) + min;
+             	Ship s = activeObjects.get(random);
+             	
 					Random rX = new Random();
 					double rangeMinX = -2.5;
-					double rangeMaxX = -1;
+					double rangeMaxX = -1.5;
 					double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
+					
 					Random rY = new Random();
 					double rangeMinY = -0.1;
-					double rangeMaxY = 1.1;
+					double rangeMaxY = 0.1;
 					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
-			 addProjectile(s.getxPos(),s.getyPos(),dx,dy,"space-wars/img/shot2.png",true);
-			 }
+					
+					ImageIcon imgI = new ImageIcon("space-wars/img/shot.png");
+					
+			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
+			 
+			 
          }
 	};
 	
+	//fiende skott
+		ActionListener fiende_Stuts = new ActionListener() {
+			 public void actionPerformed(ActionEvent evt) {
+	             
+				 for(int i = 0; i < activeObjects.size(); i++) {
+						Ship s = activeObjects.get(i);
+						s.moveEnemy();
+				 }
+	         }
+		};
 	
-	Timer fiendeSottTimer = new Timer(1200,fiende_skott);
+	Timer fiendeStuts =new Timer (1500,fiende_Stuts);
+	Timer fiendeSottTimer = new Timer(250,fiende_skott);
+	
 	public void collisionDetection() {
 		if(!activeObjects.isEmpty() && !projectiles.isEmpty()) {
 			for(int j = 0; j < projectiles.size(); j ++) {
@@ -255,17 +276,21 @@ public class GameEngine extends JPanel implements Runnable{
 		for(int i = 0; i < activeObjects.size(); i++) {
 			Ship s = activeObjects.get(i);
 			
-			if(s.getxPos() < 0) {
-				s.setxPos(1);
+			if(s.getxPos() < -s.getWidth()) {
+				activeObjects.remove(s);
 			}
-			else if(s.getxPos() >= 1280 - s.getWidth()) {
-				s.setxPos(1279 - s.getWidth());
+			else if(s.getxPos() >= 1280) {
+				s.setxPos(1279);
 			}
 			else if(s.getyPos() < 0) {
-				s.setyPos(1);
+				double speedy = s.getySpeed();
+				speedy = -speedy;
+				s.setySpeed(speedy);
 			}
 			else if(s.getyPos() >= 720 - s.getLenght()) {
-				s.setyPos(719 - s.getLenght());
+				double speedy = s.getySpeed();
+				speedy = -speedy;
+				s.setySpeed(speedy);
 			}
 		}
 		
@@ -273,7 +298,7 @@ public class GameEngine extends JPanel implements Runnable{
 		for(int i = 0; i < projectiles.size(); i++) {
 			Projectiles s = projectiles.get(i);
 			
-			if(s.getxPos() < 0) {
+			if(s.getxPos() < -2) {
 				projectiles.remove(s);
 			}
 			else if(s.getxPos() >= 1280 - s.getWidth()) {
@@ -292,7 +317,7 @@ public class GameEngine extends JPanel implements Runnable{
 	private void addThreads() {
 		 ScheduledThreadPoolExecutor eventPool = new ScheduledThreadPoolExecutor(5);
 		 //Spawns enemy ships every x seconds
-		 eventPool.scheduleAtFixedRate(new ShipMaker(this), 0, 10, SECONDS);
+		 eventPool.scheduleAtFixedRate(new ShipMaker(this), 0, 700, MILLISECONDS);
 		 eventPool.scheduleAtFixedRate(new RockMaker(this), 0, 5, SECONDS);
 
 	}

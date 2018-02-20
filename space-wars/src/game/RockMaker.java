@@ -13,5 +13,8 @@ class RockMaker implements Runnable{
         	game.rocks.add(rock);
 		}
 		System.out.println(game.rocks.size());
+		
+		
+		
 	}
 }
