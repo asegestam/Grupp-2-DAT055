@@ -11,7 +11,7 @@ public class Projectiles extends Obj {
 	private int dmg;
 	private final String shot = "space-wars/img/shot.png";
 	
-	public Projectiles(int x, int y, int dx, int dy, String img, boolean fientligt) {
+	public Projectiles(int x, int y, double dx, double dy, String img, boolean fientligt) {
 		super(x,y,dx,dy);
 		//setVisible(false);
 		initShot(x,y,img);

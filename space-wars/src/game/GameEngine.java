@@ -50,7 +50,7 @@ public class GameEngine extends JPanel implements Runnable{
     }
     //Creates the player, enemies and starts the thread
 	public void gameInit() {
-	        player = new Player(0,0,0,0,3,"test");
+	        player = new Player(0,0,0,0,5,"test");
 	        addThreads();
 	        if(gameloop == null) {
 	        	gameloop = new Thread(this);
@@ -113,7 +113,7 @@ public class GameEngine extends JPanel implements Runnable{
 	        g.dispose();
 	 }
 	 //Used to add the projectiles to the array
-	 public void addProjectile(int x,int y,int dx, int dy,String img, boolean hostile) {
+	 public void addProjectile(int x,int y,double dx, double dy,String img, boolean hostile) {
 		 projectile = new Projectiles(x,y,dx,dy,img,hostile);
 		 projectiles.add(projectile);	
 		}
@@ -170,20 +170,28 @@ public class GameEngine extends JPanel implements Runnable{
 	}
 	
 	
+
 	//fiende skott
 	ActionListener fiende_skott = new ActionListener() {
 		 public void actionPerformed(ActionEvent evt) {
              
 			 for(int i = 0; i < activeObjects.size(); i++) {
 					Ship s = activeObjects.get(i);
-			 addProjectile(s.getxPos(),s.getyPos(),-2,0,"space-wars/img/shot2.png",true);
+					Random rX = new Random();
+					double rangeMinX = -2.5;
+					double rangeMaxX = -1;
+					double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
+					Random rY = new Random();
+					double rangeMinY = -0.1;
+					double rangeMaxY = 1.1;
+					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
+			 addProjectile(s.getxPos(),s.getyPos(),dx,dy,"space-wars/img/shot2.png",true);
 			 }
          }
 	};
 	
 	
 	Timer fiendeSottTimer = new Timer(1200,fiende_skott);
-
 	public void collisionDetection() {
 		if(!activeObjects.isEmpty() && !projectiles.isEmpty()) {
 			for(int j = 0; j < projectiles.size(); j ++) {
@@ -271,7 +279,7 @@ public class GameEngine extends JPanel implements Runnable{
 			else if(s.getxPos() >= 1280 - s.getWidth()) {
 				projectiles.remove(s);
 			}
-			else if(s.getyPos() < 0) {
+			else if(s.getyPos() <= 0) {
 				projectiles.remove(s);
 			}
 			else if(s.getyPos() >= 720 - s.getLenght()) {

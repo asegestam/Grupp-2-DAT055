@@ -15,11 +15,11 @@ public class Obj {
 	private Image image;
 	private boolean visible;
 
-	public Obj(int x, int y, int dx, int dy) {
+	public Obj(int x, int y, double dx, double dy) {
 		this.xPos = x;
 		this.yPos = y;
 		this.xSpeed = dx;
-		this.yPos = dy;
+		this.ySpeed = dy;
 		visible = true;
 
 	}
