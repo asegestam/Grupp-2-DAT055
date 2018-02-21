@@ -57,7 +57,7 @@ public class ActionHandler implements ActionListener,KeyListener{
 			downKey = true;
 		}	
 		if(c == KeyEvent.VK_SPACE && !spaceKey) {
-			game.addProjectile(player.getxPos(),player.getyPos(),5,0,"space-wars/img/Shot.png",false);
+			game.addProjectile(player.getxPos(),player.getyPos(),5,0,"img/Shot.png",false);
 			spaceKey = true;
 		}	
 		

@@ -13,7 +13,7 @@ import server.Client;
 public class GUI extends JFrame {
 	
 	private final static String WINDOW_TITLE = "Space-Wars";
-	
+	JFrame gameFrame;
 	public GUI() {
 		super(WINDOW_TITLE);
 		makeStartMenu();
@@ -52,15 +52,15 @@ public class GUI extends JFrame {
 	}
 	//Creates the game frame
 	public void makeGameFrame() {
-		JFrame frame =  new JFrame("Space-Wars");
-		makeMenu(frame);
-		frame.add(new GameEngine());
-		frame.pack();
-		frame.setSize(1280, 720);
-		frame.setResizable(false);
-	    frame.setLocationRelativeTo(null); 
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    frame.setVisible(true);
+		gameFrame =  new JFrame("Space-Wars");
+		makeMenu(gameFrame);
+		gameFrame.add(new GameEngine(this));
+		gameFrame.pack();
+		gameFrame.setSize(1280, 720);
+		gameFrame.setResizable(false);
+		gameFrame.setLocationRelativeTo(null); 
+		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameFrame.setVisible(true); 
 	}
 	//Creates the menubar
 	public void makeMenu(JFrame frame) {
@@ -89,6 +89,11 @@ public class GUI extends JFrame {
 				}
 			});
 	}
+	public JFrame getFrame() {
+		
+			return gameFrame;
+		}
+	
 	
 	public void writeHighScores() {
 		Client client = new Client("127.0.0.1", 8081);

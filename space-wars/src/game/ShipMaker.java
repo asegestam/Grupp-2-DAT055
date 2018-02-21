@@ -16,7 +16,5 @@ class ShipMaker implements Runnable{
     		Ship ship = new Ship(1850, random, 0 , 0);
         	game.activeObjects.add(ship);
         	ship.moveEnemy();
-		
-		System.out.println(game.activeObjects.size());
 	}
 }

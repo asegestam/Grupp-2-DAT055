@@ -2,43 +2,45 @@ package game;
 import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import java.util.Random;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.awt.*; 
-import java.awt.image.BufferedImage;
-import javax.swing.*;
 import static java.util.concurrent.TimeUnit.*;
 import controller.ActionHandler;
 import gui.Background;
-import javax.swing.ImageIcon;
+import gui.GUI;
 
 
 public class GameEngine extends JPanel implements Runnable{
 	
 	private Background backgroundOne;
-  private Background backgroundTwo;
-  private BufferedImage back;
+	private Background backgroundTwo;
+  	private BufferedImage back;
 	public ArrayList<Ship> activeObjects;
 	public ArrayList<Projectiles> projectiles;
 	public ArrayList<Rock> rocks;
 	private Player player;
-	private Ship enemy;
 	private Projectiles projectile;
 	private Thread gameloop;
 	private int score = 0;
-	private double playerX;
-	private double playerY;
+	public boolean running;
+	private boolean backGroundvisible;
+	private GUI gui;
+	ScheduledThreadPoolExecutor eventPool;
 	
-	
-	public GameEngine() {
+	public GameEngine(GUI gui) {
 		backgroundOne = new Background();
-    backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
+		backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
 		activeObjects = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
 		rocks = new ArrayList<Rock>();
+		backGroundvisible = true;
+		this.gui = gui;
+		eventPool = new ScheduledThreadPoolExecutor(5);
+		running = true;
         setVisible(true);
         setFocusable(true);
         gameInit();
@@ -61,55 +63,64 @@ public class GameEngine extends JPanel implements Runnable{
 	//Draw the background
 	public void drawBackground(Graphics g) {
         Graphics2D twoD = (Graphics2D)g;
- 
         if (back == null)
             back = (BufferedImage)(createImage(getWidth(), getHeight()));
- 
         // Create a buffer to draw to
         Graphics buffer = back.createGraphics();
- 
         // Put the two copies of the background image onto the buffer
         backgroundOne.draw(buffer);
         backgroundTwo.draw(buffer);
- 
         // Draw the image onto the window
-        twoD.drawImage(back, null, 0, 0);
+        if(backGroundvisible) {
+        	twoD.drawImage(back, null, 0, 0);	
+        }
  
     }
 	 //Draws the player
 	 public void drawPlayer(Graphics g) {
-			g.drawImage(player.getImage(),(int) player.getxPos(),(int) player.getyPos(), this);
+		 if(player.isVisible()) {
+			 g.drawImage(player.getImage(),(int) player.getxPos(),(int) player.getyPos(), this); 
+			 }
 		 }
 	//Draws the enemies
 	 public void drawEnemies(Graphics g) {
 		 for(Ship s : activeObjects) {
-			 Ship s2 = s.getShip();
-			 g.drawImage(s2.getImage(), (int)s2.getxPos(),(int)s2.getyPos(), this);
+			 Ship shot = s.getShip();
+			 if(shot.isVisible()) {
+				 g.drawImage(shot.getImage(), (int)shot.getxPos(),(int)shot.getyPos(), this);	 
+			 }
 		 }
 	 }
 	 //Draws the projectiles
 	 public void drawShot(Graphics g) {
 		 for(Projectiles p : projectiles) {
 			 Projectiles shot = p.getProjectile();
-			 g.drawImage(shot.getImage(), (int) shot.getxPos(), (int) shot.getyPos(), this);
+			 if(shot.isVisible()) {
+				 g.drawImage(shot.getImage(), (int) shot.getxPos(), (int) shot.getyPos(), this);
+			 }
 		 }
 	 }
 	 //Draws the projectiles
 	 public void drawRocks(Graphics g) {
 		 for(Rock r : rocks) {
 			 Rock rock = r.getRock();
-			 g.drawImage(rock.getImage(),(int) rock.getxPos(),(int) rock.getyPos(), this);
+			 if(rock.isVisible()) {
+				 g.drawImage(rock.getImage(),(int) rock.getxPos(),(int) rock.getyPos(), this); 
+			 }
 		 }
 	 }
+	
 	 //Paints the player,enemies, and the projectiles
 	 @Override
 	 public void paintComponent(Graphics g) {
 	        super.paintComponent(g);
-	        drawBackground(g);
-	        drawPlayer(g);
-	        drawEnemies(g);
-	        drawShot(g);  
-	        drawRocks(g);
+	        if(running) {
+	        	drawBackground(g);
+	        	drawPlayer(g);
+	        	drawEnemies(g);
+	        	drawShot(g);  
+	        	drawRocks(g);
+	        }
 	        Toolkit.getDefaultToolkit().sync();
 	        g.dispose();
 	 }
@@ -122,12 +133,9 @@ public class GameEngine extends JPanel implements Runnable{
 	//Updates and repaints the panel on a delay
 	@Override
     public void run() {
-		double x = player.getxPos();
-		double y = player.getyPos();
         long beforeTime, timeDiff, sleep;
-        System.out.println("x: " + x + "y: " + y);
         beforeTime = System.currentTimeMillis();
-        while (true) {
+        while (running) {
             repaint();
             update();
             collisionDetection();
@@ -147,11 +155,61 @@ public class GameEngine extends JPanel implements Runnable{
             
         }
     }
+	//Removes all objects and creates a game over screen
+	public void gameOver() {
+		//Shutdowns the threadpool
+		eventPool.shutdownNow();
+		
+		JFrame frame = gui.getFrame();
+		this.setBorder(new EmptyBorder(10, 10, 10, 10));
+		frame.setLayout(new GridBagLayout()); 
+		
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        
+		JLabel gameOverLabel = new JLabel("Game Over");
+		JLabel scoreLabel = new JLabel("Your Score: " + Integer.toString(score));
+		gameOverLabel.setForeground(Color.red);
+		gameOverLabel.setFont(gameOverLabel.getFont().deriveFont(64.0f));
+		scoreLabel.setFont(scoreLabel.getFont().deriveFont(48.0f));
+		frame.add(gameOverLabel,gbc);
+		frame.add(scoreLabel,gbc);
+
+		JButton startButton = new JButton("New Game");
+		JButton loadButton = new JButton("Load Game");
+		JButton exitButton = new JButton("Exit Game");
+		JButton hsButton = new JButton("HighScores");
+
+		startButton.setPreferredSize(new Dimension(250,50));
+		loadButton.setPreferredSize(new Dimension(250,50));
+		exitButton.setPreferredSize(new Dimension(250,50));
+		hsButton.setPreferredSize(new Dimension(250,50));
+		frame.add(startButton,gbc);
+		frame.add(loadButton,gbc);
+		frame.add(exitButton,gbc);
+	    frame.add(hsButton,gbc);
+		frame.setVisible(true);
+		frame.revalidate();
+		frame.repaint();
+		//Creates a new game
+        startButton.addActionListener(
+        (ActionEvent e)->{gui.makeGameFrame(); frame.dispose();;});
+        //Exits the game
+		 exitButton.addActionListener(
+			        (ActionEvent e)->{System.exit(0);;});
+		//Prints highscores
+		hsButton.addActionListener(
+		        (ActionEvent e)->{gui.writeHighScores();});
+	}
 	public void update() {
+		if(player.getHitPoints() == 0) {
+			running = false;
+			gameOver();
+		}
 		player.move();
-		//Update the x and y position of the player for the projectiles
-		playerX = player.getxPos();
-		playerY = player.getyPos();
 		//For each projectile in the array, move it
 		for(Projectiles p : projectiles) {
 			 Projectiles shot = p.getProjectile();
@@ -169,7 +227,7 @@ public class GameEngine extends JPanel implements Runnable{
 			 r2.move();
 		}
 	}
-	
+
 	
 
 	//fiende skott
@@ -193,7 +251,7 @@ public class GameEngine extends JPanel implements Runnable{
 					
 					ImageIcon imgI = new ImageIcon("space-wars/img/shot.png");
 					
-			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
+			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
 			 
 			 
          }
@@ -234,9 +292,6 @@ public class GameEngine extends JPanel implements Runnable{
 				else if(playerHit(p,player)) {
 					projectiles.remove(p);
 					player.setHitPoints(player.getHitPoints()-1);
-					if(player.getHitPoints() == 0) {
-						System.out.println("Game over");
-					}
 				}
 			}
 		}
@@ -315,7 +370,7 @@ public class GameEngine extends JPanel implements Runnable{
 	
 	//Used to add threads to a scheduled pool
 	private void addThreads() {
-		 ScheduledThreadPoolExecutor eventPool = new ScheduledThreadPoolExecutor(5);
+		 
 		 //Spawns enemy ships every x seconds
 		 eventPool.scheduleAtFixedRate(new ShipMaker(this), 0, 700, MILLISECONDS);
 		 eventPool.scheduleAtFixedRate(new RockMaker(this), 0, 5, SECONDS);
