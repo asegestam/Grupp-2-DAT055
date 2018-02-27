@@ -1,5 +1,6 @@
 package game;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -21,13 +22,14 @@ import server.Client;
 
 public class GameEngine extends JPanel implements Runnable{
 	
-    private Background backgroundOne;
+  private Background backgroundOne;
 	private Background backgroundTwo;
-  	private BufferedImage back;
+  private BufferedImage back;
 	public ArrayList<Ship> activeObjects;
 	public ArrayList<Projectiles> projectiles;
 	public ArrayList<Rock> rocks;
 	private Player player;
+	private Ship enemy;
 	private Projectiles projectile;
 	private Thread gameloop;
 	private int score = 0;
@@ -35,9 +37,9 @@ public class GameEngine extends JPanel implements Runnable{
 	private boolean backGroundvisible;
 	private GUI gui;
 	ScheduledThreadPoolExecutor eventPool;
-	
+  
 	public GameEngine(GUI gui) {
-        backgroundOne = new Background();
+    backgroundOne = new Background();
 		backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
 		activeObjects = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
@@ -46,11 +48,11 @@ public class GameEngine extends JPanel implements Runnable{
 		this.gui = gui;
 		eventPool = new ScheduledThreadPoolExecutor(5);
 		running = true;
-        setVisible(true);
-        setFocusable(true);
-        gameInit();
-        addKeyListener(new ActionHandler(player, this));
-        setDoubleBuffered(true);
+    setVisible(true);
+    setFocusable(true);
+    gameInit();
+    addKeyListener(new ActionHandler(player, this));
+    setDoubleBuffered(true);
 	}
 	/**
 	 * Creates the player and adds the threads for enemies and meteors
@@ -154,7 +156,7 @@ public class GameEngine extends JPanel implements Runnable{
 	  * @param img the visual appearance
 	  * @param hostile if the projectile is a enemy projectile or player
 	  */
-	 	 public void addProjectile(double x,double y,double dx, double dy,String img, boolean hostile) {
+  public synchronized void addProjectile(int x,int y,int dx, int dy,String img, boolean hostile) {
 		 projectile = new Projectiles(x,y,dx,dy,img,hostile);
 		 projectiles.add(projectile);	
 		}
@@ -173,7 +175,7 @@ public class GameEngine extends JPanel implements Runnable{
             outOfBound();
             fiendeSottTimer.start();
             timeDiff = System.currentTimeMillis() - beforeTime;
-            sleep = 15 - timeDiff;
+            sleep = 10 - timeDiff;
             if (sleep < 0) {
                 sleep = 2;
             }
@@ -197,27 +199,43 @@ public class GameEngine extends JPanel implements Runnable{
 	/**
 	 * Updates the position of each object in the game
 	 */
-	public void update() {
+	public void update() {		
+		Iterator<Projectiles> shots = projectiles.iterator();
+		Iterator<Ship> enemies = activeObjects.iterator();
+		Iterator<Rock> obst = rocks.iterator();
 		if(player.getHitPoints() == 0) {
 			running = false;
 			gameOver();
 		}
 		player.move();
 		//For each projectile in the array, move it
-		for(Projectiles p : projectiles) {
-			 Projectiles shot = p.getProjectile();
+		while(shots.hasNext()) {
+			Projectiles shot = shots.next();
+			
+			if(shot.isVisible()) {
 			 shot.move();
+			}else {
+				shots.remove();
+			}
 		}
 		//For each enemy ship, move it
-		for(Ship s : activeObjects) {
-			 Ship s2 = s.getShip();
-			 s2.move();
-			 
+		while(enemies.hasNext()) {
+			 Ship s = enemies.next();
+			 if(s.isVisible()) {
+				 s.moveEnemy();
+				 s.move();
+			 }else {
+				 enemies.remove();
+			 }
 		}
-		//For each enemy ship, move it
-		for(Rock r : rocks) {
-			 Rock r2 = r.getRock();
-			 r2.move();
+		
+		while(obst.hasNext()) {
+			Rock r = obst.next();
+			if(r.isVisible()) {
+				r.move();
+			}else {
+				obst.remove();
+			}
 		}
 	}
 	//fiende skott
@@ -241,8 +259,6 @@ public class GameEngine extends JPanel implements Runnable{
 					ImageIcon imgI = new ImageIcon("space-wars/img/shot.png");
 					
 			    addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
-			 
-			 
          }
 	};
 		ActionListener fiende_Stuts = new ActionListener() {
@@ -253,67 +269,58 @@ public class GameEngine extends JPanel implements Runnable{
 				 }
 	     }
 		};
-	
 	Timer fiendeStuts =new Timer (1500,fiende_Stuts);
 	Timer fiendeSottTimer = new Timer(250,fiende_skott);
 	/**
 	 * Checks all objects for collision and removes them if true
 	 */
-	public void collisionDetection() {
-		if(!activeObjects.isEmpty() && !projectiles.isEmpty()) {
-			for(int j = 0; j < projectiles.size(); j ++) {
-				Projectiles p = projectiles.get(j);
-				if (p.isHostile() == false) {
-					for(int i = 0; i < activeObjects.size(); i++) {
-						Ship s = activeObjects.get(i);
-						//enemy and projectile
-						if(enemyHit(p,s)) {
-							score += 10;
-							System.out.println("Score " + score);
-							activeObjects.remove(s);
-							projectiles.remove(p);
-							break;
-						}
-					}
+public void collisionDetection() {
+		
+		Rectangle r1 = player.getBounds();
+		
+		for(Ship enemy: activeObjects) {
+			Rectangle r2 = enemy.getBounds();
+			
+			if(r1.intersects(r2)) {
+				System.out.println("crash");
+				enemy.setVisible(false);
+			}
+		}
+		
+		for(Projectiles p: projectiles) {
+			Rectangle r3 = p.getBounds();
+			
+			if(p.isHostile()) {
+				if(r1.intersects(r3)) {
+					p.setVisible(false);
+					System.out.println("ouch!");
 				}
-				//player and projectile
-				else if(playerHit(p,player)) {
-					projectiles.remove(p);
-					player.setHitPoints(player.getHitPoints()-1);
+			}
+				for(Ship enemy: activeObjects) {
+					Rectangle r2 = enemy.getBounds();
+					if(!p.isHostile()) {
+						if(r2.intersects(r3)) {
+							enemy.setVisible(false);
+							p.setVisible(false);
+					}
 				}
 			}
 		}
-	}
-	/**
-	 * Checks if player and projectile have collide
-	 * @param p the projectile
-	 * @param player the player
-	 * @return if collision has occured
-	 */
-	public boolean playerHit(Projectiles p, Player player) {
-		if((p.getyPos()+(p.getLenght()/2) >= player.getyPos() && p.getyPos()+(p.getLenght()/2) <= player.getyPos() + player.getLenght())
-				&& (p.getxPos()+(p.getWidth()*0.5) >= player.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= player.getxPos()+ player.getWidth())) {
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Checks if the enemy ship and projectile have collided
-	 * @param p projectile to be checked
-	 * @param s ship to be checked
-	 * @return if collision has occured
-	 */
-	private boolean enemyHit(Projectiles p, Ship s) {
-		if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
-				&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
-			return true;
-		}
-		return false;
-	}
+		
+		for(Rock obst: rocks) {
+			Rectangle r4 = obst.getBounds();
+			
+			if(r4.intersects(r1)) {
+				obst.setVisible(false);
+			}
+    }
+}
+
 	/**
 	 * Checks if the game objects have gone past the game frame
 	 */
-	public void outOfBound() {
+  public void outOfBound() {
+	  Iterator<Projectiles> p = projectiles.iterator();
 		//player
 		if(player.getxPos() < 0) {
 			player.setxPos(1);
@@ -351,20 +358,18 @@ public class GameEngine extends JPanel implements Runnable{
 		}
 		
 		//projectiles
-		for(int i = 0; i < projectiles.size(); i++) {
-			Projectiles s = projectiles.get(i);
-			
-			if(s.getxPos() < -2) {
-				projectiles.remove(s);
+		while(p.hasNext()) {
+			Projectiles s = p.next();
+			if(s.getxPos() < 0) {
+				p.remove();
 			}
 			else if(s.getxPos() >= 1280 - s.getWidth()) {
-				projectiles.remove(s);
+				p.remove();
 			}
-			else if(s.getyPos() <= 0) {
-				projectiles.remove(s);
-			}
+			else if(s.getyPos() < 0) {
+				p.remove();
 			else if(s.getyPos() >= 720 - s.getLenght()) {
-				projectiles.remove(s);
+				p.remove();
 			}
 		}
 	}

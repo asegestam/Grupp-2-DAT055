@@ -3,7 +3,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.ImageIcon;
 
 public class Rock extends Obstacles{
-	private final String shot = "space-wars/img/meteor.png";
+	private final String shot = "img/meteor.png";
 	private static int min = 5;
 	private static int max = 710;
 	
