@@ -23,6 +23,7 @@ public class GameEngine extends JPanel implements Runnable{
 	public ArrayList<Ship> activeObjects;
 	public ArrayList<Projectiles> projectiles;
 	public ArrayList<Rock> rocks;
+	public ArrayList<Boss> bosses;
 	private Player player;
 	private Projectiles projectile;
 	private Thread gameloop;
@@ -39,6 +40,7 @@ public class GameEngine extends JPanel implements Runnable{
 		activeObjects = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
 		rocks = new ArrayList<Rock>();
+		bosses = new ArrayList<Boss>();
 		backGroundvisible = true;
 		client = new Client("127.0.0.1", 8081);
 		this.gui = gui;
@@ -94,6 +96,16 @@ public class GameEngine extends JPanel implements Runnable{
 			 }
 		 }
 	 }
+	 //Draws Boss
+	 public void drawBoss(Graphics g) {
+
+			 Boss b = bosses.get(0);
+			 if(b.isVisible()) {
+				 g.drawImage(b.getImage(), (int)b.getxPos(), (int)b.getyPos(), this);
+			 
+		 }
+	 }
+	 
 	 //Draws the projectiles
 	 public void drawShot(Graphics g) {
 		 for(Projectiles p : projectiles) {
@@ -123,6 +135,7 @@ public class GameEngine extends JPanel implements Runnable{
 	        	drawEnemies(g);
 	        	drawShot(g);  
 	        	drawRocks(g);
+	        	drawBoss(g);
 	        }
 	        Toolkit.getDefaultToolkit().sync();
 	        g.dispose();
@@ -235,6 +248,11 @@ public class GameEngine extends JPanel implements Runnable{
 			 Rock r2 = r.getRock();
 			 r2.move();
 		}
+		
+		for(Boss b : bosses) {
+			 Boss b2 = b.getBoss();
+			 b2.move();
+		}
 	}
 
 	
@@ -258,9 +276,9 @@ public class GameEngine extends JPanel implements Runnable{
 					double rangeMaxY = 0.1;
 					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
 					
-					ImageIcon imgI = new ImageIcon("img/shot.png");
+					ImageIcon imgI = new ImageIcon("space-wars/img/shot2.png");
 					
-			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
+			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
 			 
 			 
          }
@@ -295,6 +313,24 @@ public class GameEngine extends JPanel implements Runnable{
 							projectiles.remove(p);
 							break;
 						}
+						if(!bosses.isEmpty()) {
+						Boss b = bosses.get(0);
+						//boss and projectile
+						if(bossHit(p,b)) {
+							score += 10;
+							System.out.println("Score " + score);
+							projectiles.remove(p);
+							int hp = b.getHitPoints();
+							hp--;
+							b.setHitPoints(hp);
+							System.out.println(hp);
+							if(b.getHitPoints() == 0) {
+								b.setBossAlive(false);
+								bosses.remove(b);
+							}
+							break;
+						}
+						}
 					}
 				}
 				//player and projectile
@@ -304,6 +340,9 @@ public class GameEngine extends JPanel implements Runnable{
 				}
 			}
 		}
+	}
+	public int getScore() {
+		return score;
 	}
 	public boolean playerHit(Projectiles p, Player player) {
 		if((p.getyPos()+(p.getLenght()/2) >= player.getyPos() && p.getyPos()+(p.getLenght()/2) <= player.getyPos() + player.getLenght())
@@ -316,6 +355,15 @@ public class GameEngine extends JPanel implements Runnable{
 	private boolean enemyHit(Projectiles p, Ship s) {
 		if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
 				&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean bossHit(Projectiles p, Boss s) {
+		if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
+				&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
+			System.out.println("true");
 			return true;
 		}
 		return false;
@@ -356,6 +404,29 @@ public class GameEngine extends JPanel implements Runnable{
 				speedy = -speedy;
 				s.setySpeed(speedy);
 			}
+		}
+		//boss
+		if(!bosses.isEmpty()) {
+		Boss b = bosses.get(0);
+		
+		if(b.getxPos() <= 800) {
+			b.setxPos(800);
+		}
+		 if(b.getxPos() >= 1501 + b.getWidth()) {
+			b.setxPos(1500 + b.getWidth());
+		}
+		 if(b.getyPos() <= 0) {
+			double speedy = b.getySpeed();
+			speedy = -speedy;
+			b.setySpeed(speedy);
+			b.setyPos(0);
+		}
+		 if(b.getyPos() >= 720 - b.getLenght()) {
+			double speedy = b.getySpeed();
+			speedy = -speedy;
+			b.setySpeed(speedy);
+			b.setyPos(720 - b.getLenght());
+		}
 		}
 		
 		//projectiles
