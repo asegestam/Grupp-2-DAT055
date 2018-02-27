@@ -1,12 +1,17 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import game.GameEngine;
 import server.Client;
 
@@ -14,9 +19,11 @@ public class GUI extends JFrame {
 	
 	private final static String WINDOW_TITLE = "Space-Wars";
 	JFrame gameFrame;
+	private Client client;
 	public GUI() {
 		super(WINDOW_TITLE);
 		makeStartMenu();
+		client = new Client("127.0.0.1", 8081);
 	}
 	//Creates a frame with buttons to start, load and exit the game
 	public void makeStartMenu() {
@@ -62,6 +69,56 @@ public class GUI extends JFrame {
 		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameFrame.setVisible(true); 
 	}
+	public void makeGameOverScreen(int score) {
+		JFrame frame = getFrame();
+		frame.setLayout(new GridBagLayout()); 
+		
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        
+		JLabel gameOverLabel = new JLabel("Game Over");
+		JLabel scoreLabel = new JLabel("Your Score: " + Integer.toString(score));
+		gameOverLabel.setForeground(Color.red);
+		gameOverLabel.setFont(gameOverLabel.getFont().deriveFont(64.0f));
+		scoreLabel.setFont(scoreLabel.getFont().deriveFont(48.0f));
+		frame.add(gameOverLabel,gbc);
+		frame.add(scoreLabel,gbc);
+
+		JButton startButton = new JButton("New Game");
+		JButton loadButton = new JButton("Load Game");
+		JButton exitButton = new JButton("Exit Game");
+		JButton hsButton = new JButton("HighScores");
+		JButton scoreButton = new JButton("Submit Score");
+
+		startButton.setPreferredSize(new Dimension(250,50));
+		loadButton.setPreferredSize(new Dimension(250,50));
+		exitButton.setPreferredSize(new Dimension(250,50));
+		hsButton.setPreferredSize(new Dimension(250,50));
+		scoreButton.setPreferredSize(new Dimension(250,50));
+		
+		frame.add(startButton,gbc);
+		frame.add(loadButton,gbc);
+		frame.add(exitButton,gbc);
+	    frame.add(hsButton,gbc);
+	    frame.add(scoreButton,gbc);
+		frame.setVisible(true);
+		frame.revalidate();
+		frame.repaint();
+		//Creates a new game
+        startButton.addActionListener(
+        (ActionEvent e)->{makeGameFrame(); frame.dispose();;});
+        //Exits the game
+		 exitButton.addActionListener(
+			        (ActionEvent e)->{System.exit(0);;});
+		//Prints highscores
+		hsButton.addActionListener(
+		        (ActionEvent e)->{writeHighScores();});
+		scoreButton.addActionListener(
+		        (ActionEvent e)->{String inputName = JOptionPane.showInputDialog("Please Enter a Name");client.addHighScore(inputName, score);});
+	}
 	//Creates the menubar
 	public void makeMenu(JFrame frame) {
 		JMenuBar menuBar = new JMenuBar();
@@ -96,7 +153,6 @@ public class GUI extends JFrame {
 	
 	
 	public void writeHighScores() {
-		Client client = new Client("127.0.0.1", 8081);
 		Map <String, Integer> map = client.getHighScore();
 		String highScoreString = "";
 		for (Map.Entry<String, Integer> entry : map.entrySet())

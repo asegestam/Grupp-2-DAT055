@@ -175,56 +175,7 @@ public class GameEngine extends JPanel implements Runnable{
 	public void gameOver() {
 		//Shutdowns the threadpool
 		eventPool.shutdownNow();
-		
-		JFrame frame = gui.getFrame();
-		this.setBorder(new EmptyBorder(10, 10, 10, 10));
-		frame.setLayout(new GridBagLayout()); 
-		
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        
-		JLabel gameOverLabel = new JLabel("Game Over");
-		JLabel scoreLabel = new JLabel("Your Score: " + Integer.toString(score));
-		gameOverLabel.setForeground(Color.red);
-		gameOverLabel.setFont(gameOverLabel.getFont().deriveFont(64.0f));
-		scoreLabel.setFont(scoreLabel.getFont().deriveFont(48.0f));
-		frame.add(gameOverLabel,gbc);
-		frame.add(scoreLabel,gbc);
-
-		JButton startButton = new JButton("New Game");
-		JButton loadButton = new JButton("Load Game");
-		JButton exitButton = new JButton("Exit Game");
-		JButton hsButton = new JButton("HighScores");
-		JButton scoreButton = new JButton("Submit Score");
-
-		startButton.setPreferredSize(new Dimension(250,50));
-		loadButton.setPreferredSize(new Dimension(250,50));
-		exitButton.setPreferredSize(new Dimension(250,50));
-		hsButton.setPreferredSize(new Dimension(250,50));
-		scoreButton.setPreferredSize(new Dimension(250,50));
-		
-		frame.add(startButton,gbc);
-		frame.add(loadButton,gbc);
-		frame.add(exitButton,gbc);
-	    frame.add(hsButton,gbc);
-	    frame.add(scoreButton,gbc);
-		frame.setVisible(true);
-		frame.revalidate();
-		frame.repaint();
-		//Creates a new game
-        startButton.addActionListener(
-        (ActionEvent e)->{gui.makeGameFrame(); frame.dispose();;});
-        //Exits the game
-		 exitButton.addActionListener(
-			        (ActionEvent e)->{System.exit(0);;});
-		//Prints highscores
-		hsButton.addActionListener(
-		        (ActionEvent e)->{gui.writeHighScores();});
-		scoreButton.addActionListener(
-		        (ActionEvent e)->{String inputName = JOptionPane.showInputDialog("Please Enter a Name");client.addHighScore(inputName, score);});
+		gui.makeGameOverScreen(score);
 	}
 	public void update() {
 		if(player.getHitPoints() == 0) {
@@ -276,9 +227,9 @@ public class GameEngine extends JPanel implements Runnable{
 					double rangeMaxY = 0.1;
 					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
 					
-					ImageIcon imgI = new ImageIcon("space-wars/img/shot2.png");
+					ImageIcon imgI = new ImageIcon("img/shot2.png");
 					
-			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
+			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
 			 
 			 } 
 			 if(!bosses.isEmpty()) {
@@ -295,9 +246,9 @@ public class GameEngine extends JPanel implements Runnable{
 					double rangeMinY = -1;
 					double rangeMaxY = 1;
 					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
-				 ImageIcon imgI = new ImageIcon("space-wars/img/shot2.png");
+				 ImageIcon imgI = new ImageIcon("img/shot2.png");
 					
-				 addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
+				 addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getLenght()/2),dx,dy,"img/shot2.png",true);
 				 
 			 }
 			 }
