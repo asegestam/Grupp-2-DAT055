@@ -11,20 +11,20 @@ public class Projectiles extends Obj {
 	private int dmg;
 	private final String shot = "img/shot.png";
 	
-	public Projectiles(int x, int y, int dx, int dy, String img, boolean fientligt) {
-		super(x,y,dx,dy);
+	public Projectiles(double d, double e, double dx, double dy, String img, boolean fientligt) {
+		super(d,e,dx,dy);
 		//setVisible(false);
-		initShot(x,y,img);
+		initShot(d,e,img);
 		hostile = fientligt;
 	}
 	
-	public void initShot(int x, int y, String img) {
+	public void initShot(double d, double e, String img) {
 		ImageIcon imgI = new ImageIcon(img);
 		setWidth(imgI.getImage().getWidth(null));
 		setLenght(imgI.getImage().getHeight(null));
 		setImage(imgI.getImage());
-		setxPos(x + 120);
-		setyPos(y + 55);
+		setxPos(d + 120);
+		setyPos(e + 55);
 	}
 
 	public boolean isHostile() {

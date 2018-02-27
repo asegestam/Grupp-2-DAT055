@@ -3,133 +3,172 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 import java.util.Random;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.awt.*; 
-import java.awt.image.BufferedImage;
-import javax.swing.*;
 import static java.util.concurrent.TimeUnit.*;
 import controller.ActionHandler;
 import gui.Background;
+import gui.GUI;
+import server.Client;
 
+/**
+ * Generates the game
+ * 
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-02-27
+ */
 
 public class GameEngine extends JPanel implements Runnable{
 	
-	private Background backgroundOne;
+  private Background backgroundOne;
 	private Background backgroundTwo;
-	private BufferedImage back;
+  private BufferedImage back;
 	public ArrayList<Ship> activeObjects;
 	public ArrayList<Projectiles> projectiles;
 	public ArrayList<Rock> rocks;
 	private Player player;
 	private Ship enemy;
-	public Semaphore sem;
 	private Projectiles projectile;
 	private Thread gameloop;
 	private int score = 0;
-	private int playerX;
-	private int playerY;
-	
-	
-	public GameEngine() {
-		backgroundOne = new Background();
+	public boolean running;
+	private boolean backGroundvisible;
+	private GUI gui;
+	ScheduledThreadPoolExecutor eventPool;
+  
+	public GameEngine(GUI gui) {
+    backgroundOne = new Background();
 		backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
 		activeObjects = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
 		rocks = new ArrayList<Rock>();
-		Semaphore sem = new Semaphore();
-        setVisible(true);
-        setFocusable(true);
-        gameInit();
-        addKeyListener(new ActionHandler(player, this));
-        setDoubleBuffered(true);
+		backGroundvisible = true;
+		this.gui = gui;
+		eventPool = new ScheduledThreadPoolExecutor(5);
+		running = true;
+    setVisible(true);
+    setFocusable(true);
+    gameInit();
+    addKeyListener(new ActionHandler(player, this));
+    setDoubleBuffered(true);
 	}
-    @Override
-    public void addNotify() {
-        super.addNotify();
-    }
-    //Creates the player, enemies and starts the thread
+	/**
+	 * Creates the player and adds the threads for enemies and meteors
+	 * Starts the game thread
+	 */
 	public void gameInit() {
-	        player = new Player(0,0,0,0,3,"test");
+	        player = new Player(0,0,0,0,5,"test");
 	        addThreads();
 	        if(gameloop == null) {
 	        	gameloop = new Thread(this);
 	        	gameloop.start();
 	        }
 	 }
+	/**
+	 * Draws the scrolling background
+	 * @param g
+	 */
 	//Draw the background
 	public void drawBackground(Graphics g) {
         Graphics2D twoD = (Graphics2D)g;
- 
         if (back == null)
             back = (BufferedImage)(createImage(getWidth(), getHeight()));
- 
         // Create a buffer to draw to
         Graphics buffer = back.createGraphics();
- 
         // Put the two copies of the background image onto the buffer
         backgroundOne.draw(buffer);
         backgroundTwo.draw(buffer);
- 
         // Draw the image onto the window
-        twoD.drawImage(back, null, 0, 0);
+        if(backGroundvisible) {
+        	twoD.drawImage(back, null, 0, 0);	
+        }
  
     }
-	 //Draws the player
+	 /**
+	  * Draws the player
+	  * @param g
+	  */
 	 public void drawPlayer(Graphics g) {
-			g.drawImage(player.getImage(), player.getxPos(), player.getyPos(), this);
+		 if(player.isVisible()) {
+			 g.drawImage(player.getImage(),(int) player.getxPos(),(int) player.getyPos(), this); 
+			 }
 		 }
-	//Draws the enemies
+	/**
+	 * Draws all enemy objects in the array
+	 * @param g
+	 */
 	 public void drawEnemies(Graphics g) {
 		 for(Ship s : activeObjects) {
-			 Ship s2 = s.getShip();
-			 g.drawImage(s2.getImage(), s2.getxPos(),s2.getyPos(), this);
+			 Ship shot = s.getShip();
+			 if(shot.isVisible()) {
+				 g.drawImage(shot.getImage(), (int)shot.getxPos(),(int)shot.getyPos(), this);	 
+			 }
 		 }
 	 }
-	 //Draws the projectiles
+	 /**
+	  * Draws all the projectiles in the array
+	  * @param g
+	  */
 	 public void drawShot(Graphics g) {
 		 for(Projectiles p : projectiles) {
 			 Projectiles shot = p.getProjectile();
-			 g.drawImage(shot.getImage(), shot.getxPos(), shot.getyPos(), this);
+			 if(shot.isVisible()) {
+				 g.drawImage(shot.getImage(), (int) shot.getxPos(), (int) shot.getyPos(), this);
+			 }
 		 }
 	 }
-	 //Draws the projectiles
+	 /**
+	  * Draws all the rocks in the array
+	  * @param g
+	  */
 	 public void drawRocks(Graphics g) {
 		 for(Rock r : rocks) {
 			 Rock rock = r.getRock();
-			 g.drawImage(rock.getImage(), rock.getxPos(), rock.getyPos(), this);
+			 if(rock.isVisible()) {
+				 g.drawImage(rock.getImage(),(int) rock.getxPos(),(int) rock.getyPos(), this); 
+			 }
 		 }
 	 }
-	 //Paints the player,enemies, and the projectiles
+	/**
+	 * Paints all the game objects if the game is running
+	 */
 	 @Override
 	 public void paintComponent(Graphics g) {
 	        super.paintComponent(g);
-	        drawBackground(g);
-	        drawPlayer(g);
-	        drawEnemies(g);
-	        drawShot(g);  
-	        drawRocks(g);
+	        if(running) {
+	        	drawBackground(g);
+	        	drawPlayer(g);
+	        	drawEnemies(g);
+	        	drawShot(g);  
+	        	drawRocks(g);
+	        }
 	        Toolkit.getDefaultToolkit().sync();
 	        g.dispose();
 	 }
-	 //Used to add the projectiles to the array
-	 public synchronized void addProjectile(int x,int y,int dx, int dy,String img, boolean hostile) {
+	 /**
+	  * Creates a projectile object and adds it so a array
+	  * @param x position in x-axis
+	  * @param y position in y-axis
+	  * @param dx directional speed x-axis
+	  * @param dy directional speed y-axis
+	  * @param img the visual appearance
+	  * @param hostile if the projectile is a enemy projectile or player
+	  */
+  public synchronized void addProjectile(int x,int y,int dx, int dy,String img, boolean hostile) {
 		 projectile = new Projectiles(x,y,dx,dy,img,hostile);
 		 projectiles.add(projectile);	
 		}
 
-	//Updates and repaints the panel on a delay
+	/**
+	 * Updates the game on a short delay
+	 */
 	@Override
     public void run() {
-		int x = player.getxPos();
-		int y = player.getyPos();
         long beforeTime, timeDiff, sleep;
-        System.out.println("x: " + x + "y: " + y);
         beforeTime = System.currentTimeMillis();
-        while (true) {
+        while (running) {
             repaint();
             update();
             collisionDetection();
@@ -149,15 +188,26 @@ public class GameEngine extends JPanel implements Runnable{
             
         }
     }
-	public void update() {
-		
+	/**
+	 * Paints the gameover screen with buttons
+	 */
+	public void gameOver() {
+		//Shutdowns the threadpool
+		eventPool.shutdownNow();
+		gui.makeGameOverScreen(score);
+	}
+	/**
+	 * Updates the position of each object in the game
+	 */
+	public void update() {		
 		Iterator<Projectiles> shots = projectiles.iterator();
 		Iterator<Ship> enemies = activeObjects.iterator();
 		Iterator<Rock> obst = rocks.iterator();
+		if(player.getHitPoints() == 0) {
+			running = false;
+			gameOver();
+		}
 		player.move();
-		//Update the x and y position of the player for the projectiles
-		playerX = player.getxPos();
-		playerY = player.getyPos();
 		//For each projectile in the array, move it
 		while(shots.hasNext()) {
 			Projectiles shot = shots.next();
@@ -188,25 +238,42 @@ public class GameEngine extends JPanel implements Runnable{
 			}
 		}
 	}
-
-	
-	
 	//fiende skott
 	ActionListener fiende_skott = new ActionListener() {
 		 public void actionPerformed(ActionEvent evt) {
-             Iterator<Ship> enemy = activeObjects.iterator();
-             
-             while(enemy.hasNext()) {
-            	 Ship s = enemy.next();
-            	 
-            	 addProjectile(s.getxPos(),s.getyPos(),-2,0,"img/shot2.png",true);
-             }
+          int min = 0;
+          int max = activeObjects.size()-1;
+          int random = new Random().nextInt(max + 1 - min) + min;
+          Ship s = activeObjects.get(random);
+             	
+					Random rX = new Random();
+					double rangeMinX = -2.5;
+					double rangeMaxX = -1.5;
+					double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
+					
+					Random rY = new Random();
+					double rangeMinY = -0.1;
+					double rangeMaxY = 0.1;
+					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
+					
+					ImageIcon imgI = new ImageIcon("space-wars/img/shot.png");
+					
+			    addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
          }
 	};
-	
-	
-	Timer fiendeSottTimer = new Timer(1200,fiende_skott);
-
+		ActionListener fiende_Stuts = new ActionListener() {
+			 public void actionPerformed(ActionEvent evt) {
+				 for(int i = 0; i < activeObjects.size(); i++) {
+						Ship s = activeObjects.get(i);
+						s.moveEnemy();
+				 }
+	     }
+		};
+	Timer fiendeStuts =new Timer (1500,fiende_Stuts);
+	Timer fiendeSottTimer = new Timer(250,fiende_skott);
+	/**
+	 * Checks all objects for collision and removes them if true
+	 */
 public void collisionDetection() {
 		
 		Rectangle r1 = player.getBounds();
@@ -246,13 +313,14 @@ public void collisionDetection() {
 			if(r4.intersects(r1)) {
 				obst.setVisible(false);
 			}
-		}
-	}
+    }
+}
 
-	
+	/**
+	 * Checks if the game objects have gone past the game frame
+	 */
   public void outOfBound() {
-	  	Iterator<Projectiles> p = projectiles.iterator();
-	  	
+	  Iterator<Projectiles> p = projectiles.iterator();
 		//player
 		if(player.getxPos() < 0) {
 			player.setxPos(1);
@@ -271,24 +339,27 @@ public void collisionDetection() {
 		for(int i = 0; i < activeObjects.size(); i++) {
 			Ship s = activeObjects.get(i);
 			
-			if(s.getxPos() < 0) {
-				s.setxPos(1);
+			if(s.getxPos() < -s.getWidth()) {
+				activeObjects.remove(s);
 			}
-			else if(s.getxPos() >= 1280 - s.getWidth()) {
-				s.setxPos(1279 - s.getWidth());
+			else if(s.getxPos() >= 1280) {
+				s.setxPos(1279);
 			}
 			else if(s.getyPos() < 0) {
-				s.setyPos(1);
+				double speedy = s.getySpeed();
+				speedy = -speedy;
+				s.setySpeed(speedy);
 			}
 			else if(s.getyPos() >= 720 - s.getLenght()) {
-				s.setyPos(719 - s.getLenght());
+				double speedy = s.getySpeed();
+				speedy = -speedy;
+				s.setySpeed(speedy);
 			}
 		}
 		
 		//projectiles
 		while(p.hasNext()) {
 			Projectiles s = p.next();
-			
 			if(s.getxPos() < 0) {
 				p.remove();
 			}
@@ -297,18 +368,19 @@ public void collisionDetection() {
 			}
 			else if(s.getyPos() < 0) {
 				p.remove();
-			}
 			else if(s.getyPos() >= 720 - s.getLenght()) {
 				p.remove();
 			}
 		}
 	}
 	
-	//Used to add threads to a scheduled pool
+	/**
+	 * Adds threads to a eventpool
+	 */
 	private void addThreads() {
-		 ScheduledThreadPoolExecutor eventPool = new ScheduledThreadPoolExecutor(5);
+		 
 		 //Spawns enemy ships every x seconds
-		 eventPool.scheduleAtFixedRate(new ShipMaker(this), 0, 10, SECONDS);
+		 eventPool.scheduleAtFixedRate(new ShipMaker(this), 0, 700, MILLISECONDS);
 		 eventPool.scheduleAtFixedRate(new RockMaker(this), 0, 5, SECONDS);
 
 	}

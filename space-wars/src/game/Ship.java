@@ -5,20 +5,21 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 
 public class Ship extends Enemy {
-	private final String enemyImg = "img/enemy.png";
-	private int max = 220;
-	private int min = -230;
-
-	public Ship (int x, int y, int dx, int dy) {
+	private final String enemyImg = "space-wars/img/enemy.png";
+	private double max = 0.3;
+	private double min = -0.3;
+	public Ship (double x, double y, double dx, double dy) {
 		super(x,y,dx,dy);
 		initEnemy(x,y);
 	}
 	public void moveEnemy() {
-		int random = new Random().nextInt(max + 1 - min) + min;
-		this.setxSpeed(random/97);
-		this.setySpeed(random/97);
+		Random random = new Random();
+		
+		double dy = min + (max - min) * random.nextDouble();
+		this.setxSpeed(-1);
+		this.setySpeed(dy);
 	}
-	public void initEnemy(int x, int y) {
+	public void initEnemy(double x, double y) {
 		ImageIcon imgI = new ImageIcon(enemyImg);
 		setWidth(imgI.getImage().getWidth(null));
 		setLenght(imgI.getImage().getHeight(null));

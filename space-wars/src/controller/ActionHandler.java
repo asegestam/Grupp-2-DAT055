@@ -10,8 +10,9 @@ import game.Player;
 import game.Projectiles;
 
 public class ActionHandler implements ActionListener,KeyListener{
-	boolean leftKey = false,rightKey = false,upKey = false, downKey = false;
+	boolean leftKey = false,rightKey = false,upKey = false, downKey = false, spaceKey = false;
 	double speed;
+	double deltaSpeed = 2;
 	private Player player;
 	private Projectiles projectile;
 	private GameEngine game;
@@ -30,33 +31,34 @@ public class ActionHandler implements ActionListener,KeyListener{
 		if(c == KeyEvent.VK_LEFT && !leftKey)
 		{
 			speed = player.getxSpeed();
-			speed --;
+			speed -= deltaSpeed;
 			player.setxSpeed(speed);
 			leftKey = true;
 		}
 		if(c == KeyEvent.VK_RIGHT && !rightKey)
 		{
 			speed = player.getxSpeed();
-			speed ++;
+			speed += deltaSpeed;
 			player.setxSpeed(speed);
 			rightKey = true;
 		}
 		if(c == KeyEvent.VK_UP && !upKey)
 		{
 			speed = player.getySpeed();
-			speed --;
+			speed -= deltaSpeed;
 			player.setySpeed(speed);
 			upKey = true;
 		}
 		if(c == KeyEvent.VK_DOWN && !downKey)
 		{
 			speed = player.getySpeed();
-			speed ++;
+			speed += deltaSpeed;
 			player.setySpeed(speed);
 			downKey = true;
 		}	
-		if(c == KeyEvent.VK_SPACE) {
-			game.addProjectile(player.getxPos(),player.getyPos(),5,0,"img/Shot.png",false);
+		if(c == KeyEvent.VK_SPACE && !spaceKey) {
+			game.addProjectile(player.getxPos(),player.getyPos(),5,0,"space-wars/img/Shot.png",false);
+			spaceKey = true;
 		}	
 		
 	}
@@ -67,31 +69,34 @@ public class ActionHandler implements ActionListener,KeyListener{
 		if(c == KeyEvent.VK_LEFT && leftKey)
 		{
 			speed = player.getxSpeed();
-			speed ++;
+			speed += deltaSpeed;
 			player.setxSpeed(speed);
 			leftKey = false;
 		}
 		if(c == KeyEvent.VK_RIGHT && rightKey)
 		{
 			speed = player.getxSpeed();
-			speed --;
+			speed -= deltaSpeed;
 			player.setxSpeed(speed);
 			rightKey = false;
 		}
 		if(c == KeyEvent.VK_UP && upKey)
 		{
 			speed = player.getySpeed();
-			speed ++;
+			speed += deltaSpeed;
 			player.setySpeed(speed);
 			upKey = false;
 		}
 		if(c == KeyEvent.VK_DOWN && downKey)
 		{
 			speed = player.getySpeed();
-			speed --;
+			speed -= deltaSpeed;
 			player.setySpeed(speed);
 			downKey = false;
-} 
+		}
+		if(c == KeyEvent.VK_SPACE && spaceKey) {
+			spaceKey = false;
+		}
 		
 	}
 

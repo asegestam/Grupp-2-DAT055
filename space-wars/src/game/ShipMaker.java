@@ -1,5 +1,6 @@
 package game;
-
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 class ShipMaker implements Runnable{
 	private GameEngine game;
 	public ShipMaker(GameEngine game) {
@@ -8,10 +9,12 @@ class ShipMaker implements Runnable{
 
 	@Override
 	public void run() {
-		for(int j = 0; j < 6; j++) {
-    		Ship ship = new Ship(1000, (50 + 114 *j), 0 , 0);
+		Random r = new Random();
+		double min = 5;
+		double max = 700;
+		double random = min + (max - min) * r.nextDouble();
+    		Ship ship = new Ship(1850, random, 0 , 0);
         	game.activeObjects.add(ship);
-		}
-		System.out.println(game.activeObjects.size());
+        	ship.moveEnemy();
 	}
 }
