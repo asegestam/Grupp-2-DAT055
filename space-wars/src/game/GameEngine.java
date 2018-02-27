@@ -15,7 +15,7 @@ import server.Client;
 /**
  * Generates the game
  * 
- * @author Albin Segestam,≈ke Svensson, Markus Saarij‰rvi, Erik Tallbacka, Theo Haugen
+ * @author Albin Segestam,√Öke Svensson, Markus Saarij√§rvi, Erik Tallbacka, Theo Haugen
  * @version 2018-02-27
  */
 
@@ -223,10 +223,10 @@ public class GameEngine extends JPanel implements Runnable{
 	//fiende skott
 	ActionListener fiende_skott = new ActionListener() {
 		 public void actionPerformed(ActionEvent evt) {
-             int min = 0;
-             	int max = activeObjects.size()-1;
-             	int random = new Random().nextInt(max + 1 - min) + min;
-             	Ship s = activeObjects.get(random);
+          int min = 0;
+          int max = activeObjects.size()-1;
+          int random = new Random().nextInt(max + 1 - min) + min;
+          Ship s = activeObjects.get(random);
              	
 					Random rX = new Random();
 					double rangeMinX = -2.5;
@@ -238,22 +238,20 @@ public class GameEngine extends JPanel implements Runnable{
 					double rangeMaxY = 0.1;
 					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
 					
-					ImageIcon imgI = new ImageIcon("img/shot.png");
+					ImageIcon imgI = new ImageIcon("space-wars/img/shot.png");
 					
-			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
+			    addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
 			 
 			 
          }
 	};
-	
 		ActionListener fiende_Stuts = new ActionListener() {
 			 public void actionPerformed(ActionEvent evt) {
-	             
 				 for(int i = 0; i < activeObjects.size(); i++) {
 						Ship s = activeObjects.get(i);
 						s.moveEnemy();
 				 }
-	         }
+	     }
 		};
 	
 	Timer fiendeStuts =new Timer (1500,fiende_Stuts);

@@ -8,7 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Map;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -17,7 +17,7 @@ import server.Client;
 /**
  * Generates the game
  * 
- * @author Albin Segestam,≈ke Svensson, Markus Saarij‰rvi, Erik Tallbacka, Theo Haugen
+ * @author Albin Segestam,√Öke Svensson, Markus Saarij√§rvi, Erik Tallbacka, Theo Haugen
  * @version 2018-02-27
  */
 
@@ -169,12 +169,32 @@ public class GUI extends JFrame {
 		
 			return gameFrame;
 		}
+	private static Map<String, Integer> sortByValue(Map<String, Integer> highScores) {
+
+        //Convert Map to List of Map
+        List<Map.Entry<String, Integer>> list =
+                new LinkedList<Map.Entry<String, Integer>>(highScores.entrySet());
+
+        //Sort list with Collections.sort and create a custom Comparator
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2) {
+                return (o2.getValue()).compareTo(o1.getValue());
+            }
+        });
+
+        //Loop the sorted list and put it into a new insertion order Map LinkedHashMapss
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        return sortedMap;
+    }
 	
-	/**
-	 * Prints the score list
-	 */
 	public void writeHighScores() {
-		Map <String, Integer> map = client.getHighScore();
+		Client client = new Client("127.0.0.1", 8081);
+		Map <String, Integer> map = sortByValue(client.getHighScore());
 		String highScoreString = "";
 		for (Map.Entry<String, Integer> entry : map.entrySet())
 		{
