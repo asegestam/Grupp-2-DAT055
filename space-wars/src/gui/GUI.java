@@ -100,7 +100,7 @@ public class GUI extends JFrame {
         List<Map.Entry<String, Integer>> list =
                 new LinkedList<Map.Entry<String, Integer>>(highScores.entrySet());
 
-        //Sort list with Collections.sort() and create a custom Comparator
+        //Sort list with Collections.sort and create a custom Comparator
         Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
             public int compare(Map.Entry<String, Integer> o1,
                                Map.Entry<String, Integer> o2) {
