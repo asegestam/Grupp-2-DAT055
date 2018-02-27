@@ -108,7 +108,7 @@ public class GUI extends JFrame {
             }
         });
 
-        //Loop the sorted list and put it into a neww insertion order Map LinkedHashMap
+        //Loop the sorted list and put it into a new insertion order Map LinkedHashMap
         Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
         for (Map.Entry<String, Integer> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
