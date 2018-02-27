@@ -12,6 +12,7 @@ import static java.util.concurrent.TimeUnit.*;
 import controller.ActionHandler;
 import gui.Background;
 import gui.GUI;
+import server.Client;
 
 
 public class GameEngine extends JPanel implements Runnable{
@@ -29,6 +30,7 @@ public class GameEngine extends JPanel implements Runnable{
 	public boolean running;
 	private boolean backGroundvisible;
 	private GUI gui;
+	private Client client;
 	ScheduledThreadPoolExecutor eventPool;
 	
 	public GameEngine(GUI gui) {
@@ -38,6 +40,7 @@ public class GameEngine extends JPanel implements Runnable{
 		projectiles = new ArrayList<Projectiles>();
 		rocks = new ArrayList<Rock>();
 		backGroundvisible = true;
+		client = new Client("127.0.0.1", 8081);
 		this.gui = gui;
 		eventPool = new ScheduledThreadPoolExecutor(5);
 		running = true;
@@ -182,15 +185,19 @@ public class GameEngine extends JPanel implements Runnable{
 		JButton loadButton = new JButton("Load Game");
 		JButton exitButton = new JButton("Exit Game");
 		JButton hsButton = new JButton("HighScores");
+		JButton scoreButton = new JButton("Submit Score");
 
 		startButton.setPreferredSize(new Dimension(250,50));
 		loadButton.setPreferredSize(new Dimension(250,50));
 		exitButton.setPreferredSize(new Dimension(250,50));
 		hsButton.setPreferredSize(new Dimension(250,50));
+		scoreButton.setPreferredSize(new Dimension(250,50));
+		
 		frame.add(startButton,gbc);
 		frame.add(loadButton,gbc);
 		frame.add(exitButton,gbc);
 	    frame.add(hsButton,gbc);
+	    frame.add(scoreButton,gbc);
 		frame.setVisible(true);
 		frame.revalidate();
 		frame.repaint();
@@ -203,6 +210,8 @@ public class GameEngine extends JPanel implements Runnable{
 		//Prints highscores
 		hsButton.addActionListener(
 		        (ActionEvent e)->{gui.writeHighScores();});
+		scoreButton.addActionListener(
+		        (ActionEvent e)->{String inputName = JOptionPane.showInputDialog("Please Enter a Name");client.addHighScore(inputName, score);});
 	}
 	public void update() {
 		if(player.getHitPoints() == 0) {
@@ -249,7 +258,7 @@ public class GameEngine extends JPanel implements Runnable{
 					double rangeMaxY = 0.1;
 					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
 					
-					ImageIcon imgI = new ImageIcon("space-wars/img/shot.png");
+					ImageIcon imgI = new ImageIcon("img/shot.png");
 					
 			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
 			 
