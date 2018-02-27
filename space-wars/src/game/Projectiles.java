@@ -9,7 +9,7 @@ public class Projectiles extends Obj {
 	
 	private boolean hostile;
 	private int dmg;
-	private final String shot = "space-wars/img/shot.png";
+	private final String shot = "img/shot.png";
 	
 	public Projectiles(double d, double e, double dx, double dy, String img, boolean fientligt) {
 		super(d,e,dx,dy);

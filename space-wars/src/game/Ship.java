@@ -8,7 +8,6 @@ public class Ship extends Enemy {
 	private final String enemyImg = "space-wars/img/enemy.png";
 	private double max = 0.3;
 	private double min = -0.3;
-
 	public Ship (double x, double y, double dx, double dy) {
 		super(x,y,dx,dy);
 		initEnemy(x,y);
