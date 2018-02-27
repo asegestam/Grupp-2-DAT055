@@ -3,7 +3,7 @@ package game;
 import javax.swing.ImageIcon;
 
 public class Player extends Obj {
-	private final String playerImg = "space-wars/img/ship.png";
+	private final String playerImg = "img/ship.png";
 
 	private String name;
 
