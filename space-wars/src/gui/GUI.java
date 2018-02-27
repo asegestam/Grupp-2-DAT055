@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -10,10 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+
+import java.util.*;
 
 import game.GameEngine;
 import server.Client;
+
 
 public class GUI extends JFrame {
 	
@@ -146,14 +147,32 @@ public class GUI extends JFrame {
 				}
 			});
 	}
-	public JFrame getFrame() {
-		
-			return gameFrame;
-		}
-	
+
+	private static Map<String, Integer> sortByValue(Map<String, Integer> highScores) {
+
+        //Convert Map to List of Map
+        List<Map.Entry<String, Integer>> list =
+                new LinkedList<Map.Entry<String, Integer>>(highScores.entrySet());
+
+        //Sort list with Collections.sort and create a custom Comparator
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2) {
+                return (o2.getValue()).compareTo(o1.getValue());
+            }
+        });
+
+        //Loop the sorted list and put it into a new insertion order Map LinkedHashMapss
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        return sortedMap;
+}
 	
 	public void writeHighScores() {
-		Map <String, Integer> map = client.getHighScore();
+		Map <String, Integer> map = sortByValue(client.getHighScore());
 		String highScoreString = "";
 		for (Map.Entry<String, Integer> entry : map.entrySet())
 		{
@@ -164,5 +183,9 @@ public class GUI extends JFrame {
 			    highScoreString,
 			    "HighScores",
 			    JOptionPane.PLAIN_MESSAGE);
+	}
+	public JFrame getFrame() {
+		
+		return gameFrame;
 	}
 }

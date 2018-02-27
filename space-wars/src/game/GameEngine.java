@@ -13,7 +13,12 @@ import controller.ActionHandler;
 import gui.Background;
 import gui.GUI;
 import server.Client;
-
+/**
+ * Generates the game
+ * 
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-02-27
+ */
 
 public class GameEngine extends JPanel implements Runnable{
 	
@@ -52,11 +57,10 @@ public class GameEngine extends JPanel implements Runnable{
         addKeyListener(new ActionHandler(player, this));
         setDoubleBuffered(true);
 	}
-    @Override
-    public void addNotify() {
-        super.addNotify();
-    }
-    //Creates the player, enemies and starts the thread
+	/**
+	 * Creates the player and adds the threads for enemies and meteors
+	 * Starts the game thread
+	 */
 	public void gameInit() {
 	        player = new Player(0,0,0,0,5,"test");
 	        addThreads();
@@ -65,7 +69,10 @@ public class GameEngine extends JPanel implements Runnable{
 	        	gameloop.start();
 	        }
 	 }
-	//Draw the background
+	/**
+	 * Draws the scrolling background
+	 * @param g
+	 */
 	public void drawBackground(Graphics g) {
         Graphics2D twoD = (Graphics2D)g;
         if (back == null)
@@ -81,13 +88,19 @@ public class GameEngine extends JPanel implements Runnable{
         }
  
     }
-	 //Draws the player
+	 /**
+	  * Draws the player
+	  * @param g
+	  */
 	 public void drawPlayer(Graphics g) {
 		 if(player.isVisible()) {
 			 g.drawImage(player.getImage(),(int) player.getxPos(),(int) player.getyPos(), this); 
 			 }
 		 }
-	//Draws the enemies
+	 /**
+	  * Draws all the enemy ships in the array
+	  * @param g
+	  */
 	 public void drawEnemies(Graphics g) {
 		 for(Ship s : activeObjects) {
 			 Ship shot = s.getShip();
@@ -96,7 +109,10 @@ public class GameEngine extends JPanel implements Runnable{
 			 }
 		 }
 	 }
-	 //Draws Boss
+	 /**
+	  * Draws the boss objects in the array
+	  * @param g
+	  */
 	 public void drawBoss(Graphics g) {
 		 for(Boss b1 : bosses) {
 			 Boss b = b1.getBoss();
@@ -106,7 +122,10 @@ public class GameEngine extends JPanel implements Runnable{
 		 }
 	 }
 	 
-	 //Draws the projectiles
+	 /**
+	  * Draws all the projectiles in the array
+	  * @param g
+	  */
 	 public void drawShot(Graphics g) {
 		 for(Projectiles p : projectiles) {
 			 Projectiles shot = p.getProjectile();
@@ -115,7 +134,10 @@ public class GameEngine extends JPanel implements Runnable{
 			 }
 		 }
 	 }
-	 //Draws the projectiles
+	 /**
+	  * Draws all the rocks in the array
+	  * @param g
+	  */
 	 public void drawRocks(Graphics g) {
 		 for(Rock r : rocks) {
 			 Rock rock = r.getRock();
@@ -125,7 +147,10 @@ public class GameEngine extends JPanel implements Runnable{
 		 }
 	 }
 	
-	 //Paints the player,enemies, and the projectiles
+	/**
+	 * Paints all the game objects onto the panel
+	 * @param g
+	 */
 	 @Override
 	 public void paintComponent(Graphics g) {
 	        super.paintComponent(g);
@@ -140,13 +165,23 @@ public class GameEngine extends JPanel implements Runnable{
 	        Toolkit.getDefaultToolkit().sync();
 	        g.dispose();
 	 }
-	 //Used to add the projectiles to the array
-	 public void addProjectile(double d,double e,double dx, double dy,String img, boolean hostile) {
-		 projectile = new Projectiles(d,e,dx,dy,img,hostile);
+	 /**
+	  * Adds a projectile with given x,y,speed and image to the projectile array
+	  * @param x postion in x-axis
+	  * @param y position in y-axis
+	  * @param dx speed in x-axis
+	  * @param dy speed in y-axis
+	  * @param img image for the design
+	  * @param hostile if the projectile is harmful for the player
+	  */
+	 public void addProjectile(double x,double y,double dx, double dy,String img, boolean hostile) {
+		 projectile = new Projectiles(x,y,dx,dy,img,hostile);
 		 projectiles.add(projectile);	
 		}
 
-	//Updates and repaints the panel on a delay
+	/**
+	 * Updates the game based on timer sleep
+	 */
 	@Override
     public void run() {
         long beforeTime, timeDiff, sleep;
@@ -171,12 +206,18 @@ public class GameEngine extends JPanel implements Runnable{
             
         }
     }
-	//Removes all objects and creates a game over screen
+	/**
+	 * Stops the background threads and calls for a game over screen
+	 * @see GUI
+	 */
 	public void gameOver() {
 		//Shutdowns the threadpool
 		eventPool.shutdownNow();
 		gui.makeGameOverScreen(score);
 	}
+	/**
+	 * Updates the game state.
+	 */
 	public void update() {
 		if(player.getHitPoints() == 0) {
 			running = false;
@@ -217,82 +258,77 @@ public class GameEngine extends JPanel implements Runnable{
              	int random = new Random().nextInt(max + 1 - min) + min;
              	Ship s = activeObjects.get(random);
              	
-					Random rX = new Random();
-					double rangeMinX = -2.5;
-					double rangeMaxX = -1.5;
-					double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
+             	Random rX = new Random();
+				double rangeMinX = -2.5;
+				double rangeMaxX = -1.5;
+				double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
 					
-					Random rY = new Random();
-					double rangeMinY = -0.1;
-					double rangeMaxY = 0.1;
-					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
+				Random rY = new Random();
+				double rangeMinY = -0.1;
+				double rangeMaxY = 0.1;
+				double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
 					
-					ImageIcon imgI = new ImageIcon("img/shot2.png");
-					
-			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
+				ImageIcon imgI = new ImageIcon("img/shot2.png");
+				addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
 			 
 			 } 
 			 if(!bosses.isEmpty()) {
 				 for(Boss b1 : bosses) {
 					 Boss s = b1.getBoss();
-				 
-				 
-				 Random rX = new Random();
-					double rangeMinX = -2.5;
-					double rangeMaxX = -1.5;
-					double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
+					 Random rX = new Random();
+					 double rangeMinX = -2.5;
+					 double rangeMaxX = -1.5;
+					 double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
 					
-					Random rY = new Random();
-					double rangeMinY = -1;
-					double rangeMaxY = 1;
-					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
-				 ImageIcon imgI = new ImageIcon("img/shot2.png");
+					 Random rY = new Random();
+					 double rangeMinY = -1;
+					 double rangeMaxY = 1;
+					 double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
+				     ImageIcon imgI = new ImageIcon("img/shot2.png");
 					
-				 addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getLenght()/2),dx,dy,"img/shot2.png",true);
+				     addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getLenght()/2),dx,dy,"img/shot2.png",true);
 				 
-			 }
+			     }
 			 }
          }
 	};
 	
-	//fiende studs
-		ActionListener fiende_Stuts = new ActionListener() {
-			 public void actionPerformed(ActionEvent evt) {
-	             
-				 for(int i = 0; i < activeObjects.size(); i++) {
-						Ship s = activeObjects.get(i);
-						s.moveEnemy();
-				 }
-	         }
-		};
+	ActionListener enemy_bounce = new ActionListener() {
+	    public void actionPerformed(ActionEvent evt) {
+		    for(int i = 0; i < activeObjects.size(); i++) {
+			    Ship s = activeObjects.get(i);
+				s.moveEnemy();
+			}
+	    }
+	};
 	
-	Timer fiendeStuts =new Timer (1500,fiende_Stuts);
-	Timer fiendeSottTimer = new Timer(250,fiende_skott);
-	
+	Timer fiendeStuts =new Timer (1500,enemy_bounce);
+	Timer fiendeSottTimer = new Timer(500,fiende_skott);
+	/**
+	 * Checks for collision between player,projectiles,ships and bosses
+	 */
 	public void collisionDetection() {
 		if(!projectiles.isEmpty()) {
 			for(int j = 0; j < projectiles.size(); j ++) {
 				Projectiles p = projectiles.get(j);
 				if (p.isHostile() == false) {
 					if(!activeObjects.isEmpty()) {
-					for(int i = 0; i < activeObjects.size(); i++) {
-						Ship s = activeObjects.get(i);
-						//enemy and projectile
-						if(enemyHit(p,s)) {
+					    for(int i = 0; i < activeObjects.size(); i++) {
+						    Ship s = activeObjects.get(i);
+						    //enemy and projectile
+						    if(enemyHit(p,s)) {
 							score += 10;
 							System.out.println("Score " + score);
 							activeObjects.remove(s);
 							projectiles.remove(p);
 							break;
-						}
-					}
+						    }
+					    }
 					}
 					if(!bosses.isEmpty()) {
 						for(Boss b1 : bosses) {
-							 Boss b = b1.getBoss();
-						
-						//boss and projectile
-						if(bossHit(p,b)) {
+						    Boss b = b1.getBoss();
+						    if(bossHit(p,b)) {
 							score += 10;
 							System.out.println("Score " + score);
 							projectiles.remove(p);
@@ -300,15 +336,15 @@ public class GameEngine extends JPanel implements Runnable{
 							hp--;
 							b.setHitPoints(hp);
 							System.out.println(hp);
-							if(b.getHitPoints() == 0) {
+								if(b.getHitPoints() == 0) {
 								b.setBossAlive(false);
 								b.setVisible(false);
 								bosses.remove(b);
-							}
+								}
 							break;
+						   }
 						}
-						}
-						}
+					}
 				}
 				//player and projectile
 				else if(playerHit(p,player)) {
@@ -345,9 +381,11 @@ public class GameEngine extends JPanel implements Runnable{
 		}
 		return false;
 	}
-	
-	
-  public void outOfBound() {
+	/**
+	 * Deletes projectiles and ships that are beyond the game frame
+	 * Keeps the player inside the game frame
+	 */
+	public void outOfBound() {
 		//player
 		if(player.getxPos() < 0) {
 			player.setxPos(1);
@@ -428,7 +466,9 @@ public class GameEngine extends JPanel implements Runnable{
 		}
 	}
 	
-	//Used to add threads to a scheduled pool
+	/**
+	 * Adds the ShipMaker and RockMaker threads to a eventpool
+	 */
 	private void addThreads() {
 		 
 		 //Spawns enemy ships every x seconds
