@@ -102,9 +102,5 @@ public class Obj {
 		this.yPos += ySpeed;
 		
 	}
-	
-	public Rectangle getBounds() {
-		return new Rectangle(xPos,yPos,width,lenght);
-	}
 
 }

@@ -1,9 +1,14 @@
 package server;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.HashMap;
 
 
 public class Server extends Thread{
@@ -97,6 +102,7 @@ public class Server extends Thread{
 	    private static HashMap<String, Integer> getHighScores(){
 	    	
 	    		return highScores;
+	    		
 	    }
 	    
 	    public void addCrapToTheMap() {
