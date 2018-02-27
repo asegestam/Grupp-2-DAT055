@@ -28,6 +28,7 @@ public class GameEngine extends JPanel implements Runnable{
 	public ArrayList<Ship> activeObjects;
 	public ArrayList<Projectiles> projectiles;
 	public ArrayList<Rock> rocks;
+	public ArrayList<Boss> bosses;
 	private Player player;
 	private Ship enemy;
 	private Projectiles projectile;
@@ -44,6 +45,7 @@ public class GameEngine extends JPanel implements Runnable{
 		activeObjects = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
 		rocks = new ArrayList<Rock>();
+		bosses = new ArrayList<Boss>();
 		backGroundvisible = true;
 		this.gui = gui;
 		eventPool = new ScheduledThreadPoolExecutor(5);
@@ -107,6 +109,15 @@ public class GameEngine extends JPanel implements Runnable{
 			 }
 		 }
 	 }
+	 //Draws Boss
+	 public void drawBoss(Graphics g) {
+		 for(Boss b1 : bosses) {
+			 Boss b = b1.getBoss();
+			 if(b.isVisible()) {
+				 g.drawImage(b.getImage(), (int)b.getxPos(), (int)b.getyPos(), this);
+			 }
+		 }
+	 }
 	 /**
 	  * Draws all the projectiles in the array
 	  * @param g
@@ -143,6 +154,7 @@ public class GameEngine extends JPanel implements Runnable{
 	        	drawEnemies(g);
 	        	drawShot(g);  
 	        	drawRocks(g);
+	        	drawBoss(g);
 	        }
 	        Toolkit.getDefaultToolkit().sync();
 	        g.dispose();
@@ -237,10 +249,20 @@ public class GameEngine extends JPanel implements Runnable{
 				obst.remove();
 			}
 		}
+		
+		for(Boss b : bosses) {
+			 Boss b2 = b.getBoss();
+			 b2.move();
+		}
 	}
 	//fiende skott
 	ActionListener fiende_skott = new ActionListener() {
 		 public void actionPerformed(ActionEvent evt) {
+			 if(!activeObjects.isEmpty()) {
+          int min = 0;
+          int max = activeObjects.size()-1;
+          int random = new Random().nextInt(max + 1 - min) + min;
+          Ship s = activeObjects.get(random);
           int min = 0;
           int max = activeObjects.size()-1;
           int random = new Random().nextInt(max + 1 - min) + min;
@@ -255,11 +277,32 @@ public class GameEngine extends JPanel implements Runnable{
 					double rangeMinY = -0.1;
 					double rangeMaxY = 0.1;
 					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
-					
-					ImageIcon imgI = new ImageIcon("space-wars/img/shot.png");
+					ImageIcon imgI = new ImageIcon("space-wars/img/shot2.png");
 					
 			    addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
-         }
+			 
+			 } 
+			 if(!bosses.isEmpty()) {
+				 for(Boss b1 : bosses) {
+					 Boss s = b1.getBoss();
+				 
+				 
+				 Random rX = new Random();
+					double rangeMinX = -2.5;
+					double rangeMaxX = -1.5;
+					double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
+					
+					Random rY = new Random();
+					double rangeMinY = -1;
+					double rangeMaxY = 1;
+					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
+				 ImageIcon imgI = new ImageIcon("space-wars/img/shot2.png");
+					
+				 addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
+				 
+			       }
+			   }
+      }
 	};
 		ActionListener fiende_Stuts = new ActionListener() {
 			 public void actionPerformed(ActionEvent evt) {
@@ -293,7 +336,7 @@ public void collisionDetection() {
 			if(p.isHostile()) {
 				if(r1.intersects(r3)) {
 					p.setVisible(false);
-					System.out.println("ouch!");
+					System.out.println("ouch");
 				}
 			}
 				for(Ship enemy: activeObjects) {
@@ -305,17 +348,36 @@ public void collisionDetection() {
 					}
 				}
 			}
+      for(Boss b1 : bosses) {
+              Rectangle r5 = b1.get.getBounds();
+              		if(r5.intersects(r3)) {
+                    b1.setVisible(false);
+                    score += 10;
+							      System.out.println("Score " + score);
+							projectiles.remove(p);
+							int hp = b.getHitPoints();
+							hp--;
+							b.setHitPoints(hp);
+							System.out.println(hp);
+							if(b.getHitPoints() == 0) {
+								b.setBossAlive(false);
+								b.setVisible(false);
+								bosses.remove(b);
+							}
+							break;
+                  }
+            }
 		}
-		
-		for(Rock obst: rocks) {
+for(Rock obst: rocks) {
 			Rectangle r4 = obst.getBounds();
-			
 			if(r4.intersects(r1)) {
 				obst.setVisible(false);
 			}
     }
-}
 
+	public int getScore() {
+		return score;
+	}
 	/**
 	 * Checks if the game objects have gone past the game frame
 	 */
@@ -354,6 +416,31 @@ public void collisionDetection() {
 				double speedy = s.getySpeed();
 				speedy = -speedy;
 				s.setySpeed(speedy);
+			}
+		}
+		//boss
+		if(!bosses.isEmpty()) {
+			for(Boss b1 : bosses) {
+				 Boss b = b1.getBoss();
+		
+		if(b.getxPos() <= 800) {
+			b.setxPos(800);
+		}
+		 if(b.getxPos() >= 1501 + b.getWidth()) {
+			b.setxPos(1500 + b.getWidth());
+		}
+		 if(b.getyPos() <= 0) {
+			double speedy = b.getySpeed();
+			speedy = -speedy;
+			b.setySpeed(speedy);
+			b.setyPos(0);
+		}
+		 if(b.getyPos() >= 720 - b.getLenght()) {
+			double speedy = b.getySpeed();
+			speedy = -speedy;
+			b.setySpeed(speedy);
+			b.setyPos(720 - b.getLenght());
+		}
 			}
 		}
 		
