@@ -239,7 +239,7 @@ public class GameEngine extends JPanel implements Runnable{
 
 	
 
-	//fiende skott
+	//fiendeskott
 	ActionListener fiende_skott = new ActionListener() {
 		 public void actionPerformed(ActionEvent evt) {
 			 
@@ -258,15 +258,15 @@ public class GameEngine extends JPanel implements Runnable{
 					double rangeMaxY = 0.1;
 					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
 					
-					ImageIcon imgI = new ImageIcon("img/shot.png");
+					ImageIcon imgI = new ImageIcon("space-wars/img/shot.png");
 					
-			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
+			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
 			 
 			 
          }
 	};
 	
-	//fiende skott
+	//fiendeskott
 		ActionListener fiende_Stuts = new ActionListener() {
 			 public void actionPerformed(ActionEvent evt) {
 	             
