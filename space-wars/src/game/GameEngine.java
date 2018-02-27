@@ -98,11 +98,11 @@ public class GameEngine extends JPanel implements Runnable{
 	 }
 	 //Draws Boss
 	 public void drawBoss(Graphics g) {
-
-			 Boss b = bosses.get(0);
+		 for(Boss b1 : bosses) {
+			 Boss b = b1.getBoss();
 			 if(b.isVisible()) {
 				 g.drawImage(b.getImage(), (int)b.getxPos(), (int)b.getyPos(), this);
-			 
+			 }
 		 }
 	 }
 	 
@@ -260,7 +260,7 @@ public class GameEngine extends JPanel implements Runnable{
 	//fiende skott
 	ActionListener fiende_skott = new ActionListener() {
 		 public void actionPerformed(ActionEvent evt) {
-			 
+			 if(!activeObjects.isEmpty()) {
              	int min = 0;
              	int max = activeObjects.size()-1;
              	int random = new Random().nextInt(max + 1 - min) + min;
@@ -280,11 +280,31 @@ public class GameEngine extends JPanel implements Runnable{
 					
 			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
 			 
-			 
+			 } 
+			 if(!bosses.isEmpty()) {
+				 for(Boss b1 : bosses) {
+					 Boss s = b1.getBoss();
+				 
+				 
+				 Random rX = new Random();
+					double rangeMinX = -2.5;
+					double rangeMaxX = -1.5;
+					double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
+					
+					Random rY = new Random();
+					double rangeMinY = -1;
+					double rangeMaxY = 1;
+					double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
+				 ImageIcon imgI = new ImageIcon("space-wars/img/shot2.png");
+					
+				 addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
+				 
+			 }
+			 }
          }
 	};
 	
-	//fiende skott
+	//fiende studs
 		ActionListener fiende_Stuts = new ActionListener() {
 			 public void actionPerformed(ActionEvent evt) {
 	             
@@ -299,10 +319,11 @@ public class GameEngine extends JPanel implements Runnable{
 	Timer fiendeSottTimer = new Timer(250,fiende_skott);
 	
 	public void collisionDetection() {
-		if(!activeObjects.isEmpty() && !projectiles.isEmpty()) {
+		if(!projectiles.isEmpty()) {
 			for(int j = 0; j < projectiles.size(); j ++) {
 				Projectiles p = projectiles.get(j);
 				if (p.isHostile() == false) {
+					if(!activeObjects.isEmpty()) {
 					for(int i = 0; i < activeObjects.size(); i++) {
 						Ship s = activeObjects.get(i);
 						//enemy and projectile
@@ -313,8 +334,12 @@ public class GameEngine extends JPanel implements Runnable{
 							projectiles.remove(p);
 							break;
 						}
-						if(!bosses.isEmpty()) {
-						Boss b = bosses.get(0);
+					}
+					}
+					if(!bosses.isEmpty()) {
+						for(Boss b1 : bosses) {
+							 Boss b = b1.getBoss();
+						
 						//boss and projectile
 						if(bossHit(p,b)) {
 							score += 10;
@@ -326,12 +351,13 @@ public class GameEngine extends JPanel implements Runnable{
 							System.out.println(hp);
 							if(b.getHitPoints() == 0) {
 								b.setBossAlive(false);
+								b.setVisible(false);
 								bosses.remove(b);
 							}
 							break;
 						}
 						}
-					}
+						}
 				}
 				//player and projectile
 				else if(playerHit(p,player)) {
@@ -368,6 +394,7 @@ public class GameEngine extends JPanel implements Runnable{
 		}
 		return false;
 	}
+	
 	
   public void outOfBound() {
 		//player
@@ -407,7 +434,8 @@ public class GameEngine extends JPanel implements Runnable{
 		}
 		//boss
 		if(!bosses.isEmpty()) {
-		Boss b = bosses.get(0);
+			for(Boss b1 : bosses) {
+				 Boss b = b1.getBoss();
 		
 		if(b.getxPos() <= 800) {
 			b.setxPos(800);
@@ -427,6 +455,7 @@ public class GameEngine extends JPanel implements Runnable{
 			b.setySpeed(speedy);
 			b.setyPos(720 - b.getLenght());
 		}
+			}
 		}
 		
 		//projectiles
