@@ -1,8 +1,10 @@
 package game;
 import java.awt.*;
-import javax.imageio.*;
+import java.io.Serializable;
 
-public class Obj {
+public class Obj implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	//Instansvariabler
 	private double xPos;
@@ -12,7 +14,7 @@ public class Obj {
 	private int hitPoints;
 	private int width;
 	private int lenght;
-	private Image image;
+	transient private Image image;
 	private boolean visible;
 
 	public Obj(double x, double y, double dx, double dy) {

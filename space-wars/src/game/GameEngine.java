@@ -3,6 +3,12 @@ import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import javax.swing.*;
 import java.util.Random;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -10,16 +16,25 @@ import static java.util.concurrent.TimeUnit.*;
 import controller.ActionHandler;
 import gui.Background;
 import gui.GUI;
-import server.Client;
 
 /**
  * Generates the game
  * 
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Albin Segestam,ï¿½ke Svensson, Markus Saarijï¿½rvi, Erik Tallbacka, Theo Haugen
  * @version 2018-02-27
  */
 
-public class GameEngine extends JPanel implements Runnable{
+public class GameEngine extends JPanel implements Runnable {
+	
+	private static class State implements Serializable {
+		public ArrayList<Ship> activeObjects;
+		public ArrayList<Projectiles> projectiles;
+		public ArrayList<Rock> rocks;
+		private Player player;
+		private double xPos;
+		private double yPos;
+		private int score;
+	}
 	
     private Background backgroundOne;
 	private Background backgroundTwo;
@@ -35,6 +50,7 @@ public class GameEngine extends JPanel implements Runnable{
 	private boolean backGroundvisible;
 	private GUI gui;
 	ScheduledThreadPoolExecutor eventPool;
+	private State state = new State();
 	
 	public GameEngine(GUI gui) {
         backgroundOne = new Background();
@@ -240,7 +256,7 @@ public class GameEngine extends JPanel implements Runnable{
 					
 					ImageIcon imgI = new ImageIcon("img/shot.png");
 					
-			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
+			 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"space-wars/img/shot2.png",true);
 			 
 			 
          }
@@ -381,12 +397,67 @@ public class GameEngine extends JPanel implements Runnable{
 		 eventPool.scheduleAtFixedRate(new RockMaker(this), 0, 5, SECONDS);
 
 	}
-
-	public void newGame(String name) {
-
+	
+	public void save(String fileName) {
+		
+		state.activeObjects = activeObjects;
+		state.projectiles = projectiles;
+		state.rocks = rocks;
+		state.player = player;
+		state.xPos = player.getxPos();
+		state.yPos = player.getyPos();
+		state.score = score;
+		
+		try {
+			ObjectOutputStream out = 
+					new ObjectOutputStream(
+							new FileOutputStream(fileName));
+			
+			out.writeObject(state);
+			out.close();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void loadGame(String fileName) {
+		try {
+			ObjectInputStream in = 
+					new ObjectInputStream(
+							new FileInputStream(fileName));
+			
+			state = (State) in.readObject();
+			in.close();
+			
+			activeObjects = state.activeObjects;
+			projectiles = state.projectiles;
+			rocks = state.rocks;
+			player = state.player;
+			player.setxPos(state.xPos);
+			player.setyPos(state.yPos);
+			score = state.score;
+			
+			player.setPlayerImage();
+			addKeyListener(new ActionHandler(player, this));
+			
+			for(Ship s : activeObjects) {
+				s.setShipImage();
+			}
+			for(Projectiles p : projectiles) {
+				p.setProjectilesImage();
+			}
+			for(Rock r : rocks) {
+				r.setRockImage();
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	public void loadGame(String file) {
+	public void newGame(String name) {
 
 	}
 

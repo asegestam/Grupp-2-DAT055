@@ -17,7 +17,7 @@ import server.Client;
 /**
  * Generates the game
  * 
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Albin Segestam,ï¿½ke Svensson, Markus Saarijï¿½rvi, Erik Tallbacka, Theo Haugen
  * @version 2018-02-27
  */
 
@@ -26,10 +26,12 @@ public class GUI extends JFrame {
 	private final static String WINDOW_TITLE = "Space-Wars";
 	JFrame gameFrame;
 	private Client client;
+	private GameEngine game;
 	
 	public GUI() {
 		super(WINDOW_TITLE);
 		client = new Client("127.0.0.1", 8081);
+		game = new GameEngine(this);
 		makeStartMenu();
 	}
 	/**
@@ -72,7 +74,7 @@ public class GUI extends JFrame {
 	public void makeGameFrame() {
 		gameFrame =  new JFrame("Space-Wars");
 		makeMenu(gameFrame);
-		gameFrame.add(new GameEngine(this));
+		gameFrame.add(game);
 		gameFrame.pack();
 		gameFrame.setSize(1280, 720);
 		gameFrame.setResizable(false);
@@ -109,6 +111,17 @@ public class GUI extends JFrame {
 					writeHighScores();
 				}
 			});
+		//Game menu
+		menu = new JMenu("Save/Load");
+		menuBar.add(menu);
+		menuItem = new JMenuItem("Save Game");
+		menu.add(menuItem);
+		frame.setJMenuBar(menuBar);
+		menuItem.addActionListener((ActionEvent e)->{String input = JOptionPane.showInputDialog("Provide file name"); game.save(input);});
+		menuItem = new JMenuItem("Load Game");
+		menu.add(menuItem);
+		frame.setJMenuBar(menuBar);
+		menuItem.addActionListener((ActionEvent e)->{String input = JOptionPane.showInputDialog("Provide file name"); game.loadGame(input);});
 	}
 	/**
 	 * Draws the game over screen with buttons and score
