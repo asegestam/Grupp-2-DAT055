@@ -1,5 +1,7 @@
 package game;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -103,10 +105,11 @@ public class GameEngine extends JPanel implements Runnable{
 	  * @param g
 	  */
 	 public void drawEnemies(Graphics g) {
-		 for(Ship s : activeShips) {
-			 Ship shot = s.getShip();
-			 if(shot.isVisible()) {
-				 g.drawImage(shot.getImage(), (int)shot.getxPos(),(int)shot.getyPos(), this);	 
+		 Iterator<Ship> iter = activeShips.iterator();
+		 while(iter.hasNext()) {
+			 Ship ship = iter.next().getShip();
+			 if(ship.isVisible()) {
+				 g.drawImage(ship.getImage(), (int) ship.getxPos(), (int) ship.getyPos(), this);
 			 }
 		 }
 	 }
@@ -115,10 +118,11 @@ public class GameEngine extends JPanel implements Runnable{
 	  * @param g
 	  */
 	 public void drawBoss(Graphics g) {
-		 for(Boss b1 : bosses) {
-			 Boss b = b1.getBoss();
-			 if(b.isVisible()) {
-				 g.drawImage(b.getImage(), (int)b.getxPos(), (int)b.getyPos(), this);
+		 Iterator<Boss> iter = bosses.iterator();
+		 while(iter.hasNext()) {
+			 Boss boss = iter.next().getBoss();
+			 if(boss.isVisible()) {
+				 g.drawImage(boss.getImage(), (int) boss.getxPos(), (int) boss.getyPos(), this);
 			 }
 		 }
 	 }
@@ -128,8 +132,9 @@ public class GameEngine extends JPanel implements Runnable{
 	  * @param g
 	  */
 	 public void drawShot(Graphics g) {
-		 for(Projectiles p : projectiles) {
-			 Projectiles shot = p.getProjectile();
+		 Iterator<Projectiles> iter = projectiles.iterator();
+		 while(iter.hasNext()) {
+			 Projectiles shot = iter.next().getProjectile();
 			 if(shot.isVisible()) {
 				 g.drawImage(shot.getImage(), (int) shot.getxPos(), (int) shot.getyPos(), this);
 			 }
@@ -140,10 +145,11 @@ public class GameEngine extends JPanel implements Runnable{
 	  * @param g
 	  */
 	 public void drawRocks(Graphics g) {
-		 for(Meteor r : meteors) {
-			 Meteor rock = r.getMeteor();
-			 if(rock.isVisible()) {
-				 g.drawImage(rock.getImage(),(int) rock.getxPos(),(int) rock.getyPos(), this); 
+		 Iterator<Meteor> iter = meteors.iterator();
+		 while(iter.hasNext()) {
+			 Meteor meteor = iter.next().getMeteor();
+			 if(meteor.isVisible()) {
+				 g.drawImage(meteor.getImage(), (int) meteor.getxPos(), (int) meteor.getyPos(), this);
 			 }
 		 }
 	 }
@@ -226,26 +232,29 @@ public class GameEngine extends JPanel implements Runnable{
 		}
 		player.move();
 		//For each projectile in the array, move it
-		for(Projectiles p : projectiles) {
-			 Projectiles shot = p.getProjectile();
-			 shot.move();
+		Iterator<Projectiles> projIter = projectiles.iterator();
+		while(projIter.hasNext()) {
+			Projectiles shot = projIter.next().getProjectile();
+			shot.move();
 		}
 		//For each enemy ship, move it
-		for(Ship s : activeShips) {
-			 Ship s2 = s.getShip();
-			 s2.move();
-			 
-		}
-		//For each enemy ship, move it
-		for(Meteor r : meteors) {
-			 Meteor r2 = r.getMeteor();
-			 r2.move();
-		}
-		
-		for(Boss b : bosses) {
-			 Boss b2 = b.getBoss();
-			 b2.move();
-		}
+		Iterator<Ship> shipIter = activeShips.iterator();
+		 while(shipIter.hasNext()) {
+			 Ship ship = shipIter.next().getShip();
+			 ship.move();
+		 }
+		 
+		 Iterator<Meteor> metIter = meteors.iterator();
+		 while(metIter.hasNext()) {
+			 Meteor meteor = metIter.next().getMeteor();
+			 meteor.move();
+		 }
+		 
+		 Iterator<Boss> bossIter = bosses.iterator();
+		 while(bossIter.hasNext()) {
+			Boss boss = bossIter.next().getBoss();
+			boss.move();
+		 }
 	}
 
 	
