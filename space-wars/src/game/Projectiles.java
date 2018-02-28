@@ -36,7 +36,7 @@ public class Projectiles extends Obj {
 		setWidth(imgI.getImage().getWidth(null));
 		setLenght(imgI.getImage().getHeight(null));
 		setImage(imgI.getImage());
-		setxPos(y + 120);
+		setxPos(x + 120);
 		setyPos(y + 55);
 	}
 	/**

@@ -85,7 +85,7 @@ public class Server extends Thread{
 	                ex.printStackTrace();
 	            }
 	        }
-	    }
+		}
 	    
 	    private static void add(String user, int score) {
 	    	

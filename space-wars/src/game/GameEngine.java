@@ -141,7 +141,7 @@ public class GameEngine extends JPanel implements Runnable{
 	  */
 	 public void drawRocks(Graphics g) {
 		 for(Meteor r : meteors) {
-			 Meteor rock = r.getRock();
+			 Meteor rock = r.getMeteor();
 			 if(rock.isVisible()) {
 				 g.drawImage(rock.getImage(),(int) rock.getxPos(),(int) rock.getyPos(), this); 
 			 }
@@ -238,7 +238,7 @@ public class GameEngine extends JPanel implements Runnable{
 		}
 		//For each enemy ship, move it
 		for(Meteor r : meteors) {
-			 Meteor r2 = r.getRock();
+			 Meteor r2 = r.getMeteor();
 			 r2.move();
 		}
 		
@@ -304,7 +304,7 @@ public class GameEngine extends JPanel implements Runnable{
 	};
 	
 	Timer fiendeStuts =new Timer (1500,enemy_bounce);
-	Timer fiendeSottTimer = new Timer(500,fiende_skott);
+	Timer fiendeSottTimer = new Timer(350,fiende_skott);
 	/**
 	 * Checks for collision between player,projectiles,ships and bosses
 	 */

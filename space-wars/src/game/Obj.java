@@ -1,6 +1,5 @@
 package game;
 import java.awt.*;
-import javax.imageio.*;
 
 public class Obj {
 	private double xPos;
@@ -14,11 +13,8 @@ public class Obj {
 	private boolean visible;
 
 	public Obj(double x, double y, double dx, double dy) {
-		setxPos(x);
-		setyPos(y);
-		setxSpeed(dx);
-		setySpeed(dy);
 		this.yPos = y;
+		this.xPos = x;
 		this.xSpeed = dx;
 		this.ySpeed = dy;
 		visible = true;

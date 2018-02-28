@@ -36,7 +36,7 @@ public class Meteor extends Obj{
 	 * Returns a rock object for use in other classes
 	 * @return Rock
 	 */
-	public Meteor getRock() {
+	public Meteor getMeteor() {
 		return this;
 	}
 
