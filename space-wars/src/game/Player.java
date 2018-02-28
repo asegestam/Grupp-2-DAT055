@@ -1,27 +1,33 @@
 package game;
 
 import javax.swing.ImageIcon;
-
+/**
+ * Used to iniate a player object with HP,X and Y positions
+ * @author Albin Segestam
+ *
+ */
 public class Player extends Obj {
-	private final String playerImg = "space-wars/img/ship.png";
-
-	private String name;
-
-	public Player(int x, int y, int dx, int dy,int hp, String name) {
+	private final String playerImg = "img/ship.png";
+    /**
+     * Sets initial X and Y positions, speed, and hp
+     * @param x position x-axis
+     * @param y position y-axis
+     * @param dx speed x-axis
+     * @param dy speed y-axis
+     * @param hp health points
+     */
+	public Player(int x, int y, int dx, int dy,int hp) {
 		super(x,y,dx,dy);
 		setHitPoints(hp);
-		this.name = name;
 		initPlayer();
 	}
+	/**
+	 * Sets an image as the player graphics
+	 */
 	public void initPlayer() {
 		ImageIcon imgI = new ImageIcon(playerImg);
 		setWidth(imgI.getImage().getWidth(null));
 		setLenght(imgI.getImage().getHeight(null));
 		setImage(imgI.getImage());
-		setxPos(100);
-		setyPos(250);
-	}
-	public String getName() {
-		return name;
 	}
 }

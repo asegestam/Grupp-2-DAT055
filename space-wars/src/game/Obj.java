@@ -3,8 +3,6 @@ import java.awt.*;
 import javax.imageio.*;
 
 public class Obj {
-	
-	//Instansvariabler
 	private double xPos;
 	private double yPos;
 	private double xSpeed;
@@ -16,7 +14,10 @@ public class Obj {
 	private boolean visible;
 
 	public Obj(double x, double y, double dx, double dy) {
-		this.xPos = x;
+		setxPos(x);
+		setyPos(y);
+		setxSpeed(dx);
+		setySpeed(dy);
 		this.yPos = y;
 		this.xSpeed = dx;
 		this.ySpeed = dy;

@@ -17,17 +17,17 @@ import server.Client;
  * Generates the game
  * 
  * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
- * @version 2018-02-27
+ * @version 2018-02-28
  */
 
 public class GameEngine extends JPanel implements Runnable{
-	
+
 	private Background backgroundOne;
 	private Background backgroundTwo;
   	private BufferedImage back;
-	public ArrayList<Ship> activeObjects;
+	public ArrayList<Ship> activeShips;
 	public ArrayList<Projectiles> projectiles;
-	public ArrayList<Rock> rocks;
+	public ArrayList<Meteor> meteors;
 	public ArrayList<Boss> bosses;
 	private Player player;
 	private Projectiles projectile;
@@ -36,15 +36,16 @@ public class GameEngine extends JPanel implements Runnable{
 	public boolean running;
 	private boolean backGroundvisible;
 	private GUI gui;
+	@SuppressWarnings("unused")
 	private Client client;
 	ScheduledThreadPoolExecutor eventPool;
 	
 	public GameEngine(GUI gui) {
 		backgroundOne = new Background();
 		backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
-		activeObjects = new ArrayList<Ship>();
+		activeShips = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
-		rocks = new ArrayList<Rock>();
+		meteors = new ArrayList<Meteor>();
 		bosses = new ArrayList<Boss>();
 		backGroundvisible = true;
 		client = new Client("127.0.0.1", 8081);
@@ -62,7 +63,7 @@ public class GameEngine extends JPanel implements Runnable{
 	 * Starts the game thread
 	 */
 	public void gameInit() {
-	        player = new Player(0,0,0,0,5,"test");
+	        player = new Player(100,250,0,0,5);
 	        addThreads();
 	        if(gameloop == null) {
 	        	gameloop = new Thread(this);
@@ -102,7 +103,7 @@ public class GameEngine extends JPanel implements Runnable{
 	  * @param g
 	  */
 	 public void drawEnemies(Graphics g) {
-		 for(Ship s : activeObjects) {
+		 for(Ship s : activeShips) {
 			 Ship shot = s.getShip();
 			 if(shot.isVisible()) {
 				 g.drawImage(shot.getImage(), (int)shot.getxPos(),(int)shot.getyPos(), this);	 
@@ -139,8 +140,8 @@ public class GameEngine extends JPanel implements Runnable{
 	  * @param g
 	  */
 	 public void drawRocks(Graphics g) {
-		 for(Rock r : rocks) {
-			 Rock rock = r.getRock();
+		 for(Meteor r : meteors) {
+			 Meteor rock = r.getRock();
 			 if(rock.isVisible()) {
 				 g.drawImage(rock.getImage(),(int) rock.getxPos(),(int) rock.getyPos(), this); 
 			 }
@@ -230,14 +231,14 @@ public class GameEngine extends JPanel implements Runnable{
 			 shot.move();
 		}
 		//For each enemy ship, move it
-		for(Ship s : activeObjects) {
+		for(Ship s : activeShips) {
 			 Ship s2 = s.getShip();
 			 s2.move();
 			 
 		}
 		//For each enemy ship, move it
-		for(Rock r : rocks) {
-			 Rock r2 = r.getRock();
+		for(Meteor r : meteors) {
+			 Meteor r2 = r.getRock();
 			 r2.move();
 		}
 		
@@ -252,11 +253,11 @@ public class GameEngine extends JPanel implements Runnable{
 	//fiende skott
 	ActionListener fiende_skott = new ActionListener() {
 		 public void actionPerformed(ActionEvent evt) {
-			 if(!activeObjects.isEmpty()) {
+			 if(!activeShips.isEmpty()) {
              	int min = 0;
-             	int max = activeObjects.size()-1;
+             	int max = activeShips.size()-1;
              	int random = new Random().nextInt(max + 1 - min) + min;
-             	Ship s = activeObjects.get(random);
+             	Ship s = activeShips.get(random);
              	
              	Random rX = new Random();
 				double rangeMinX = -2.5;
@@ -295,8 +296,8 @@ public class GameEngine extends JPanel implements Runnable{
 	
 	ActionListener enemy_bounce = new ActionListener() {
 	    public void actionPerformed(ActionEvent evt) {
-		    for(int i = 0; i < activeObjects.size(); i++) {
-			    Ship s = activeObjects.get(i);
+		    for(int i = 0; i < activeShips.size(); i++) {
+			    Ship s = activeShips.get(i);
 				s.moveEnemy();
 			}
 	    }
@@ -312,14 +313,14 @@ public class GameEngine extends JPanel implements Runnable{
 			for(int j = 0; j < projectiles.size(); j ++) {
 				Projectiles p = projectiles.get(j);
 				if (p.isHostile() == false) {
-					if(!activeObjects.isEmpty()) {
-					    for(int i = 0; i < activeObjects.size(); i++) {
-						    Ship s = activeObjects.get(i);
+					if(!activeShips.isEmpty()) {
+					    for(int i = 0; i < activeShips.size(); i++) {
+						    Ship s = activeShips.get(i);
 						    //enemy and projectile
 						    if(enemyHit(p,s)) {
 							score += 10;
 							System.out.println("Score " + score);
-							activeObjects.remove(s);
+							activeShips.remove(s);
 							projectiles.remove(p);
 							break;
 						    }
@@ -401,11 +402,11 @@ public class GameEngine extends JPanel implements Runnable{
 		}
 		
 		//skepp
-		for(int i = 0; i < activeObjects.size(); i++) {
-			Ship s = activeObjects.get(i);
+		for(int i = 0; i < activeShips.size(); i++) {
+			Ship s = activeShips.get(i);
 			
 			if(s.getxPos() < -s.getWidth()) {
-				activeObjects.remove(s);
+				activeShips.remove(s);
 			}
 			else if(s.getxPos() >= 1280) {
 				s.setxPos(1279);
@@ -473,7 +474,7 @@ public class GameEngine extends JPanel implements Runnable{
 		 
 		 //Spawns enemy ships every x seconds
 		 eventPool.scheduleAtFixedRate(new ShipMaker(this), 0, 700, MILLISECONDS);
-		 eventPool.scheduleAtFixedRate(new RockMaker(this), 0, 5, SECONDS);
+		 eventPool.scheduleAtFixedRate(new MeteorMaker(this), 0, 5, SECONDS);
 
 	}
 

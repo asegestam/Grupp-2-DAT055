@@ -5,7 +5,7 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 
 public class Boss extends Enemy {
-	private final String bossImg = "space-wars/img/boss.png";
+	private final String bossImg = "img/boss.png";
 	double min = -3;
 	double max = 3;
 	boolean bossAlive = false;

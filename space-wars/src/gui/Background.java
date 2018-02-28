@@ -4,11 +4,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 
-
+/**
+ * Used to add a scrolling background to the game to mimic forward movement
+ * @author Erik Tallbacka
+ *
+ */
 public class Background {
 	
 	private BufferedImage img;
-	private final String backgroundImg = "space-wars/img/space.jpg";
+	private final String backgroundImg = "img/space.jpg";
 	private int x,y;
 	
 	public Background() {

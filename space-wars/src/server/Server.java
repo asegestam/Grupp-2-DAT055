@@ -10,7 +10,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 
-
+/**
+ * 	Server to store highscores and objects
+ * @author Markus Saarijärvi
+ * @version 2018-02-27
+ */
 public class Server extends Thread{
 
 	    public static final int PORT_NUMBER = 8081;
@@ -19,7 +23,7 @@ public class Server extends Thread{
 	 
 	    protected Socket socket;
 
-	    private Server(Socket socket) {
+	    public Server(Socket socket) {
 	        this.socket = socket;
 	        addCrapToTheMap();
 	        start();
@@ -38,10 +42,6 @@ public class Server extends Thread{
 	                if(request.startsWith("add")) {
 	                		String highScoreInfo[] = request.split(" ");
 	                		add(highScoreInfo[1], Integer.parseInt(highScoreInfo[2]));
-//	                		for (Map.Entry<String, Integer> entry : highScores.entrySet())
-//	                		{
-//	                			System.out.println(entry.getKey() + ":" + entry.getValue());
-//	                		}
 	                }
 	                else if(request.startsWith("get")) {
 	                		mapOutputStream.writeObject(getHighScores());
@@ -109,7 +109,7 @@ public class Server extends Thread{
 	    		add("Markus", 1337);
 	    		add("Theo", 100);
 	    		add("Albin", 111);
-	    		add("Ã…ke", 1);
+	    		add("Ake", 1);
 	    		add("Tony", 1336);
 	    		add("Svante", 1335);
 	    }

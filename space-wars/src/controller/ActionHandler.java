@@ -4,26 +4,34 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import game.GameEngine;
 import game.Player;
-import game.Projectiles;
+/**
+ * 	Handles the user input to move and shoot the player object
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-02-27
+ */
 
-public class ActionHandler implements ActionListener,KeyListener{
+public class ActionHandler implements ActionListener,KeyListener {
+	
 	boolean leftKey = false,rightKey = false,upKey = false, downKey = false, spaceKey = false;
 	double speed;
 	double deltaSpeed = 2;
 	private Player player;
-	private Projectiles projectile;
 	private GameEngine game;
-	
+	/**
+	 * Initiates the player object being controlled and the game engine
+	 * @param player
+	 * @param game
+	 */
 	public ActionHandler(Player player, GameEngine game) {
 		this.player = player;
 		this.game = game;
 	}
-	
-	
-	
+    /**
+     * Moves the player object  and adds a projectile to the projectile array based on key pressed
+     * Keys used: Arrow Keys, Space
+     */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int c = e.getKeyCode();
@@ -57,12 +65,14 @@ public class ActionHandler implements ActionListener,KeyListener{
 			downKey = true;
 		}	
 		if(c == KeyEvent.VK_SPACE && !spaceKey) {
-			game.addProjectile(player.getxPos(),player.getyPos(),5,0,"space-wars/img/Shot.png",false);
+			game.addProjectile(player.getxPos(),player.getyPos(),5,0,"img/Shot.png",false);
 			spaceKey = true;
 		}	
 		
 	}
-
+	/**
+	 * Moves the player object based on key released
+	 */
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int c = e.getKeyCode();
@@ -100,12 +110,18 @@ public class ActionHandler implements ActionListener,KeyListener{
 		
 	}
 
+	/**
+	 * Unused
+	 */
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Unused
+	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
