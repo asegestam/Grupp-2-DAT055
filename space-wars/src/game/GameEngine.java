@@ -51,6 +51,7 @@ public class GameEngine extends JPanel implements Runnable {
 	private GUI gui;
 	ScheduledThreadPoolExecutor eventPool;
 	private State state = new State();
+	private ActionHandler playerHandler;
 	
 	public GameEngine(GUI gui) {
         backgroundOne = new Background();
@@ -65,9 +66,19 @@ public class GameEngine extends JPanel implements Runnable {
         setVisible(true);
         setFocusable(true);
         gameInit();
-        addKeyListener(new ActionHandler(player, this));
+        addPlayerKeyListener(player, this);
         setDoubleBuffered(true);
 	}
+	
+	public void addPlayerKeyListener(Player player, GameEngine game) {
+		if(playerHandler == null) {
+			playerHandler = new ActionHandler(player, this);
+			addKeyListener(playerHandler);
+		}else {
+			playerHandler.updateHandler(player, this);
+		}
+	}
+	
 	/**
 	 * Creates the player and adds the threads for enemies and meteors
 	 * Starts the game thread
@@ -440,7 +451,10 @@ public class GameEngine extends JPanel implements Runnable {
 			score = state.score;
 			
 			player.setPlayerImage();
-			addKeyListener(new ActionHandler(player, this));
+			setVisible(true);
+			update();
+			addPlayerKeyListener(player, this);
+			
 			
 			for(Ship s : activeObjects) {
 				s.setShipImage();

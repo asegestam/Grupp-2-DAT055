@@ -22,7 +22,10 @@ public class ActionHandler implements ActionListener,KeyListener{
 		this.game = game;
 	}
 	
-	
+	public void updateHandler(Player player, GameEngine game) {
+		this.player = player;
+		this.game = game;
+	}
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
