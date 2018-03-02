@@ -486,8 +486,8 @@ public class GameEngine extends JPanel implements Runnable {
 	 * @return
 	 */
 	private boolean meteorCollision(Player player, Meteor m) {
-		if((player.getyPos()+(player.getHeight()/2) >= m.getyPos() && player.getyPos()+(player.getHeight()/2) <= m.getyPos() + m.getHeight())
-				&& (player.getxPos()+(player.getWidth()*0.5) >= m.getxPos() && player.getxPos()+(player.getWidth()*0.5) <= m.getxPos()+ m.getWidth())) {
+		if((m.getyPos()+(m.getHeight()/2) >= player.getyPos() && m.getyPos()+(m.getHeight()/2) <= player.getyPos() + player.getHeight())
+				&& (m.getxPos()+(m.getWidth()*0.5) >= player.getxPos() && m.getxPos()+(m.getWidth()*0.5) <= player.getxPos()+ player.getWidth())) {
 			
 			return true;
 		}
