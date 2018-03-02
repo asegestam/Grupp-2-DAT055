@@ -2,8 +2,9 @@ package game;
 /**
  * This class is used to add new rocks into the game
  * Is runnable so can be used as a thread
- * @author Albin Segestam
- *
+ * 
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-03-02
  */
 public class MeteorMaker implements Runnable{
 	private GameEngine game;

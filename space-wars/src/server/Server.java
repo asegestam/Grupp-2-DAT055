@@ -11,8 +11,8 @@ import java.util.HashMap;
 
 /**
  * 	Server to store highscores
- * @author Markus Saarijärvi
- * @version 2018-02-27
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-03-02
  */
 public class Server extends Thread{
 	

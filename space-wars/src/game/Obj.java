@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 /** 
  * Used as a abstract class for the game objects
- * @author abbes
- *
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-03-02
  */
 
 public abstract class Obj implements Serializable {

@@ -47,7 +47,11 @@ public class GameEngine extends JPanel implements Runnable {
 	private Client client;
 	ScheduledThreadPoolExecutor eventPool;
 	public boolean pause;
-
+	/**
+	 * Initiate all necessary fields
+	 * Initate the game
+	 * @param gui
+	 */
 	public GameEngine(GUI gui) {
 		this.gui = gui;
 		client = new Client("127.0.0.1", 8081);
@@ -72,7 +76,7 @@ public class GameEngine extends JPanel implements Runnable {
 	 * Starts the game thread
 	 */
 	public void gameInit() {
-	    player = new Player(100,250,0,0,100000);
+	    player = new Player(100,250,0,0,5);
 	    addThreads();
 	    if(gameloop == null) {
 	    	gameloop = new Thread(this);
@@ -167,17 +171,17 @@ public class GameEngine extends JPanel implements Runnable {
 	 */
 	 @Override
 	 public void paintComponent(Graphics g) {
-	        super.paintComponent(g);
-	        if(running) {
-	        	drawBackground(g);
-	        	drawPlayer(g);
-	        	drawEnemies(g);
-	        	drawShot(g);  
-	        	drawRocks(g);
-	        	drawBoss(g);
-	        }
-	        Toolkit.getDefaultToolkit().sync();
-	        g.dispose();
+		 super.paintComponent(g);
+		 if(running) {
+	         drawBackground(g);
+	         drawPlayer(g);
+	         drawEnemies(g);
+	         drawShot(g);  
+	         drawRocks(g);
+	         drawBoss(g);
+	     }
+	     Toolkit.getDefaultToolkit().sync();
+	     g.dispose();
 	 }
 	 /**
 	  * Adds a projectile with given x,y,speed and image to the projectile array

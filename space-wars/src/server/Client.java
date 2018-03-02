@@ -8,8 +8,8 @@ import java.net.UnknownHostException;
 import java.util.Map;
  /**
   * Used to receive and obtain information from the server
-  * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
-  *
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-03-02
   */
 public class Client {
  

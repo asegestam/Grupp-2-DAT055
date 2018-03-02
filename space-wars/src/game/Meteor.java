@@ -3,8 +3,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.ImageIcon;
 /**
  * Used to create a moving rock object that moves across the screen
- * @author Albin Segestam
- *
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-03-02
  */
 public class Meteor extends Obj{
 	private final String shot = "img/meteor.png";

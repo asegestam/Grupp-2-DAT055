@@ -5,7 +5,7 @@ import javax.swing.ImageIcon;
 /**
  * Used to create a Boss object with HP,X and Y positions
  * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
- *
+ * @version 2018-03-02
  */
 public class Boss extends Enemy {
 	private final String bossImg = "img/boss.png";

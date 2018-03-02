@@ -6,8 +6,8 @@ import javax.imageio.ImageIO;
 
 /**
  * Used to add a scrolling background to the game to mimic forward movement
- * @author Erik Tallbacka
- *
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-03-02
  */
 public class Background {
 	

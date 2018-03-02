@@ -2,7 +2,7 @@ import java.awt.EventQueue;
 import gui.GUI;
 
 /**
- * 	Starts the server and creates the initial start menu
+ * 	Starts the program with the initial Start menu
  * @author Albin Segestam, Markus Saarijärvi
  * @version 2018-02-27
  */

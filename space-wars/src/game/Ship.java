@@ -3,8 +3,8 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 /**
  * Used to create enemy ships with initial positions and graphics
- * @author Albin Segestam, Åke Svensson
- *
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-03-02
  */
 public class Ship extends Enemy {
 	private final String enemyImg = "img/enemy.png";

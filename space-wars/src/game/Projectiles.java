@@ -2,8 +2,8 @@ package game;
 import javax.swing.ImageIcon;
 /**
  * Used to create moving projectiles
- * @author Albin Segestam
- *
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-03-02
  */
 public class Projectiles extends Obj {
 	

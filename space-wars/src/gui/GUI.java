@@ -39,22 +39,19 @@ public class GUI extends JFrame {
 	 */
 	public void makeStartMenu() {
 		JFrame frame =  new JFrame("Space-Wars");
-		GridLayout gl = new GridLayout(2,2);
+		GridLayout gl = new GridLayout(3,1);
 		frame.setSize(1280, 720);
 		frame.setLayout(gl);
 		frame.setResizable(false);
 		JButton startButton = new JButton("Start Game");
-		JButton loadButton = new JButton("Load Game");
 		JButton exitButton = new JButton("Exit Game");
 		JButton hsButton = new JButton("HighScores");
 		
 		startButton.setPreferredSize(new Dimension(250,50));
-		loadButton.setPreferredSize(new Dimension(250,50));
 		exitButton.setPreferredSize(new Dimension(250,50));
 		hsButton.setPreferredSize(new Dimension(250,50));
 		
 		frame.add(startButton);
-		frame.add(loadButton);
 		frame.add(exitButton);
 		frame.add(hsButton);
 		frame.pack();
@@ -69,6 +66,8 @@ public class GUI extends JFrame {
         //Prints highscores
         hsButton.addActionListener(
         (ActionEvent e)->{printHighScores();});
+        exitButton.addActionListener(
+                (ActionEvent e)->{System.exit(0);;});
 	}
 	/**
 	 * Creates the game frame and in turn starts the game
@@ -108,19 +107,16 @@ public class GUI extends JFrame {
 		frame.add(scoreLabel,gbc);
 
 		JButton startButton = new JButton("New Game");
-		JButton loadButton = new JButton("Load Game");
 		JButton exitButton = new JButton("Exit Game");
 		JButton hsButton = new JButton("HighScores");
 		JButton scoreButton = new JButton("Submit Score");
 
 		startButton.setPreferredSize(new Dimension(250,50));
-		loadButton.setPreferredSize(new Dimension(250,50));
 		exitButton.setPreferredSize(new Dimension(250,50));
 		hsButton.setPreferredSize(new Dimension(250,50));
 		scoreButton.setPreferredSize(new Dimension(250,50));
 		
 		frame.add(startButton,gbc);
-		frame.add(loadButton,gbc);
 		frame.add(exitButton,gbc);
 	    frame.add(hsButton,gbc);
 	    frame.add(scoreButton,gbc);
@@ -131,11 +127,12 @@ public class GUI extends JFrame {
         startButton.addActionListener(
         (ActionEvent e)->{makeGameFrame(); frame.dispose();;});
         //Exits the game
-		 exitButton.addActionListener(
+		exitButton.addActionListener(
 			        (ActionEvent e)->{System.exit(0);;});
 		//Prints highscores
 		hsButton.addActionListener(
 		        (ActionEvent e)->{printHighScores();});
+		//Submits score
 		scoreButton.addActionListener(
 		        (ActionEvent e)->{String inputName = JOptionPane.showInputDialog("Please Enter a Name");client.addHighScore(inputName, score);});
 	}
