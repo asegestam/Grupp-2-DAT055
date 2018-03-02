@@ -1,5 +1,4 @@
 package server;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,27 +10,28 @@ import java.net.Socket;
 import java.util.HashMap;
 
 /**
- * 	Server to store highscores and objects
+ * 	Server to store highscores
  * @author Markus Saarijärvi
  * @version 2018-02-27
  */
 public class Server extends Thread{
-
-	    public static final int PORT_NUMBER = 8081;
-	    
-	    private static HashMap<String, Integer> highScores  = new HashMap<String, Integer>();
-	 
-	    protected Socket socket;
-
-	    public Server(Socket socket) {
+	
+    public static final int PORT_NUMBER = 8081;
+    private static HashMap<String, Integer> highScores  = new HashMap<String, Integer>();
+    protected Socket socket;
+    
+    public Server(Socket socket) {
 	        this.socket = socket;
 	        addCrapToTheMap();
 	        start();
 	    }
-	 
-	    public void run() {
-	        InputStream in = null;
-	        OutputStream out = null;
+    /**
+	 * Responds to the query from the client
+	 * Such as AddHighscore and getHighScores
+	 */
+    public void run() {
+	    InputStream in = null;
+	    OutputStream out = null;
 	        try {
 	            in = socket.getInputStream();
 	            out = socket.getOutputStream();
@@ -40,13 +40,12 @@ public class Server extends Thread{
 	            String request;
 	            while ((request = br.readLine()) != null) {
 	                if(request.startsWith("add")) {
-	                		String highScoreInfo[] = request.split(" ");
-	                		add(highScoreInfo[1], Integer.parseInt(highScoreInfo[2]));
+	                    String highScoreInfo[] = request.split(" ");
+	                    add(highScoreInfo[1], Integer.parseInt(highScoreInfo[2]));
 	                }
 	                else if(request.startsWith("get")) {
-	                		mapOutputStream.writeObject(getHighScores());
+	                    mapOutputStream.writeObject(getHighScores());
 	                }
-	                
 	                request += '\n';
 	            }
 	 
@@ -62,19 +61,22 @@ public class Server extends Thread{
 	            }
 	        }
 	    }
-	 
-	    public static void main(String[] args) {
-	        System.out.println("Space-Wars Server is now active");
-	        ServerSocket server = null;
-	        try {
-	            server = new ServerSocket(PORT_NUMBER);
-	            while (true) {
-	                /**
-	                 * create a new {@link SocketServer} object for each connection
-	                 * this will allow multiple client connections
-	                 */
-	                new Server(server.accept());
-	            }
+    /**
+	 * Establish a connection to the server
+	 * @param args
+	 */
+    public static void main(String[] args) {
+    	System.out.println("Space-Wars Server is now active");
+	    ServerSocket server = null;
+	    try {
+	    	server = new ServerSocket(PORT_NUMBER);
+	        while (true) {
+	        	/**
+	             * create a new {@link SocketServer} object for each connection
+	             * this will allow multiple client connections
+	             */
+	        	new Server(server.accept());
+	        }
 	        } catch (IOException ex) {
 	            System.out.println("Unable to start server.");
 	        } finally {
@@ -86,32 +88,35 @@ public class Server extends Thread{
 	            }
 	        }
 		}
-	    
-	    private static void add(String user, int score) {
-	    	
-	    		if(!highScores.containsKey(user) && score > 0) {
-	    			highScores.put(user, score);
-	    		}
-	    			
-	    		if(highScores.containsKey(user) && highScores.get(user) < score) {
-	    			highScores.put(user, score);
-	    		}
-	    		
-	    }
-	    
-	    private static HashMap<String, Integer> getHighScores(){
-	    	
-	    		return highScores;
-	    		
-	    }
-	    
-	    public void addCrapToTheMap() {
-	    		add("Markus", 1337);
-	    		add("Theo", 100);
-	    		add("Albin", 111);
-	    		add("Ake", 1);
-	    		add("Tony", 1336);
-	    		add("Svante", 1335);
-	    }
-	
-}
+    /**
+	 * Adds a name and a score to the HashMap
+	 * @param user
+	 * @param score
+	 */
+    private static void add(String user, int score) {
+    	if(!highScores.containsKey(user) && score > 0) {
+    		highScores.put(user, score);
+    		}
+    	if(highScores.containsKey(user) && highScores.get(user) < score) {
+    		highScores.put(user, score);
+	    	}
+    	}
+    /**
+	 * Returns the HashMap
+	 * @return
+	 */
+    private static HashMap<String, Integer> getHighScores(){
+    	return highScores;
+	}
+    /**
+	 * Adds dummy values to the list
+	 */
+    public void addCrapToTheMap() {
+    	add("Markus", 1337);
+	    add("Theo", 100);
+	    add("Albin", 111);
+	    add("Ake", 1);
+	    add("Tony", 1336);
+	    add("Svante", 1335);
+	    }	
+    }

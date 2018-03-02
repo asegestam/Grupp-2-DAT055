@@ -192,7 +192,11 @@ public class GameEngine extends JPanel implements Runnable {
 		 projectile = new Projectiles(x,y,dx,dy,img,hostile);
 		 projectiles.add(projectile);	
 		}
-	 
+	 /**
+	  * Adds a KeyListener to the player object
+	  * @param player player object
+	  * @param game game panel
+	  */
 	 public void addPlayerKeyListener(Player player, GameEngine game) {
 			if(playerHandler == null) {
 				playerHandler = new ActionHandler(player, this);
@@ -277,7 +281,9 @@ public class GameEngine extends JPanel implements Runnable {
 	}
 	
 
-	//fiende skott
+	/**
+	 * Enemies shoot at random directions on a timer
+	 */
 	ActionListener enemy_shoot = new ActionListener() {
 		 public void actionPerformed(ActionEvent evt) {
 			 if(!pause) {
@@ -316,13 +322,14 @@ public class GameEngine extends JPanel implements Runnable {
 						 ImageIcon imgI = new ImageIcon("img/shot2.png");
 						 
 						 addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getLenght()/2),dx,dy,"img/shot2.png",true);
-						 
 					 }
 				 }
 			 }
-         }
+	    }
 	};
-	
+	/**
+	 * Enemies moves around on a timer
+	 */
 	ActionListener enemy_bounce = new ActionListener() {
 	    public void actionPerformed(ActionEvent evt) {
 		    for(int i = 0; i < activeShips.size(); i++) {
@@ -331,8 +338,7 @@ public class GameEngine extends JPanel implements Runnable {
 			}
 	    }
 	};
-	
-	Timer enemyBounce =new Timer (1500,enemy_bounce);
+	Timer enemyBounce = new Timer (1500,enemy_bounce);
 	Timer enemyShootTimer = new Timer(280,enemy_shoot);
 	/**
 	 * Checks for collision between player,projectiles,ships and bosses
@@ -381,9 +387,38 @@ public class GameEngine extends JPanel implements Runnable {
 					projectiles.remove(p);
 					player.setHitPoints(player.getHitPoints()-1);
 				}
+				
+				for(int i = 0; i < activeShips.size(); i++) {
+					Ship s = activeShips.get(i);
+					if(shipCollision(player, s)) {
+						player.setHitPoints(player.getHitPoints()-1);
+						activeShips.remove(i);
+						break;
+					}
+				}
+				for(int i = 0; i < bosses.size(); i++) {
+					Boss b = bosses.get(i);
+					if(bossCollision(player, b)) {
+						player.setHitPoints(player.getHitPoints()-1);
+						break;
+					}
+				}
+				for(int i = 0; i < meteors.size(); i++) {
+					Meteor m = meteors.get(i);
+					if(meteorCollision(player, m)) {
+						player.setHitPoints(player.getHitPoints()-1);
+						meteors.remove(m);
+					}
+				}
 			}
 		}
 	}
+	/**
+	 * Checks for collision between player and enemy projectiles
+	 * @param p the projectile being checked
+	 * @param player player being checked
+	 * @return if collision has occurred or not
+	 */
 	public boolean playerHit(Projectiles p, Player player) {
 		if((p.getyPos()+(p.getLenght()/2) >= player.getyPos() && p.getyPos()+(p.getLenght()/2) <= player.getyPos() + player.getLenght())
 				&& (p.getxPos()+(p.getWidth()*0.5) >= player.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= player.getxPos()+ player.getWidth())) {
@@ -391,7 +426,12 @@ public class GameEngine extends JPanel implements Runnable {
 		}
 		return false;
 	}
-	
+	/**
+	 * Checks for collision between enemy ships and player projectiles
+	 * @param p the projectile being checked
+	 * @param s the ship being checked
+	 * @return
+	 */
 	private boolean enemyHit(Projectiles p, Ship s) {
 		if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
 				&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
@@ -399,11 +439,55 @@ public class GameEngine extends JPanel implements Runnable {
 		}
 		return false;
 	}
-	
-	private boolean bossHit(Projectiles p, Boss s) {
-		if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
-				&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
-			System.out.println("true");
+	/**
+	 * Checks for collision between boss and player projectiles
+	 * @param p the projectile being checked
+	 * @param b the boss being checked
+	 * @return
+	 */
+	private boolean bossHit(Projectiles p, Boss b) {
+		if((p.getyPos()+(p.getLenght()/2) >= b.getyPos() && p.getyPos()+(p.getLenght()/2) <= b.getyPos() + b.getLenght())
+				&& (p.getxPos()+(p.getWidth()*0.5) >= b.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= b.getxPos()+ b.getWidth())) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Checks for collision between player and boss
+	 * @param player
+	 * @param boss
+	 * @return
+	 */
+	private boolean bossCollision(Player player, Boss boss) {
+		if((player.getyPos()+(player.getLenght()/2) >= boss.getyPos() && player.getyPos()+(player.getLenght()/2) <= boss.getyPos() + boss.getLenght())
+				&& (player.getxPos()+(player.getWidth()*0.5) >= boss.getxPos() && player.getxPos()+(player.getWidth()*0.5) <= boss.getxPos()+ boss.getWidth())) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Checks for collision between player and enemy ship
+	 * @param player player being checked
+	 * @param s ship being checked
+	 * @return
+	 */
+	private boolean shipCollision(Player player, Ship s) {
+		if((player.getyPos()+(player.getLenght()/2) >= s.getyPos() && player.getyPos()+(player.getLenght()/2) <= s.getyPos() + s.getLenght())
+				&& (player.getxPos()+(player.getWidth()*0.5) >= s.getxPos() && player.getxPos()+(player.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Checks collision between meteor and player
+	 * @param player player being checked
+	 * @param m meteor being checked
+	 * @return
+	 */
+	private boolean meteorCollision(Player player, Meteor m) {
+		if((player.getyPos()+(player.getLenght()/2) >= m.getyPos() && player.getyPos()+(player.getLenght()/2) <= m.getyPos() + m.getLenght())
+				&& (player.getxPos()+(player.getWidth()*0.5) >= m.getxPos() && player.getxPos()+(player.getWidth()*0.5) <= m.getxPos()+ m.getWidth())) {
+			
 			return true;
 		}
 		return false;
@@ -500,8 +584,11 @@ public class GameEngine extends JPanel implements Runnable {
 		 eventPool.scheduleAtFixedRate(new ShipMaker(this), 0, 700, MILLISECONDS);
 		 eventPool.scheduleAtFixedRate(new MeteorMaker(this), 0, 5, SECONDS);
 	}
+	/**
+	 * Streams the game objects to a file
+	 * @param fileName
+	 */
 	public void saveGame(String fileName) {
-		
 		state.activeShips = activeShips;
 		state.projectiles = projectiles;
 		state.bosses = bosses;
@@ -521,11 +608,13 @@ public class GameEngine extends JPanel implements Runnable {
 		}
 		
 	}
-	
+	/**
+	 * Loads objects from file into the game
+	 * @param fileName
+	 */
 	public void loadGame(String fileName) {
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
-				
 				state = (State)in.readObject();
 				in.close();
 				activeShips = state.activeShips;
@@ -556,12 +645,24 @@ public class GameEngine extends JPanel implements Runnable {
 		}
 	
 	}
+	/**
+	 * Returns the score
+	 * @return
+	 */
 	public int getScore() {
 		return score;
 	}
+	/**
+	 * Returns pause state
+	 * @return
+	 */
 	public boolean getPause() {
 		return pause;
 	}
+	/**
+	 * Set the pause state
+	 * @param paused
+	 */
 	public void setPause(boolean paused) {
 		pause = paused;
 	}

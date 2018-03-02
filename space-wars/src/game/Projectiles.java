@@ -40,10 +40,16 @@ public class Projectiles extends Obj {
 		setxPos(x + 120);
 		setyPos(y + 55);
 	}
-	
+	/**
+	 * Sets image
+	 */
 	public void setProjectilesImage() {
 		setImage(imgI.getImage());
 	}
+	/**
+	 * Return image of projectile
+	 * @return
+	 */
 	public String getProjectilesImage() {
 				return shot;
 	}
@@ -61,14 +67,10 @@ public class Projectiles extends Obj {
 	public void setHostile(boolean hostile) {
 		this.hostile = hostile;
 	}
-
-	public int getDmg() {
-		return dmg;
-	}
-
-	public void setDmg(int dmg) {
-		this.dmg = dmg;
-	}
+	/**
+	 * Returns this object
+	 * @return
+	 */
 	public Projectiles getProjectile() {
 		return this;
 	}

@@ -51,30 +51,27 @@ public class ActionHandler implements ActionListener,KeyListener {
 				game.setPause(true);
 				}
 			}
+		
 		if(!game.pause) {
-			if(c == KeyEvent.VK_LEFT && !leftKey)
-			{
+			if(c == KeyEvent.VK_LEFT && !leftKey) {
 				speed = player.getxSpeed();
 				speed -= deltaSpeed;
 				player.setxSpeed(speed);
 				leftKey = true;
 			}
-			if(c == KeyEvent.VK_RIGHT && !rightKey)
-			{
+			if(c == KeyEvent.VK_RIGHT && !rightKey) {
 				speed = player.getxSpeed();
 				speed += deltaSpeed;
 				player.setxSpeed(speed);
 				rightKey = true;
 			}
-			if(c == KeyEvent.VK_UP && !upKey)
-			{
+			if(c == KeyEvent.VK_UP && !upKey) {
 				speed = player.getySpeed();
 				speed -= deltaSpeed;
 				player.setySpeed(speed);
 				upKey = true;
 			}
-			if(c == KeyEvent.VK_DOWN && !downKey)
-			{
+			if(c == KeyEvent.VK_DOWN && !downKey) {
 				speed = player.getySpeed();
 				speed += deltaSpeed;
 				player.setySpeed(speed);
@@ -84,8 +81,7 @@ public class ActionHandler implements ActionListener,KeyListener {
 				game.addProjectile(player.getxPos(),player.getyPos(),5,0,"img/Shot.png",false);
 				spaceKey = true;
 			}	
-		}
-		
+	    }	
 	}
 	/**
 	 * Moves the player object based on key released
@@ -94,29 +90,25 @@ public class ActionHandler implements ActionListener,KeyListener {
 	public void keyReleased(KeyEvent e) {
 		int c = e.getKeyCode();
 		
-		if(c == KeyEvent.VK_LEFT && leftKey)
-		{
+		if(c == KeyEvent.VK_LEFT && leftKey) {
 			speed = player.getxSpeed();
 			speed += deltaSpeed;
 			player.setxSpeed(speed);
 			leftKey = false;
 		}
-		if(c == KeyEvent.VK_RIGHT && rightKey)
-		{
+		if(c == KeyEvent.VK_RIGHT && rightKey) {
 			speed = player.getxSpeed();
 			speed -= deltaSpeed;
 			player.setxSpeed(speed);
 			rightKey = false;
 		}
-		if(c == KeyEvent.VK_UP && upKey)
-		{
+		if(c == KeyEvent.VK_UP && upKey) {
 			speed = player.getySpeed();
 			speed += deltaSpeed;
 			player.setySpeed(speed);
 			upKey = false;
 		}
-		if(c == KeyEvent.VK_DOWN && downKey)
-		{
+		if(c == KeyEvent.VK_DOWN && downKey) {
 			speed = player.getySpeed();
 			speed -= deltaSpeed;
 			player.setySpeed(speed);
