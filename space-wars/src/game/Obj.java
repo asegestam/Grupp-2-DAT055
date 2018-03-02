@@ -2,7 +2,13 @@ package game;
 import java.awt.*;
 import java.io.Serializable;
 
-public class Obj implements Serializable {
+/** 
+ * Used as a abstract class for the game objects
+ * @author abbes
+ *
+ */
+
+public abstract class Obj implements Serializable {
 	/**
 	 * 
 	 */

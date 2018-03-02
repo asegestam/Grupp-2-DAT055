@@ -3,7 +3,7 @@ package game;
 import javax.swing.ImageIcon;
 /**
  * Used to iniate a player object with HP,X and Y positions
- * @author Albin Segestam
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
  *
  */
 public class Player extends Obj {
@@ -23,7 +23,7 @@ public class Player extends Obj {
 		initPlayer();
 	}
 	/**
-	 * Sets an image as the player graphics
+	 * Initiates the player object
 	 */
 	public void initPlayer() {
 		imgI = new ImageIcon(playerImg);
@@ -31,7 +31,9 @@ public class Player extends Obj {
 		setLenght(imgI.getImage().getHeight(null));
 		setPlayerImage();
 	}
-	
+	/**
+	 * Sets a image as the player graphics
+	 */
 	public void setPlayerImage() {
 		setImage(imgI.getImage());
 	}

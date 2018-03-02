@@ -1,9 +1,12 @@
 package game;
 
 import java.util.Random;
-
 import javax.swing.ImageIcon;
-
+/**
+ * Used to create a Boss object with HP,X and Y positions
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ *
+ */
 public class Boss extends Enemy {
 	private final String bossImg = "img/boss.png";
 	double min = -3;

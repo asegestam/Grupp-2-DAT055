@@ -1,7 +1,5 @@
 package game;
-
 import java.util.Random;
-
 import javax.swing.ImageIcon;
 /**
  * Used to create enemy ships with initial positions and graphics

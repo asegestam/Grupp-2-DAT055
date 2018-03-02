@@ -22,20 +22,16 @@ import server.Client;
  * Generates the game
  * 
  * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
- * @version 2018-02-28
+ * @version 2018-03-02
  */
 
-public class GameEngine extends JPanel implements Runnable{
-
-	/**
-	 * 
-	 */
+public class GameEngine extends JPanel implements Runnable {
 	private static final long serialVersionUID = 8589348462449768141L;
 	private GUI gui;
 	private Player player;
 	private Projectiles projectile;
 	private Thread gameloop;
-	private State state;
+	private State state = new State();
 	private ActionHandler playerHandler;
 	public ArrayList<Ship> activeShips;
 	public ArrayList<Projectiles> projectiles;
@@ -51,26 +47,6 @@ public class GameEngine extends JPanel implements Runnable{
 	private Client client;
 	ScheduledThreadPoolExecutor eventPool;
 	public boolean pause;
-	
-	
-	private static class State implements Serializable {
-		
-		public State() {
-			
-		}
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -6636539941992971082L;
-		public ArrayList<Ship> activeShips;
-		public ArrayList<Projectiles> projectiles;
-		public ArrayList<Meteor> meteors;
-		public ArrayList<Boss> bosses;
-		private Player player;
-		private double xPos;
-		private double yPos;
-		private int score;
-	}
 
 	public GameEngine(GUI gui) {
 		this.gui = gui;
@@ -357,7 +333,7 @@ public class GameEngine extends JPanel implements Runnable{
 	};
 	
 	Timer enemyBounce =new Timer (1500,enemy_bounce);
-	Timer enemyShootTimer = new Timer(350,enemy_shoot);
+	Timer enemyShootTimer = new Timer(280,enemy_shoot);
 	/**
 	 * Checks for collision between player,projectiles,ships and bosses
 	 */
@@ -538,6 +514,7 @@ public class GameEngine extends JPanel implements Runnable{
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
 			out.writeObject(state);
 			out.close();
+			return;
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -548,31 +525,31 @@ public class GameEngine extends JPanel implements Runnable{
 	public void loadGame(String fileName) {
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
-			state = (State)in.readObject();
-			in.close();
-			activeShips = state.activeShips;
-			projectiles = state.projectiles;
-			bosses = state.bosses;
-			meteors = state.meteors;
-			player = state.player;
-			player.setxPos(state.xPos);
-			player.setyPos(state.yPos);
-			score = state.score;
-			player.setPlayerImage();
-			setVisible(true);
-			update();
-			addPlayerKeyListener(player, this);
-			
-			for(Ship s : activeShips) {
-				s.setShipImage();
-			}
-			for(Projectiles p : projectiles) {
-				p.setProjectilesImage();
-			}
-			for(Meteor m : meteors) {
-				m.setMeteorImage();
-			}
-			setPause(false);
+				
+				state = (State)in.readObject();
+				in.close();
+				activeShips = state.activeShips;
+				projectiles = state.projectiles;
+				bosses = state.bosses;
+				meteors = state.meteors;
+				player = state.player;
+				player.setxPos(state.xPos);
+				player.setyPos(state.yPos);
+				score = state.score;
+				player.setPlayerImage();
+				setVisible(true);
+				update();
+				addPlayerKeyListener(player, this);
+				
+				for(Ship s : activeShips) {
+					s.setShipImage();
+				}
+				for(Projectiles p : projectiles) {
+					p.setProjectilesImage();
+				}
+				for(Meteor m : meteors) {
+					m.setMeteorImage();
+				}
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -587,6 +564,26 @@ public class GameEngine extends JPanel implements Runnable{
 	}
 	public void setPause(boolean paused) {
 		pause = paused;
+	}
+	
+	/**
+	 * A inner class used for saving the state of all game objects
+	 * @author Markus Saarijärvi
+	 *
+	 */
+	private static class State implements Serializable {
+		
+		public State() {
+		}
+		private static final long serialVersionUID = -6636539941992971082L;
+		public ArrayList<Ship> activeShips;
+		public ArrayList<Projectiles> projectiles;
+		public ArrayList<Meteor> meteors;
+		public ArrayList<Boss> bosses;
+		private Player player;
+		private double xPos;
+		private double yPos;
+		private int score;
 	}
 	
 }

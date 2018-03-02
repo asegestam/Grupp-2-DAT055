@@ -35,8 +35,8 @@ public class ActionHandler implements ActionListener,KeyListener {
 		this.game = game;
 	}
     /**
-     * Moves the player object  and adds a projectile to the projectile array based on key pressed
-     * Keys used: Arrow Keys, Space
+     * Moves the player object  and adds a projectile to the projectile array based on key pressed. Can also pause the game.
+     * Keys used: Arrow Keys, Space, Escape
      */
 	@Override
 	public void keyPressed(KeyEvent e) {

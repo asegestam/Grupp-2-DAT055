@@ -5,7 +5,7 @@ package game;
  * @author Albin Segestam
  *
  */
-class MeteorMaker implements Runnable{
+public class MeteorMaker implements Runnable{
 	private GameEngine game;
 	/**
 	 * Initiates the given game engine object
