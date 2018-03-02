@@ -1,13 +1,16 @@
 package game;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
+import javax.swing.*;
 import java.util.Random;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import static java.util.concurrent.TimeUnit.*;
@@ -24,72 +27,100 @@ import server.Client;
 
 public class GameEngine extends JPanel implements Runnable{
 
-	private Background backgroundOne;
-	private Background backgroundTwo;
-  	private BufferedImage back;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8589348462449768141L;
+	private GUI gui;
+	private Player player;
+	private Projectiles projectile;
+	private Thread gameloop;
+	private State state;
+	private ActionHandler playerHandler;
 	public ArrayList<Ship> activeShips;
 	public ArrayList<Projectiles> projectiles;
 	public ArrayList<Meteor> meteors;
 	public ArrayList<Boss> bosses;
-	private Player player;
-	private Projectiles projectile;
-	private Thread gameloop;
+	private Background backgroundOne;
+	private Background backgroundTwo;
+  	private BufferedImage back;
 	private int score = 0;
 	public boolean running;
 	private boolean backGroundvisible;
-	private GUI gui;
 	@SuppressWarnings("unused")
 	private Client client;
 	ScheduledThreadPoolExecutor eventPool;
+	public boolean pause;
 	
+	
+	private static class State implements Serializable {
+		
+		public State() {
+			
+		}
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6636539941992971082L;
+		public ArrayList<Ship> activeShips;
+		public ArrayList<Projectiles> projectiles;
+		public ArrayList<Meteor> meteors;
+		public ArrayList<Boss> bosses;
+		private Player player;
+		private double xPos;
+		private double yPos;
+		private int score;
+	}
+
 	public GameEngine(GUI gui) {
-		backgroundOne = new Background();
-		backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
+		this.gui = gui;
+		client = new Client("127.0.0.1", 8081);
+		eventPool = new ScheduledThreadPoolExecutor(5);
 		activeShips = new ArrayList<Ship>();
 		projectiles = new ArrayList<Projectiles>();
 		meteors = new ArrayList<Meteor>();
 		bosses = new ArrayList<Boss>();
+		backgroundOne = new Background();
+		backgroundTwo = new Background(backgroundOne.getImageWidth(), 0);
 		backGroundvisible = true;
-		client = new Client("127.0.0.1", 8081);
-		this.gui = gui;
-		eventPool = new ScheduledThreadPoolExecutor(5);
-		running = true;
         setVisible(true);
         setFocusable(true);
-        gameInit();
-        addKeyListener(new ActionHandler(player, this));
         setDoubleBuffered(true);
+        pause = false;
+        running = true;
+		gameInit();
+		addPlayerKeyListener(player, this);
 	}
 	/**
 	 * Creates the player and adds the threads for enemies and meteors
 	 * Starts the game thread
 	 */
 	public void gameInit() {
-	        player = new Player(100,250,0,0,5);
-	        addThreads();
-	        if(gameloop == null) {
-	        	gameloop = new Thread(this);
-	        	gameloop.start();
-	        }
-	 }
+	    player = new Player(100,250,0,0,100000);
+	    addThreads();
+	    if(gameloop == null) {
+	    	gameloop = new Thread(this);
+	        gameloop.start();
+	    }
+	}
 	/**
 	 * Draws the scrolling background
 	 * @param g
 	 */
 	public void drawBackground(Graphics g) {
-        Graphics2D twoD = (Graphics2D)g;
-        if (back == null)
-            back = (BufferedImage)(createImage(getWidth(), getHeight()));
-        // Create a buffer to draw to
-        Graphics buffer = back.createGraphics();
-        // Put the two copies of the background image onto the buffer
-        backgroundOne.draw(buffer);
-        backgroundTwo.draw(buffer);
-        // Draw the image onto the window
-        if(backGroundvisible) {
-        	twoD.drawImage(back, null, 0, 0);	
-        }
- 
+		Graphics2D twoD = (Graphics2D)g;
+		if (back == null) {
+			back = (BufferedImage)(createImage(getWidth(), getHeight()));
+		}
+		// Create a buffer to draw to
+		Graphics buffer = back.createGraphics();
+		// Put the two copies of the background image onto the buffer
+		backgroundOne.draw(buffer);
+		backgroundTwo.draw(buffer);
+		// Draw the image onto the window
+		if(backGroundvisible) {
+			twoD.drawImage(back, null, 0, 0);	
+		}
     }
 	 /**
 	  * Draws the player
@@ -185,6 +216,15 @@ public class GameEngine extends JPanel implements Runnable{
 		 projectile = new Projectiles(x,y,dx,dy,img,hostile);
 		 projectiles.add(projectile);	
 		}
+	 
+	 public void addPlayerKeyListener(Player player, GameEngine game) {
+			if(playerHandler == null) {
+				playerHandler = new ActionHandler(player, this);
+				addKeyListener(playerHandler);
+			}else {
+				playerHandler.updateHandler(player, this);
+			}
+	}
 
 	/**
 	 * Updates the game based on timer sleep
@@ -198,7 +238,7 @@ public class GameEngine extends JPanel implements Runnable{
             update();
             collisionDetection();
             outOfBound();
-            fiendeSottTimer.start();
+            enemyShootTimer.start();
             timeDiff = System.currentTimeMillis() - beforeTime;
             sleep = 5 - timeDiff;
             if (sleep < 0) {
@@ -214,6 +254,43 @@ public class GameEngine extends JPanel implements Runnable{
         }
     }
 	/**
+	 * Updates the game state.
+	 */
+	public void update() {
+		if(!pause) {
+			if(player.getHitPoints() == 0) {
+				running = false;
+				gameOver();
+			}
+			player.move();
+			//For each projectile in the array, move it
+			Iterator<Projectiles> projIter = projectiles.iterator();
+			while(projIter.hasNext()) {
+				Projectiles shot = projIter.next().getProjectile();
+				shot.move();
+			}
+			//For each enemy ship, move it
+			Iterator<Ship> shipIter = activeShips.iterator();
+			while(shipIter.hasNext()) {
+				Ship ship = shipIter.next().getShip();
+				ship.move();
+			}
+			
+			Iterator<Meteor> metIter = meteors.iterator();
+			while(metIter.hasNext()) {
+				Meteor meteor = metIter.next().getMeteor();
+				meteor.move();
+			}
+			
+			Iterator<Boss> bossIter = bosses.iterator();
+			while(bossIter.hasNext()) {
+				Boss boss = bossIter.next().getBoss();
+				boss.move();
+			}
+		}
+	}
+
+	/**
 	 * Stops the background threads and calls for a game over screen
 	 * @see GUI
 	 */
@@ -222,83 +299,50 @@ public class GameEngine extends JPanel implements Runnable{
 		eventPool.shutdownNow();
 		gui.makeGameOverScreen(score);
 	}
-	/**
-	 * Updates the game state.
-	 */
-	public void update() {
-		if(player.getHitPoints() == 0) {
-			running = false;
-			gameOver();
-		}
-		player.move();
-		//For each projectile in the array, move it
-		Iterator<Projectiles> projIter = projectiles.iterator();
-		while(projIter.hasNext()) {
-			Projectiles shot = projIter.next().getProjectile();
-			shot.move();
-		}
-		//For each enemy ship, move it
-		Iterator<Ship> shipIter = activeShips.iterator();
-		 while(shipIter.hasNext()) {
-			 Ship ship = shipIter.next().getShip();
-			 ship.move();
-		 }
-		 
-		 Iterator<Meteor> metIter = meteors.iterator();
-		 while(metIter.hasNext()) {
-			 Meteor meteor = metIter.next().getMeteor();
-			 meteor.move();
-		 }
-		 
-		 Iterator<Boss> bossIter = bosses.iterator();
-		 while(bossIter.hasNext()) {
-			Boss boss = bossIter.next().getBoss();
-			boss.move();
-		 }
-	}
-
 	
 
 	//fiende skott
-	ActionListener fiende_skott = new ActionListener() {
+	ActionListener enemy_shoot = new ActionListener() {
 		 public void actionPerformed(ActionEvent evt) {
-			 if(!activeShips.isEmpty()) {
-             	int min = 0;
-             	int max = activeShips.size()-1;
-             	int random = new Random().nextInt(max + 1 - min) + min;
-             	Ship s = activeShips.get(random);
-             	
-             	Random rX = new Random();
-				double rangeMinX = -2.5;
-				double rangeMaxX = -1.5;
-				double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
-					
-				Random rY = new Random();
-				double rangeMinY = -0.1;
-				double rangeMaxY = 0.1;
-				double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
-					
-				ImageIcon imgI = new ImageIcon("img/shot2.png");
-				addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
-			 
-			 } 
-			 if(!bosses.isEmpty()) {
-				 for(Boss b1 : bosses) {
-					 Boss s = b1.getBoss();
+			 if(!pause) {
+				 if(!activeShips.isEmpty()) {
+					 int min = 0;
+					 int max = activeShips.size()-1;
+					 int random = new Random().nextInt(max + 1 - min) + min;
+					 Ship s = activeShips.get(random);
+					 
 					 Random rX = new Random();
 					 double rangeMinX = -2.5;
 					 double rangeMaxX = -1.5;
 					 double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
-					
+					 
 					 Random rY = new Random();
-					 double rangeMinY = -1;
-					 double rangeMaxY = 1;
+					 double rangeMinY = -0.1;
+					 double rangeMaxY = 0.1;
 					 double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
-				     ImageIcon imgI = new ImageIcon("img/shot2.png");
-					
-				     addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getLenght()/2),dx,dy,"img/shot2.png",true);
-				 
-			     }
+					 
+					 ImageIcon imgI = new ImageIcon("img/shot2.png");
+					 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
+					 
+				 } 
+				 if(!bosses.isEmpty()) {
+					 for(Boss b1 : bosses) {
+						 Boss s = b1.getBoss();
+						 Random rX = new Random();
+						 double rangeMinX = -2.5;
+						 double rangeMaxX = -1.5;
+						 double dx = rangeMinX + (rangeMaxX - rangeMinX) * rX.nextDouble();
+						 
+						 Random rY = new Random();
+						 double rangeMinY = -1;
+						 double rangeMaxY = 1;
+						 double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
+						 ImageIcon imgI = new ImageIcon("img/shot2.png");
+						 
+						 addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getLenght()/2),dx,dy,"img/shot2.png",true);
+						 
+					 }
+				 }
 			 }
          }
 	};
@@ -312,8 +356,8 @@ public class GameEngine extends JPanel implements Runnable{
 	    }
 	};
 	
-	Timer fiendeStuts =new Timer (1500,enemy_bounce);
-	Timer fiendeSottTimer = new Timer(350,fiende_skott);
+	Timer enemyBounce =new Timer (1500,enemy_bounce);
+	Timer enemyShootTimer = new Timer(350,enemy_shoot);
 	/**
 	 * Checks for collision between player,projectiles,ships and bosses
 	 */
@@ -363,9 +407,6 @@ public class GameEngine extends JPanel implements Runnable{
 				}
 			}
 		}
-	}
-	public int getScore() {
-		return score;
 	}
 	public boolean playerHit(Projectiles p, Player player) {
 		if((p.getyPos()+(p.getLenght()/2) >= player.getyPos() && p.getyPos()+(p.getLenght()/2) <= player.getyPos() + player.getLenght())
@@ -475,29 +516,78 @@ public class GameEngine extends JPanel implements Runnable{
 			}
 		}
 	}
-	
 	/**
 	 * Adds the ShipMaker and RockMaker threads to a eventpool
 	 */
 	private void addThreads() {
-		 
 		 //Spawns enemy ships every x seconds
 		 eventPool.scheduleAtFixedRate(new ShipMaker(this), 0, 700, MILLISECONDS);
 		 eventPool.scheduleAtFixedRate(new MeteorMaker(this), 0, 5, SECONDS);
-
 	}
-
-	public void newGame(String name) {
-
+	public void saveGame(String fileName) {
+		
+		state.activeShips = activeShips;
+		state.projectiles = projectiles;
+		state.bosses = bosses;
+		state.meteors = meteors;
+		state.player = player;
+		state.xPos = player.getxPos();
+		state.yPos = player.getyPos();
+		state.score = score;
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
+			out.writeObject(state);
+			out.close();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
-
-	public void loadGame(String file) {
-
+	
+	public void loadGame(String fileName) {
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
+			state = (State)in.readObject();
+			in.close();
+			activeShips = state.activeShips;
+			projectiles = state.projectiles;
+			bosses = state.bosses;
+			meteors = state.meteors;
+			player = state.player;
+			player.setxPos(state.xPos);
+			player.setyPos(state.yPos);
+			score = state.score;
+			player.setPlayerImage();
+			setVisible(true);
+			update();
+			addPlayerKeyListener(player, this);
+			
+			for(Ship s : activeShips) {
+				s.setShipImage();
+			}
+			for(Projectiles p : projectiles) {
+				p.setProjectilesImage();
+			}
+			for(Meteor m : meteors) {
+				m.setMeteorImage();
+			}
+			setPause(false);
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	
 	}
-
-	public void generateScore() {
-
+	public int getScore() {
+		return score;
 	}
-
+	public boolean getPause() {
+		return pause;
+	}
+	public void setPause(boolean paused) {
+		pause = paused;
+	}
+	
 }
 

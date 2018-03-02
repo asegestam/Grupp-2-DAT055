@@ -19,9 +19,11 @@ class MeteorMaker implements Runnable{
 	 */
 	@Override
 	public void run() {
-		for(int j = 0; j < 5; j++) {
-    		Meteor rock = new Meteor(1200, 400, -4,0);
-        	game.meteors.add(rock);
+		if(!game.pause) {
+			for(int j = 0; j < 5; j++) {
+				Meteor rock = new Meteor(1200, 400, -4,0);
+				game.meteors.add(rock);
+			}
 		}
 	}
 }

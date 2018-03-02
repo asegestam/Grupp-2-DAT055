@@ -10,7 +10,6 @@ import server.Server;
  * @version 2018-02-27
  */
 public class Main{
-	public static final int PORT_NUMBER = 8081;
 
 	public static void main(String[] args) {
     EventQueue.invokeLater(() -> {

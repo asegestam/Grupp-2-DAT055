@@ -10,6 +10,7 @@ public class Meteor extends Obj{
 	private final String shot = "img/meteor.png";
 	private static int min = 5;
 	private static int max = 710;
+	private ImageIcon imgI;
 	/**
 	 * Sets the X and Y position and speed
 	 * @param x position x-axis
@@ -26,11 +27,14 @@ public class Meteor extends Obj{
 	 */
 	public void initRock() {
 		int randomNum = ThreadLocalRandom.current().nextInt(min, max + 1);
-		ImageIcon imgI = new ImageIcon(shot);
+		imgI = new ImageIcon(shot);
 		setWidth(imgI.getImage().getWidth(null));
 		setLenght(imgI.getImage().getHeight(null));
-		setImage(imgI.getImage());
+		setMeteorImage();
 		setyPos(randomNum);
+	}
+	public void setMeteorImage() {
+		setImage(imgI.getImage());
 	}
 	/**
 	 * Returns a rock object for use in other classes

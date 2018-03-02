@@ -28,6 +28,12 @@ public class ActionHandler implements ActionListener,KeyListener {
 		this.player = player;
 		this.game = game;
 	}
+	
+	
+	public void updateHandler(Player player, GameEngine game) {
+		this.player = player;
+		this.game = game;
+	}
     /**
      * Moves the player object  and adds a projectile to the projectile array based on key pressed
      * Keys used: Arrow Keys, Space
@@ -36,38 +42,49 @@ public class ActionHandler implements ActionListener,KeyListener {
 	public void keyPressed(KeyEvent e) {
 		int c = e.getKeyCode();
 		
-		if(c == KeyEvent.VK_LEFT && !leftKey)
-		{
-			speed = player.getxSpeed();
-			speed -= deltaSpeed;
-			player.setxSpeed(speed);
-			leftKey = true;
+		if(c == KeyEvent.VK_ESCAPE) {
+			boolean pause = game.getPause();
+			if(pause) {
+				game.setPause(false);
+			}
+			else {
+				game.setPause(true);
+				}
+			}
+		if(!game.pause) {
+			if(c == KeyEvent.VK_LEFT && !leftKey)
+			{
+				speed = player.getxSpeed();
+				speed -= deltaSpeed;
+				player.setxSpeed(speed);
+				leftKey = true;
+			}
+			if(c == KeyEvent.VK_RIGHT && !rightKey)
+			{
+				speed = player.getxSpeed();
+				speed += deltaSpeed;
+				player.setxSpeed(speed);
+				rightKey = true;
+			}
+			if(c == KeyEvent.VK_UP && !upKey)
+			{
+				speed = player.getySpeed();
+				speed -= deltaSpeed;
+				player.setySpeed(speed);
+				upKey = true;
+			}
+			if(c == KeyEvent.VK_DOWN && !downKey)
+			{
+				speed = player.getySpeed();
+				speed += deltaSpeed;
+				player.setySpeed(speed);
+				downKey = true;
+			}	
+			if(c == KeyEvent.VK_SPACE && !spaceKey) {
+				game.addProjectile(player.getxPos(),player.getyPos(),5,0,"img/Shot.png",false);
+				spaceKey = true;
+			}	
 		}
-		if(c == KeyEvent.VK_RIGHT && !rightKey)
-		{
-			speed = player.getxSpeed();
-			speed += deltaSpeed;
-			player.setxSpeed(speed);
-			rightKey = true;
-		}
-		if(c == KeyEvent.VK_UP && !upKey)
-		{
-			speed = player.getySpeed();
-			speed -= deltaSpeed;
-			player.setySpeed(speed);
-			upKey = true;
-		}
-		if(c == KeyEvent.VK_DOWN && !downKey)
-		{
-			speed = player.getySpeed();
-			speed += deltaSpeed;
-			player.setySpeed(speed);
-			downKey = true;
-		}	
-		if(c == KeyEvent.VK_SPACE && !spaceKey) {
-			game.addProjectile(player.getxPos(),player.getyPos(),5,0,"img/Shot.png",false);
-			spaceKey = true;
-		}	
 		
 	}
 	/**
@@ -76,6 +93,7 @@ public class ActionHandler implements ActionListener,KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int c = e.getKeyCode();
+		
 		if(c == KeyEvent.VK_LEFT && leftKey)
 		{
 			speed = player.getxSpeed();

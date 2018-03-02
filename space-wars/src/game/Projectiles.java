@@ -10,6 +10,7 @@ public class Projectiles extends Obj {
 	private boolean hostile;
 	private int dmg;
 	private final String shot = "img/shot.png";
+	private ImageIcon imgI;
 	/**
 	 * Initiates position, speed, graphics and if its a enemy projectile or player
 	 * @param x position x-axis
@@ -32,12 +33,19 @@ public class Projectiles extends Obj {
 	 * @param img
 	 */
 	public void initShot(double x, double y, String img) {
-		ImageIcon imgI = new ImageIcon(img);
+		imgI = new ImageIcon(img);
 		setWidth(imgI.getImage().getWidth(null));
 		setLenght(imgI.getImage().getHeight(null));
-		setImage(imgI.getImage());
+		setProjectilesImage();
 		setxPos(x + 120);
 		setyPos(y + 55);
+	}
+	
+	public void setProjectilesImage() {
+		setImage(imgI.getImage());
+	}
+	public String getProjectilesImage() {
+				return shot;
 	}
 	/**
 	 * Returns hostile state

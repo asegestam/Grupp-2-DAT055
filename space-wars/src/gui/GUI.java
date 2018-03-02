@@ -25,6 +25,7 @@ public class GUI extends JFrame {
 	private final static String WINDOW_TITLE = "Space-Wars";
 	JFrame gameFrame;
 	private Client client;
+	private GameEngine game;
 	/**
 	 * Constructor creates the start menu and starts a connection to the client
 	 */
@@ -76,7 +77,7 @@ public class GUI extends JFrame {
 	public void makeGameFrame() {
 		gameFrame =  new JFrame("Space-Wars");
 		makeMenu(gameFrame);
-		gameFrame.add(new GameEngine(this));
+		gameFrame.add(game = new GameEngine(this));
 		gameFrame.pack();
 		gameFrame.setSize(1280, 720);
 		gameFrame.setResizable(false);
@@ -145,29 +146,25 @@ public class GUI extends JFrame {
 	 */
 	public void makeMenu(JFrame frame) {
 		JMenuBar menuBar = new JMenuBar();
-		//Options menu
-		JMenu menu = new JMenu("Options");
-		JMenuItem menuItem = new JMenuItem("text");
-		menuBar.add(menu);
-		menu.add(menuItem);
-		//Settings menu
-		menu = new JMenu("Settings");
-		menuBar.add(menu);
-		menuItem = new JMenuItem("text");
-		menu.add(menuItem);
-		frame.setJMenuBar(menuBar);
 		//HighScore menu
-		menu = new JMenu("HighScores");
-		menuBar.add(menu);
-		menuItem = new JMenuItem("List of highscores");
-		menu.add(menuItem);
+		JMenu menu = new JMenu("HighScores");
+		JMenuItem menuItem = new JMenuItem("List of highscores");
 		frame.setJMenuBar(menuBar);
-		menuItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					printHighScores();
-				}
-	    });
+		menuBar.add(menu);
+		menu.add(menuItem);
+		menuItem.addActionListener((ActionEvent e)->{printHighScores();});
+		//Load/Save 
+		menu = new JMenu("Game Options");
+		menuBar.add(menu);
+		menuItem = new JMenuItem("Save Game");
+		menu.add(menuItem);
+		menuItem.addActionListener((ActionEvent e)->{String input = JOptionPane.showInputDialog("Provide file name"); /*game.save(input);*/});
+		menuItem = new JMenuItem("Load Game");
+		menu.add(menuItem);
+		menuItem.addActionListener((ActionEvent e)->{String input = JOptionPane.showInputDialog("Provide file name"); game.loadGame(input);});
+		menuItem = new JMenuItem("Exit Game");
+		menu.add(menuItem);
+		menuItem.addActionListener((ActionEvent e)->{System.exit(0);});
 	}
 	/**
 	 * Sorts the given collection of values

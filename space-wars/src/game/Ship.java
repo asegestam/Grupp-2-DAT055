@@ -12,6 +12,7 @@ public class Ship extends Enemy {
 	private final String enemyImg = "img/enemy.png";
 	private double max = 0.3;
 	private double min = -0.3;
+	private ImageIcon imgI;
 	/**
 	 * Sets X and Y positions and X and Y-axis speeds
 	 * @param x position x-axis
@@ -36,9 +37,13 @@ public class Ship extends Enemy {
 	 * Sets an image as the ship graphics
 	 */
 	public void initEnemy() {
-		ImageIcon imgI = new ImageIcon(enemyImg);
+		imgI = new ImageIcon(enemyImg);
 		setWidth(imgI.getImage().getWidth(null));
 		setLenght(imgI.getImage().getHeight(null));
+		setShipImage();
+	}
+	
+	public void setShipImage() {
 		setImage(imgI.getImage());
 	}
 	/**

@@ -1,7 +1,12 @@
 package game;
 import java.awt.*;
+import java.io.Serializable;
 
-public class Obj {
+public class Obj implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4645154821514581456L;
 	private double xPos;
 	private double yPos;
 	private double xSpeed;
@@ -9,7 +14,7 @@ public class Obj {
 	private int hitPoints;
 	private int width;
 	private int lenght;
-	private Image image;
+	private  transient Image image;
 	private boolean visible;
 
 	public Obj(double x, double y, double dx, double dy) {
