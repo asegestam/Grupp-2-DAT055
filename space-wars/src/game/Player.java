@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
  *
  */
 public class Player extends Obj {
-	private final String playerImg = "img/ship.png";
+	private final String playerImg = "img/playerShip.png";
 	private ImageIcon imgI;
     /**
      * Sets initial X and Y positions, speed, and hp
@@ -29,7 +29,7 @@ public class Player extends Obj {
 	public void initPlayer() {
 		imgI = new ImageIcon(playerImg);
 		setWidth(imgI.getImage().getWidth(null));
-		setLenght(imgI.getImage().getHeight(null));
+		setHeight(imgI.getImage().getHeight(null));
 		setPlayerImage();
 	}
 	/**

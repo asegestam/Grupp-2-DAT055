@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
  * @version 2018-03-02
  */
 public class Ship extends Enemy {
-	private final String enemyImg = "img/enemy.png";
+	private final String enemyImg = "img/enemyBlack5.png";
 	private double max = 0.3;
 	private double min = -0.3;
 	private ImageIcon imgI;
@@ -37,7 +37,7 @@ public class Ship extends Enemy {
 	public void initEnemy() {
 		imgI = new ImageIcon(enemyImg);
 		setWidth(imgI.getImage().getWidth(null));
-		setLenght(imgI.getImage().getHeight(null));
+		setHeight(imgI.getImage().getHeight(null));
 		setShipImage();
 	}
 	

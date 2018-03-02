@@ -76,7 +76,7 @@ public class GameEngine extends JPanel implements Runnable {
 	 * Starts the game thread
 	 */
 	public void gameInit() {
-	    player = new Player(100,250,0,0,5);
+	    player = new Player(100,250,0,0,500);
 	    addThreads();
 	    if(gameloop == null) {
 	    	gameloop = new Thread(this);
@@ -308,7 +308,7 @@ public class GameEngine extends JPanel implements Runnable {
 					 double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
 					 
 					 ImageIcon imgI = new ImageIcon("img/shot2.png");
-					 addProjectile(s.getxPos()-s.getWidth()- imgI.getImage().getWidth(null),s.getyPos()-(s.getLenght()/2),dx,dy,"img/shot2.png",true);
+					 addProjectile(s.getxPos() - s.getWidth() - imgI.getImage().getWidth(null),s.getyPos()-(s.getHeight()/2)+20,dx,dy,"img/shot2.png",true);
 					 
 				 } 
 				 if(!bosses.isEmpty()) {
@@ -325,7 +325,7 @@ public class GameEngine extends JPanel implements Runnable {
 						 double dy = rangeMinY + (rangeMaxY - rangeMinY) * rY.nextDouble();
 						 ImageIcon imgI = new ImageIcon("img/shot2.png");
 						 
-						 addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getLenght()/2),dx,dy,"img/shot2.png",true);
+						 addProjectile(s.getxPos()- imgI.getImage().getWidth(null),s.getyPos()+(s.getHeight()/2),dx,dy,"img/shot2.png",true);
 					 }
 				 }
 			 }
@@ -343,7 +343,7 @@ public class GameEngine extends JPanel implements Runnable {
 	    }
 	};
 	Timer enemyBounce = new Timer (1500,enemy_bounce);
-	Timer enemyShootTimer = new Timer(280,enemy_shoot);
+	Timer enemyShootTimer = new Timer(275,enemy_shoot);
 	/**
 	 * Checks for collision between player,projectiles,ships and bosses
 	 */
@@ -358,7 +358,6 @@ public class GameEngine extends JPanel implements Runnable {
 						    //enemy and projectile
 						    if(enemyHit(p,s)) {
 							score += 10;
-							System.out.println("Score " + score);
 							activeShips.remove(s);
 							projectiles.remove(p);
 							break;
@@ -370,12 +369,10 @@ public class GameEngine extends JPanel implements Runnable {
 						    Boss b = b1.getBoss();
 						    if(bossHit(p,b)) {
 							score += 10;
-							System.out.println("Score " + score);
 							projectiles.remove(p);
 							int hp = b.getHitPoints();
 							hp--;
 							b.setHitPoints(hp);
-							System.out.println(hp);
 								if(b.getHitPoints() == 0) {
 								b.setBossAlive(false);
 								b.setVisible(false);
@@ -424,7 +421,7 @@ public class GameEngine extends JPanel implements Runnable {
 	 * @return if collision has occurred or not
 	 */
 	public boolean playerHit(Projectiles p, Player player) {
-		if((p.getyPos()+(p.getLenght()/2) >= player.getyPos() && p.getyPos()+(p.getLenght()/2) <= player.getyPos() + player.getLenght())
+		if((p.getyPos()+(p.getHeight()/2) >= player.getyPos() && p.getyPos()+(p.getHeight()/2) <= player.getyPos() + player.getHeight())
 				&& (p.getxPos()+(p.getWidth()*0.5) >= player.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= player.getxPos()+ player.getWidth())) {
 			return true;
 		}
@@ -437,7 +434,7 @@ public class GameEngine extends JPanel implements Runnable {
 	 * @return
 	 */
 	private boolean enemyHit(Projectiles p, Ship s) {
-		if((p.getyPos()+(p.getLenght()/2) >= s.getyPos() && p.getyPos()+(p.getLenght()/2) <= s.getyPos() + s.getLenght())
+		if((p.getyPos()+(p.getHeight()/2) >= s.getyPos() && p.getyPos()+(p.getHeight()/2) <= s.getyPos() + s.getHeight())
 				&& (p.getxPos()+(p.getWidth()*0.5) >= s.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
 			return true;
 		}
@@ -450,7 +447,7 @@ public class GameEngine extends JPanel implements Runnable {
 	 * @return
 	 */
 	private boolean bossHit(Projectiles p, Boss b) {
-		if((p.getyPos()+(p.getLenght()/2) >= b.getyPos() && p.getyPos()+(p.getLenght()/2) <= b.getyPos() + b.getLenght())
+		if((p.getyPos()+(p.getHeight()/2) >= b.getyPos() && p.getyPos()+(p.getHeight()/2) <= b.getyPos() + b.getHeight())
 				&& (p.getxPos()+(p.getWidth()*0.5) >= b.getxPos() && p.getxPos()+(p.getWidth()*0.5) <= b.getxPos()+ b.getWidth())) {
 			return true;
 		}
@@ -463,7 +460,7 @@ public class GameEngine extends JPanel implements Runnable {
 	 * @return
 	 */
 	private boolean bossCollision(Player player, Boss boss) {
-		if((player.getyPos()+(player.getLenght()/2) >= boss.getyPos() && player.getyPos()+(player.getLenght()/2) <= boss.getyPos() + boss.getLenght())
+		if((player.getyPos()+(player.getHeight()/2) >= boss.getyPos() && player.getyPos()+(player.getHeight()/2) <= boss.getyPos() + boss.getHeight())
 				&& (player.getxPos()+(player.getWidth()*0.5) >= boss.getxPos() && player.getxPos()+(player.getWidth()*0.5) <= boss.getxPos()+ boss.getWidth())) {
 			return true;
 		}
@@ -476,7 +473,7 @@ public class GameEngine extends JPanel implements Runnable {
 	 * @return
 	 */
 	private boolean shipCollision(Player player, Ship s) {
-		if((player.getyPos()+(player.getLenght()/2) >= s.getyPos() && player.getyPos()+(player.getLenght()/2) <= s.getyPos() + s.getLenght())
+		if((player.getyPos()+(player.getHeight()/2) >= s.getyPos() && player.getyPos()+(player.getHeight()/2) <= s.getyPos() + s.getHeight())
 				&& (player.getxPos()+(player.getWidth()*0.5) >= s.getxPos() && player.getxPos()+(player.getWidth()*0.5) <= s.getxPos()+ s.getWidth())) {
 			return true;
 		}
@@ -489,7 +486,7 @@ public class GameEngine extends JPanel implements Runnable {
 	 * @return
 	 */
 	private boolean meteorCollision(Player player, Meteor m) {
-		if((player.getyPos()+(player.getLenght()/2) >= m.getyPos() && player.getyPos()+(player.getLenght()/2) <= m.getyPos() + m.getLenght())
+		if((player.getyPos()+(player.getHeight()/2) >= m.getyPos() && player.getyPos()+(player.getHeight()/2) <= m.getyPos() + m.getHeight())
 				&& (player.getxPos()+(player.getWidth()*0.5) >= m.getxPos() && player.getxPos()+(player.getWidth()*0.5) <= m.getxPos()+ m.getWidth())) {
 			
 			return true;
@@ -511,8 +508,8 @@ public class GameEngine extends JPanel implements Runnable {
 		else if(player.getyPos() < 0) {
 			player.setyPos(1);
 		}
-		else if(player.getyPos() >= 720 - player.getLenght()) {
-			player.setyPos(719 - player.getLenght());
+		else if(player.getyPos() >= 720 - player.getHeight()) {
+			player.setyPos(719 - player.getHeight());
 		}
 		
 		//skepp
@@ -530,7 +527,7 @@ public class GameEngine extends JPanel implements Runnable {
 				speedy = -speedy;
 				s.setySpeed(speedy);
 			}
-			else if(s.getyPos() >= 720 - s.getLenght()) {
+			else if(s.getyPos() >= 720 - s.getHeight()) {
 				double speedy = s.getySpeed();
 				speedy = -speedy;
 				s.setySpeed(speedy);
@@ -553,11 +550,11 @@ public class GameEngine extends JPanel implements Runnable {
 			b.setySpeed(speedy);
 			b.setyPos(0);
 		}
-		 if(b.getyPos() >= 720 - b.getLenght()) {
+		 if(b.getyPos() >= 720 - b.getHeight()) {
 			double speedy = b.getySpeed();
 			speedy = -speedy;
 			b.setySpeed(speedy);
-			b.setyPos(720 - b.getLenght());
+			b.setyPos(720 - b.getHeight());
 		}
 			}
 		}
@@ -575,7 +572,7 @@ public class GameEngine extends JPanel implements Runnable {
 			else if(s.getyPos() <= 0) {
 				projectiles.remove(s);
 			}
-			else if(s.getyPos() >= 720 - s.getLenght()) {
+			else if(s.getyPos() >= 720 - s.getHeight()) {
 				projectiles.remove(s);
 			}
 		}

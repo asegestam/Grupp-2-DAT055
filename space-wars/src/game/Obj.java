@@ -19,7 +19,7 @@ public abstract class Obj implements Serializable {
 	private double ySpeed;
 	private int hitPoints;
 	private int width;
-	private int lenght;
+	private int height;
 	private  transient Image image;
 	private boolean visible;
 
@@ -80,12 +80,12 @@ public abstract class Obj implements Serializable {
 		this.width = width;
 	}
 
-	public int getLenght() {
-		return lenght;
+	public int getHeight() {
+		return height;
 	}
 
-	public void setLenght(int lenght) {
-		this.lenght = lenght;
+	public void setHeight(int lenght) {
+		this.height = lenght;
 	}
     public void setImage(Image image) {
         

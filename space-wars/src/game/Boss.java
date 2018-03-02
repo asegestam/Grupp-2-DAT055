@@ -35,7 +35,7 @@ public class Boss extends Enemy {
 	public void initBoss(double x, double y) {
 		imgI = new ImageIcon(bossImg);
 		setWidth(imgI.getImage().getWidth(null));
-		setLenght(imgI.getImage().getHeight(null));
+		setHeight(imgI.getImage().getHeight(null));
 		setBossImage();
 		setxPos(x);
 		setyPos(y);

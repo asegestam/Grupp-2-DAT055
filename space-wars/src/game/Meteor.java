@@ -29,7 +29,7 @@ public class Meteor extends Obj{
 		int randomNum = ThreadLocalRandom.current().nextInt(min, max + 1);
 		imgI = new ImageIcon(shot);
 		setWidth(imgI.getImage().getWidth(null));
-		setLenght(imgI.getImage().getHeight(null));
+		setHeight(imgI.getImage().getHeight(null));
 		setMeteorImage();
 		setyPos(randomNum);
 	}
