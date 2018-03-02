@@ -1,53 +1,66 @@
 package game;
 import java.awt.*;
-import javax.imageio.*;
+import java.io.Serializable;
 
-public class Obj {
-	
-	//Instansvariabler
-	
-	private int xPos;
-	private int yPos;
-	private int xSpeed;
-	private int ySpeed;
+/** 
+ * Used as a abstract class for the game objects
+ * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @version 2018-03-02
+ */
+
+public abstract class Obj implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4645154821514581456L;
+	private double xPos;
+	private double yPos;
+	private double xSpeed;
+	private double ySpeed;
 	private int hitPoints;
 	private int width;
 	private int lenght;
-	//private BufferedImage img;
-	
-	public Obj() {
-		
+	private  transient Image image;
+	private boolean visible;
+
+	public Obj(double x, double y, double dx, double dy) {
+		this.yPos = y;
+		this.xPos = x;
+		this.xSpeed = dx;
+		this.ySpeed = dy;
+		visible = true;
+
 	}
 
-	public int getxPos() {
+	public double getxPos() {
 		return xPos;
 	}
 
-	public void setxPos(int xPos) {
-		this.xPos = xPos;
+	public void setxPos(double x) {
+		this.xPos = x;
 	}
 
-	public int getyPos() {
+	public double getyPos() {
 		return yPos;
 	}
 
-	public void setyPos(int yPos) {
-		this.yPos = yPos;
+	public void setyPos(double y) {
+		this.yPos = y;
 	}
 
-	public int getxSpeed() {
+	public double getxSpeed() {
 		return xSpeed;
 	}
 
-	public void setxSpeed(int xSpeed) {
+	public void setxSpeed(double xSpeed) {
 		this.xSpeed = xSpeed;
 	}
 
-	public int getySpeed() {
+	public double getySpeed() {
 		return ySpeed;
 	}
 
-	public void setySpeed(int ySpeed) {
+	public void setySpeed(double ySpeed) {
 		this.ySpeed = ySpeed;
 	}
 
@@ -74,8 +87,27 @@ public class Obj {
 	public void setLenght(int lenght) {
 		this.lenght = lenght;
 	}
-	
+    public void setImage(Image image) {
+        
+        this.image = image;
+    }
+
+    public Image getImage() {
+    
+        return image;
+    }
+    public boolean isVisible() {
+    
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+    
+        this.visible = visible;
+    }
 	public void move() {
+		this.xPos += xSpeed;
+		this.yPos += ySpeed;
 		
 	}
 
