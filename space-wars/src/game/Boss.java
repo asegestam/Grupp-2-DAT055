@@ -1,19 +1,27 @@
 package game;
 
+import java.net.URL;
 import java.util.Random;
 import javax.swing.ImageIcon;
 /**
  * Used to create a Boss object with HP,X and Y positions
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Albin Segestam,Åke Svensson
  * @version 2018-03-02
  */
 public class Boss extends Enemy {
-	private final String bossImg = "img/boss.png";
-	double min = -3;
-	double max = 3;
-	boolean bossAlive = false;
+	private URL bossImg = getClass().getResource("/boss.png");
+	private double min = -3;
+	private double max = 3;
+	private boolean bossAlive = false;
 	private ImageIcon imgI;
-	
+	/**
+	 * Initiates position and hp on boss creation.
+	 * @param x positon x-axis
+	 * @param y position y-axis
+	 * @param dx speed x-axis
+	 * @param dy speed y-axis
+	 * @param hp health points for the boss
+	 */
 	public Boss(double  x, double y, double dx, double dy, int hp) {
 		super(x,y,dx,dy);
 		this.setHitPoints(hp);
@@ -29,8 +37,8 @@ public class Boss extends Enemy {
 	}
 	/**
 	 * Initiate the boss
-	 * @param x
-	 * @param y
+	 * @param x position x-axis
+	 * @param y position x-axis
 	 */
 	public void initBoss(double x, double y) {
 		imgI = new ImageIcon(bossImg);
@@ -46,12 +54,17 @@ public class Boss extends Enemy {
 	public void setBossImage() {
 		setImage(imgI.getImage());
 	}
-	public Boss getBoss() {
-		return this;
-	}
+	/**
+	 * Returns boolean indicating if the boss is alive
+	 * @return boolean if the boss is alive or not
+	 */
 	public boolean getBossAlive() {
 		return bossAlive;
 	}
+	/**
+	 * Sets the alive boolean
+	 * @param b true if it is alive, false if not
+	 */
 	public void setBossAlive(boolean b) {
 		bossAlive = b;
 	}

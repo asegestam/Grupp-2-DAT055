@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 /**
  * 	Server to store highscores
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Markus Saarijärvi
  * @version 2018-03-02
  */
 public class Server extends Thread{
@@ -19,7 +19,10 @@ public class Server extends Thread{
     public static final int PORT_NUMBER = 8081;
     private static HashMap<String, Integer> highScores  = new HashMap<String, Integer>();
     protected Socket socket;
-    
+    /**
+     * Iniates the server and adds some dummy items to it.
+     * @param socket Socket being used
+     */
     public Server(Socket socket) {
 	        this.socket = socket;
 	        addCrapToTheMap();
@@ -90,8 +93,8 @@ public class Server extends Thread{
 		}
     /**
 	 * Adds a name and a score to the HashMap
-	 * @param user
-	 * @param score
+	 * @param user user being added
+	 * @param score score being added
 	 */
     private static void add(String user, int score) {
     	if(!highScores.containsKey(user) && score > 0) {
@@ -103,7 +106,7 @@ public class Server extends Thread{
     	}
     /**
 	 * Returns the HashMap
-	 * @return
+	 * @return a HashMap of the scores
 	 */
     private static HashMap<String, Integer> getHighScores(){
     	return highScores;

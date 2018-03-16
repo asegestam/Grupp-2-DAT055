@@ -1,17 +1,21 @@
 package game;
+import java.util.ArrayList;
 import java.util.Random;
 /**
  * This class is used to add new rocks into the game
  * Is runnable so can be used as a thread
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Erik Tallbacka, Åke Svensson
  * @version 2018-03-02
  */
 class ShipMaker implements Runnable{
 	private GameEngine game;
 	private Boss boss1,boss2,boss3;
+	private ArrayList<Ship> activeShips;
+	private ArrayList<Boss> bosses;
+	private Player player;
 	/**
 	 * Initiates the given game engine object and Boss objects
-	 * @param game
+	 * @param game a instance of game engine
 	 */
 	public ShipMaker(GameEngine game) {
 		this.game = game;
@@ -25,15 +29,18 @@ class ShipMaker implements Runnable{
 	 */
 	@Override
 	public void run() {
-		if(!game.pause) {
-			if(game.getScore() <= 130 && game.getScore() >= 100 && boss1.getBossAlive() == false) {
-				game.bosses.add(boss1);
+		if(!game.getPause()) {
+			bosses = game.getBosses();
+			player = game.getPlayer();
+			activeShips = game.getActiveShips();
+			if(game.cd.getScore() <= 130 && game.cd.getScore() >= 100 && boss1.getBossAlive() == false) {
+				bosses.add(boss1);
 				boss1.setBossAlive(true);
 			}
-			if(game.getScore() <= 750 && game.getScore() >= 700 && boss2.getBossAlive() == false && boss3.getBossAlive() == false) {
-				game.bosses.add(boss2);
+			if(game.cd.getScore() <= 750 && game.cd.getScore() >= 700 && boss2.getBossAlive() == false && boss3.getBossAlive() == false) {
+				bosses.add(boss2);
 				boss2.setBossAlive(true);
-				game.bosses.add(boss3);
+				bosses.add(boss3);
 				boss3.setBossAlive(true);
 			}
 			if(!boss1.getBossAlive()) {
@@ -42,11 +49,11 @@ class ShipMaker implements Runnable{
 				double max = 700;
 				double random = min + (max - min) * r.nextDouble();
 				Ship ship = new Ship(1850, random, 0 , 0);
-				game.activeShips.add(ship);
+				activeShips.add(ship);
 				ship.moveEnemy();
 			}
-			for(Boss b1 : game.bosses) {
-				Boss b = b1.getBoss();
+			for(Boss b1 : bosses) {
+				Boss b = (Boss) b1.getInstance();
 				if(b.getBossAlive()) {
 					b.moveBoss();
 				}

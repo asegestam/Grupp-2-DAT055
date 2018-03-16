@@ -3,7 +3,7 @@ import gui.GUI;
 
 /**
  * 	Starts the program with the initial Start menu
- * @author Albin Segestam, Markus Saarijärvi
+ * @author Albin Segestam
  * @version 2018-02-27
  */
 public class Main {

@@ -15,7 +15,7 @@ import server.Client;
 /**
  * Creates the Game GUI
  * Used to create start menu, game frame and game-over screen
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Albin Segestam,Markus Saarijärvi, Erik Tallbacka
  * @version 2018-03-02
  */
 
@@ -155,6 +155,8 @@ public class GUI extends JFrame {
 		menuItem = new JMenuItem("Save Game");
 		menu.add(menuItem);
 		menuItem.addActionListener((ActionEvent e)->{String input = JOptionPane.showInputDialog("Provide file name"); game.saveGame(input);});
+		
+		
 		menuItem = new JMenuItem("Load Game");
 		menu.add(menuItem);
 		menuItem.addActionListener((ActionEvent e)->{String input = JOptionPane.showInputDialog("Provide file name"); game.loadGame(input);});
@@ -199,7 +201,7 @@ public class GUI extends JFrame {
 	}
 	/**
 	 * Returns the frame
-	 * @return JFrame
+	 * @return JFrame the active frame
 	 */
 	public JFrame getFrame() {
 		

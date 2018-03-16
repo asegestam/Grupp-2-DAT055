@@ -1,14 +1,16 @@
 package game;
 
+import java.net.URL;
+
 import javax.swing.ImageIcon;
 /**
  * Used to iniate a player object with HP,X and Y positions
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Albin Segestam,Erik Tallbacka
  * @version 2018-03-02
  *
  */
 public class Player extends Obj {
-	private final String playerImg = "img/playerShip.png";
+	private URL playerImg = getClass().getResource("/playerShip.png");
 	private ImageIcon imgI;
     /**
      * Sets initial X and Y positions, speed, and hp
@@ -28,9 +30,9 @@ public class Player extends Obj {
 	 */
 	public void initPlayer() {
 		imgI = new ImageIcon(playerImg);
+		setPlayerImage();
 		setWidth(imgI.getImage().getWidth(null));
 		setHeight(imgI.getImage().getHeight(null));
-		setPlayerImage();
 	}
 	/**
 	 * Sets a image as the player graphics

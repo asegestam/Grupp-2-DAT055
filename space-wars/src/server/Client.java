@@ -8,15 +8,19 @@ import java.net.UnknownHostException;
 import java.util.Map;
  /**
   * Used to receive and obtain information from the server
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Markus Saarijärvi
  * @version 2018-03-02
   */
 public class Client {
  
 	private String host;
 	private int port;
- 
-    @SuppressWarnings("unchecked")
+
+	/**
+	 * Initiates the client
+	 * @param host the host address
+	 * @param port the port being used
+	 */
 	public Client(String host, int port) {
     	this.host = host;
     	this.port = port;

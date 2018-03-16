@@ -1,13 +1,14 @@
 package game;
+import java.net.URL;
 import java.util.Random;
 import javax.swing.ImageIcon;
 /**
  * Used to create enemy ships with initial positions and graphics
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Åke Svensson
  * @version 2018-03-02
  */
 public class Ship extends Enemy {
-	private final String enemyImg = "img/enemyBlack5.png";
+	private URL ship = getClass().getResource("/enemyShip.png");
 	private double max = 0.3;
 	private double min = -0.3;
 	private ImageIcon imgI;
@@ -35,20 +36,15 @@ public class Ship extends Enemy {
 	 * Sets an image as the ship graphics
 	 */
 	public void initEnemy() {
-		imgI = new ImageIcon(enemyImg);
+		imgI = new ImageIcon(ship);
 		setWidth(imgI.getImage().getWidth(null));
 		setHeight(imgI.getImage().getHeight(null));
 		setShipImage();
 	}
-	
+	/**
+	 * Sets an image for the object
+	 */
 	public void setShipImage() {
 		setImage(imgI.getImage());
-	}
-	/**
-	 * Returns a enemy ship object for use in other classes
-	 * @return Ship
-	 */
-	public Ship getShip() {
-		return this;
 	}
 }

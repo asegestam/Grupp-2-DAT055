@@ -1,20 +1,21 @@
 package gui;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import javax.imageio.ImageIO;
 
 /**
  * Used to add a scrolling background to the game to mimic forward movement
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Erik Tallbacka
  * @version 2018-03-02
  */
 public class Background {
 	
 	private BufferedImage img;
-	private final String backgroundImg = "img/space.jpg";
+	java.net.URL backgroundImg =  getClass().getResource("/space.jpg");
 	private int x,y;
-	
+	/**
+	 * Initiates starting position of the background
+	 */
 	public Background() {
         this(0,0);
     }
@@ -24,13 +25,13 @@ public class Background {
 	    this.y = y;
 	    // Try to open the image file background
 	    try {
-	        img = ImageIO.read(new File(backgroundImg));
+	        img = ImageIO.read(backgroundImg);
 	    }
 	    catch (Exception e) { System.out.println(e); }
 	}
 	/**
 	 * Draws the background
-	 * @param g
+	 * @param g what object to draw on, in this case the panel
 	 */
 	public void draw(Graphics g) {
 		// Draw the image onto the Graphics reference
@@ -48,28 +49,28 @@ public class Background {
 	}
 	/**
 	 * Sets the x position
-	 * @param x
+	 * @param x value being set
 	 */
 	public void setX(int x) {
 		this.x = x;
 	}
 	/**
 	 * Returns the x position
-	 * @return
+	 * @return x position
 	 */
 	public int getX() {
 	   return this.x;
 	}
 	/**
 	 * Returns y position
-	 * @return
+	 * @return y position
 	 */
 	public int getY() {
 		return this.y;
 	}
 	/**
 	 * Returns the image width
-	 * @return
+	 * @return the image width
 	 */
 	public int getImageWidth() {
 	    return img.getWidth();

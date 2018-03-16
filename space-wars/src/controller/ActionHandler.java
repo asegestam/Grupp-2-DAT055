@@ -4,11 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.net.URL;
+
 import game.GameEngine;
 import game.Player;
 /**
  * 	Handles the user input to move and shoot the player object
- * @author Albin Segestam,Åke Svensson, Markus Saarijärvi, Erik Tallbacka, Theo Haugen
+ * @author Åke Svensson,Theo Haugen
  * @version 2018-02-27
  */
 
@@ -19,10 +21,11 @@ public class ActionHandler implements ActionListener,KeyListener {
 	double deltaSpeed = 2;
 	private Player player;
 	private GameEngine game;
+	private URL shot = getClass().getResource("/shot.png");
 	/**
 	 * Initiates the player object being controlled and the game engine
-	 * @param player
-	 * @param game
+	 * @param player player object being controlled
+	 * @param game instance of the game engine
 	 */
 	public ActionHandler(Player player, GameEngine game) {
 		this.player = player;
@@ -78,7 +81,7 @@ public class ActionHandler implements ActionListener,KeyListener {
 				downKey = true;
 			}	
 			if(c == KeyEvent.VK_SPACE && !spaceKey) {
-				game.addProjectile(player.getxPos(),player.getyPos(),5,0,"img/Shot.png",false);
+				game.addProjectile(player.getxPos(),player.getyPos(),5,0,shot,false);
 				spaceKey = true;
 			}	
 	    }	
